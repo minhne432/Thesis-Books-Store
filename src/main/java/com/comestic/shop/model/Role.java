@@ -2,39 +2,64 @@ package com.comestic.shop.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int roleID;
 
-    @Column(unique = true)
-    private String name;
+    private String roleName;
+    private String description;
 
-    // Constructors, getters và setters
-    public Role() {}
+    @OneToMany(mappedBy = "role")
+    private Set<UserRole> userRoles;
 
-    public Role(String name) {
-        this.name = name;
+    @OneToMany(mappedBy = "role")
+    private Set<RolePermission> rolePermissions;
+
+    // Getter và Setter
+    // ...
+
+    public int getRoleID() {
+        return roleID;
     }
 
-    // ... getters và setters ...
-
-    public Long getId() {
-        return id;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Set<RolePermission> getRolePermissions() {
+        return rolePermissions;
+    }
+
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public void setRolePermissions(Set<RolePermission> rolePermissions) {
+        this.rolePermissions = rolePermissions;
     }
 }

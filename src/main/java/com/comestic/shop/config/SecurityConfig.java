@@ -9,34 +9,43 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
-    private final CustomAuthenticationSuccessHandler successHandler;
-
-    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
-        this.successHandler = successHandler;
-    }
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // Cho phép tất cả các yêu cầu không cần xác thực
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(successHandler)  // Sử dụng successHandler tùy chỉnh
-                        .permitAll()
-                )
-                .logout(logout -> logout.permitAll());
+                .csrf(csrf -> csrf.disable()); // Tắt CSRF
 
         return http.build();
     }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    private final CustomAuthenticationSuccessHandler successHandler;
+//
+//    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
+//        this.successHandler = successHandler;
+//    }
+//
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/").permitAll()
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/user/**").hasRole("USER")
+//                        .anyRequest().authenticated()
+//                )
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .successHandler(successHandler)  // Sử dụng successHandler tùy chỉnh
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout.permitAll());
+//
+//        return http.build();
+//    }
+//
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }
