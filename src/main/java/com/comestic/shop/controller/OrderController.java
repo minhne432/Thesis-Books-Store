@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.order;
+package com.comestic.shop.controller;
 
 public class OrderController {
 }

@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.home;
+package com.comestic.shop.controller;
 
 
 import org.springframework.stereotype.Controller;

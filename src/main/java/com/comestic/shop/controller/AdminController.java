@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.admin;
+package com.comestic.shop.controller;
 
 public class AdminController {
 }

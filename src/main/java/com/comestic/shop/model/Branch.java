@@ -147,4 +147,13 @@ public class Branch {
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here
+    @Override
+    public String toString() {
+        return "Branch{" +
+                "branchID=" + branchId +
+                ", branchName='" + branchName + '\'' +
+                ", location='" + location + '\'' +
+                ", manager='" + manager + '\'' +
+                '}';
+    }
 }

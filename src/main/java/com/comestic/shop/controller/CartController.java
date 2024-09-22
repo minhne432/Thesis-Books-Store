@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.customer;
+package com.comestic.shop.controller;
 
 public class CartController {
 }

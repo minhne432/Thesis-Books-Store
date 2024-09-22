@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.product;
+package com.comestic.shop.controller;
 
 public class DiscountCodeController {
 }

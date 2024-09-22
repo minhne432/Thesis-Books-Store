@@ -1,4 +1,4 @@
-package com.comestic.shop.controller.report;
+package com.comestic.shop.controller;
 
 public class ReportController {
 }
