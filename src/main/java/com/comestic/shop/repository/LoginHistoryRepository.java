@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface LoginHistoryRepository extends JpaRepository<LoginHistory, Long> {
+    // Sửa lại phương thức để truy cập đúng thuộc tính
     List<LoginHistory> findByCustomerId(Long customerId);
 }
