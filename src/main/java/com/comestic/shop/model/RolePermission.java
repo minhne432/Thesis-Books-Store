@@ -19,4 +19,29 @@ public class RolePermission {
 
     // Getter và Setter
     // ...
+
+
+    public int getRolePermissionID() {
+        return rolePermissionID;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setRolePermissionID(int rolePermissionID) {
+        this.rolePermissionID = rolePermissionID;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
+    }
 }
