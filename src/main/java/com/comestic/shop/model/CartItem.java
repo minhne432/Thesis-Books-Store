@@ -1,5 +1,7 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Product;
+import com.comestic.shop.model.Cart;
 import jakarta.persistence.*;
 
 @Entity

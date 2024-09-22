@@ -1,5 +1,8 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Coupon;
+import com.comestic.shop.model.Branch;
+import com.comestic.shop.model.Customer;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;

@@ -1,5 +1,7 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Branch;
+import com.comestic.shop.model.Product;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 

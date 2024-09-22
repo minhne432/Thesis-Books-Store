@@ -1,4 +1,4 @@
-package com.comestic.shop.controller;
+package com.comestic.shop.controller.order;
 
 public class PaymentController {
 }

@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Customer;
 import jakarta.persistence.*;
 
 import java.util.Date;

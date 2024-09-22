@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Supplier;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,5 +1,9 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.PurchaseOrderDetails;
+import com.comestic.shop.model.CartItem;
+import com.comestic.shop.model.Review;
+import com.comestic.shop.model.OrderDetails;
 import jakarta.persistence.*;
 
 import java.util.Set;

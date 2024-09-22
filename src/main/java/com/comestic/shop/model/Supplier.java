@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.PurchaseOrder;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

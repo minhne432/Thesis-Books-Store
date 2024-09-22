@@ -1,5 +1,9 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.LoginHistory;
+import com.comestic.shop.model.Order;
+import com.comestic.shop.model.UserRole;
+import com.comestic.shop.model.Cart;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;

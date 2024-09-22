@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.RolePermission;
 import jakarta.persistence.*;
 
 import java.util.Set;

@@ -1,5 +1,7 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Inventory;
+import com.comestic.shop.model.Order;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;

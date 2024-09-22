@@ -1,5 +1,7 @@
 package com.comestic.shop.model;
 
+import com.comestic.shop.model.Permission;
+import com.comestic.shop.model.Role;
 import jakarta.persistence.*;
 
 @Entity
