@@ -23,11 +23,11 @@ public class UserRoleService {
     }
 
     public List<UserRole> getUserRolesByCustomerId(int customerId) {
-        return userRoleRepository.findByCustomerId(customerId);
+        return userRoleRepository.findByCustomer_CustomerID(customerId);
     }
 
     public List<UserRole> getUserRolesByRoleId(int roleId) {
-        return userRoleRepository.findByRoleId(roleId);
+        return userRoleRepository.findByRole_RoleID(roleId);
     }
 
     public UserRole addUserRole(UserRole userRole) {

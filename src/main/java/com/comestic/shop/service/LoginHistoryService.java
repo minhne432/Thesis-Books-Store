@@ -23,7 +23,7 @@ public class LoginHistoryService {
     }
 
     public List<LoginHistory> getLoginHistoriesByCustomerId(Long customerId) {
-        return loginHistoryRepository.findByCustomerId(customerId);
+        return loginHistoryRepository.findByCustomer_CustomerID(customerId);
     }
 
     public LoginHistory addLoginHistory(LoginHistory loginHistory) {
