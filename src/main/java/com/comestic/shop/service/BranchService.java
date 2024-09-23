@@ -30,19 +30,28 @@ public class BranchService {
         Optional<Branch> optionalBranch = branchRepository.findById(id);
         if (optionalBranch.isPresent()) {
             Branch branch = optionalBranch.get();
+
             branch.setBranchName(branchDetails.getBranchName());
             branch.setLocation(branchDetails.getLocation());
             branch.setLatitude(branchDetails.getLatitude());
             branch.setLongitude(branchDetails.getLongitude());
             branch.setContactNumber(branchDetails.getContactNumber());
             branch.setManager(branchDetails.getManager());
-            branch.setInventories(branchDetails.getInventories());
-            branch.setOrders(branchDetails.getOrders());
+
+            // Cập nhật inventories thay vì thay thế toàn bộ
+            branch.getInventories().clear();  // Xóa các phần tử hiện tại
+            branch.getInventories().addAll(branchDetails.getInventories());  // Thêm các phần tử mới
+
+            // Cập nhật orders thay vì thay thế toàn bộ
+            branch.getOrders().clear();  // Xóa các phần tử hiện tại
+            branch.getOrders().addAll(branchDetails.getOrders());  // Thêm các phần tử mới
+
             return branchRepository.save(branch);
         } else {
-            return null; // Hoặc bạn có thể ném ra ngoại lệ tùy theo logic
+            return null; // Hoặc ném ra ngoại lệ tùy theo logic của bạn
         }
     }
+
 
     public void deleteBranch(Long id) {
         branchRepository.deleteById(id);

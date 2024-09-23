@@ -58,6 +58,7 @@ public class BranchController {
     // Handle the form submission to update a branch
     @PostMapping("/update/{id}")
     public String updateBranch(@PathVariable("id") Long id, @Valid @ModelAttribute("branch") Branch branch, BindingResult result, Model model) {
+
         if (result.hasErrors()) {
             return "branch/edit";
         }

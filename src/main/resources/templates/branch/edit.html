@@ -6,7 +6,9 @@
 <body>
 <h1>Edit Branch</h1>
 
-<form th:action="@{branches/update/{id}(id=${branch.branchId})}" th:object="${branch}" method="post">
+<!--<form th:action="@{branches/update/{id}(id=${branch.branchId})}" th:object="${branch}" method="post">-->
+<form th:action="@{/branches/update/{id}(id=${branch.branchId})}" th:object="${branch}" method="post">
+
   <input type="hidden" th:field="*{branchId}" />
 
   <label for="branchName">Branch Name:</label>
