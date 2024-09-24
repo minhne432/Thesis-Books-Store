@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Purchase Order Detail</title>
+</head>
+<body>
+<h1>Add Purchase Order Detail</h1>
+<form action="#" th:action="@{/purchase-order-details/add}" th:object="${purchaseOrderDetails}" method="post">
+    <label>Product:</label>
+    <input type="text" th:field="*{product.productName}" /><br/>
+    <label>Quantity:</label>
+    <input type="number" th:field="*{quantity}" /><br/>
+    <label>Unit Price:</label>
+    <input type="text" th:field="*{unitPrice}" /><br/>
+    <label>Received Date:</label>
+    <input type="date" th:field="*{receivedDate}" /><br/>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

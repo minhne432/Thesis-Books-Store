@@ -29,7 +29,7 @@ public class PurchaseOrder {
     @Column(name = "Status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PurchaseOrderDetails> purchaseOrderDetails = new ArrayList<>();
 
     // Constructors

@@ -1,6 +1,7 @@
 package com.comestic.shop.service;
 
 import com.comestic.shop.model.PurchaseOrder;
+import com.comestic.shop.model.PurchaseOrderDetails;
 import com.comestic.shop.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,17 +31,37 @@ public class PurchaseOrderService {
         Optional<PurchaseOrder> optionalPurchaseOrder = purchaseOrderRepository.findById(id);
         if (optionalPurchaseOrder.isPresent()) {
             PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+
+            // Cập nhật các thuộc tính của PurchaseOrder
             purchaseOrder.setSupplier(purchaseOrderDetails.getSupplier());
             purchaseOrder.setOrderDate(purchaseOrderDetails.getOrderDate());
-            purchaseOrder.setTotalAmount(purchaseOrderDetails.getTotalAmount());
             purchaseOrder.setStatus(purchaseOrderDetails.getStatus());
-            purchaseOrder.setPurchaseOrderDetails(purchaseOrderDetails.getPurchaseOrderDetails());
+
+            // Xử lý danh sách purchaseOrderDetails một cách cẩn thận
+            List<PurchaseOrderDetails> existingDetails = purchaseOrder.getPurchaseOrderDetails();
+
+            // Xóa các chi tiết đơn hàng không còn trong danh sách mới
+            existingDetails.removeIf(existingDetail ->
+                    !purchaseOrderDetails.getPurchaseOrderDetails().contains(existingDetail)
+            );
+
+            // Thêm các chi tiết đơn hàng mới
+            for (PurchaseOrderDetails newDetail : purchaseOrderDetails.getPurchaseOrderDetails()) {
+                if (!existingDetails.contains(newDetail)) {
+                    purchaseOrder.addPurchaseOrderDetail(newDetail); // Phải thêm qua helper method
+                }
+            }
+
+            // Cập nhật tổng tiền sau khi thay đổi chi tiết đơn hàng
             purchaseOrder.updateTotalAmount();
+
+            // Lưu purchase order sau khi cập nhật
             return purchaseOrderRepository.save(purchaseOrder);
         } else {
-            return null; // Hoặc bạn có thể ném ra ngoại lệ tùy theo logic
+            return null; // Hoặc có thể ném ra ngoại lệ tùy theo logic của bạn
         }
     }
+
 
     public void deletePurchaseOrder(Long id) {
         purchaseOrderRepository.deleteById(id);

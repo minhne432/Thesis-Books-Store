@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Purchase Order Details List</title>
+</head>
+<body>
+<h1>Purchase Order Details</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Received Date</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orderDetail : ${orderDetailsList}">
+        <td th:text="${orderDetail.purchaseOrderDetailId}"></td>
+        <td th:text="${orderDetail.product.productName}"></td>
+        <td th:text="${orderDetail.quantity}"></td>
+        <td th:text="${orderDetail.unitPrice}"></td>
+        <td th:text="${orderDetail.receivedDate}"></td>
+        <td>
+            <a th:href="@{/purchase-order-details/edit/{id}(id=${orderDetail.purchaseOrderDetailId})}">Edit</a>
+            <a th:href="@{/purchase-order-details/delete/{id}(id=${orderDetail.purchaseOrderDetailId})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a href="/purchase-order-details/add">Add New Purchase Order Detail</a>
+</body>
+</html>

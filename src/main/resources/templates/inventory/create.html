@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm mới Tồn Kho</title>
+</head>
+<body>
+<h1>Thêm mới Tồn Kho</h1>
+<form action="#" th:action="@{/inventories/create}" th:object="${inventory}" method="post">
+    <label for="branch">Chi Nhánh:</label>
+    <input type="text" id="branch" th:field="*{branch}" required><br> <!-- Tùy thuộc vào cách chọn branch -->
+
+    <label for="product">Sản Phẩm:</label>
+    <input type="text" id="product" th:field="*{product}" required><br> <!-- Tùy thuộc vào cách chọn product -->
+
+    <label for="quantity">Số Lượng:</label>
+    <input type="number" id="quantity" th:field="*{quantity}" required><br>
+
+    <label for="lastUpdatedDate">Ngày Cập Nhật:</label>
+    <input type="date" id="lastUpdatedDate" th:field="*{lastUpdatedDate}" required><br>
+
+    <button type="submit">Lưu</button>
+</form>
+</body>
+</html>

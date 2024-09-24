@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Tồn Kho</title>
+</head>
+<body>
+<h1>Danh sách Tồn Kho</h1>
+<a href="/inventories/create">Thêm mới Tồn Kho</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Chi Nhánh</th>
+        <th>Sản Phẩm</th>
+        <th>Số Lượng</th>
+        <th>Ngày Cập Nhật</th>
+        <th>Thao Tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="inventory : ${inventories}">
+        <td th:text="${inventory.inventoryId}"></td>
+        <td th:text="${inventory.branch.branchName}"></td> <!-- branch.name tùy thuộc vào entity Branch -->
+        <td th:text="${inventory.product.productName}"></td> <!-- product.productName tùy thuộc vào entity Product -->
+        <td th:text="${inventory.quantity}"></td>
+        <td th:text="${inventory.lastUpdatedDate}"></td>
+        <td>
+            <a th:href="@{/inventories/edit/{id}(id=${inventory.inventoryId})}">Sửa</a> |
+            <a th:href="@{/inventories/delete/{id}(id=${inventory.inventoryId})}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -14,11 +14,11 @@ public class PurchaseOrderDetails {
     @Column(name = "PurchaseOrderDetailID")
     private Long purchaseOrderDetailId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "PurchaseOrderID", nullable = false)
     private PurchaseOrder purchaseOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ProductID", nullable = false)
     private Product product;
 

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Đơn Đặt Hàng</title>
+</head>
+<body>
+<h1>Danh sách Đơn Đặt Hàng</h1>
+<a href="/purchase-orders/create">Thêm mới Đơn Đặt Hàng</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nhà Cung Cấp</th>
+        <th>Ngày Đặt Hàng</th>
+        <th>Tổng Tiền</th>
+        <th>Trạng Thái</th>
+        <th>Thao Tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="purchaseOrder : ${purchaseOrders}">
+        <td th:text="${purchaseOrder.purchaseOrderId}"></td>
+        <td th:text="${purchaseOrder.supplier.supplierName}"></td> <!-- Tùy thuộc vào cách bạn hiển thị tên nhà cung cấp -->
+        <td th:text="${purchaseOrder.orderDate}"></td>
+        <td th:text="${purchaseOrder.totalAmount}"></td>
+        <td th:text="${purchaseOrder.status}"></td>
+        <td>
+            <a th:href="@{/purchase-orders/edit/{id}(id=${purchaseOrder.purchaseOrderId})}">Sửa</a> |
+            <a th:href="@{/purchase-orders/delete/{id}(id=${purchaseOrder.purchaseOrderId})}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
