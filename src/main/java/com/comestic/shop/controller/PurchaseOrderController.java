@@ -1,12 +1,15 @@
 package com.comestic.shop.controller;
 
 import com.comestic.shop.model.PurchaseOrder;
+import com.comestic.shop.model.PurchaseOrderDetails;
 import com.comestic.shop.service.PurchaseOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -45,6 +48,9 @@ public class PurchaseOrderController {
         }
     }
 
+
+
+
     @PostMapping("/edit/{id}")
     public String updatePurchaseOrder(@PathVariable Long id, @ModelAttribute("purchaseOrder") PurchaseOrder purchaseOrderDetails) {
         purchaseOrderService.updatePurchaseOrder(id, purchaseOrderDetails);
@@ -55,5 +61,24 @@ public class PurchaseOrderController {
     public String deletePurchaseOrder(@PathVariable Long id) {
         purchaseOrderService.deletePurchaseOrder(id);
         return "redirect:/purchase-orders";
+    }
+
+
+    // Hiển thị chi tiết của một PurchaseOrder
+    @GetMapping("{id}/details")
+    public String getPurchaseOrderDetails(@PathVariable("id") Long id, Model model) {
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(id).orElse(null);
+        List<PurchaseOrderDetails> purchaseOrderDetails = purchaseOrder.getPurchaseOrderDetails();
+        model.addAttribute("purchaseOrder", purchaseOrder);
+        model.addAttribute("purchaseOrderDetails", purchaseOrderDetails);
+        return "purchase_order_details";  // Tên của file HTML dùng Thymeleaf để hiển thị chi tiết
+    }
+
+    // Hiển thị danh sách PurchaseOrder
+    @GetMapping("/list")
+    public String getAllPurchaseOrders(Model model) {
+        List<PurchaseOrder> purchaseOrders = purchaseOrderService.getAllPurchaseOrders();
+        model.addAttribute("purchaseOrders", purchaseOrders);
+        return "purchase_orders";  // Tên của file HTML dùng Thymeleaf để hiển thị danh sách
     }
 }

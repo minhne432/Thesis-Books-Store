@@ -9,7 +9,7 @@
 
     <!-- Hiển thị thông tin PurchaseOrder hiện tại -->
     <label>Current Purchase Order:</label>
-    <input type="hidden" th:field="*{purchaseOrder}" th:value="${currentPurchaseOrder}" readonly/><br/>
+    <input type="text" th:field="*{purchaseOrder}" th:value="${currentPurchaseOrder.purchaseOrderId}" readonly/><br/>
 
     <!-- Hiển thị danh sách các sản phẩm để lựa chọn -->
     <label>Product:</label>
@@ -26,7 +26,7 @@
     <input type="text" th:field="*{unitPrice}" required/><br/>
 
     <label>Received Date:</label>
-    <input type="date" th:field="*{receivedDate}" /><br/>
+    <input type="date" th:value="*{receivedDate}" name="receivedDate"/><br/>
 
     <button type="submit">Update</button>
 </form>

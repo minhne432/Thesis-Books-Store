@@ -109,4 +109,14 @@ public class PurchaseOrder {
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here
+    @Override
+    public String toString() {
+        return "PurchaseOrder{" +
+                "purchaseOrderId=" + purchaseOrderId +
+                ", supplier='" + supplier + '\'' +
+                ", orderDate=" + orderDate +
+                ", totalAmount=" + totalAmount +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

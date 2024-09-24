@@ -10,7 +10,7 @@
     <input type="text" id="supplier" th:field="*{supplier}" required><br>
 
     <label for="orderDate">Ngày Đặt Hàng:</label>
-    <input type="date" id="orderDate" th:field="*{orderDate}" required><br>
+    <input type="date" id="orderDate" th:value="*{orderDate}" name="orderDate" required><br>
 
     <label for="totalAmount">Tổng Tiền:</label>
     <input type="number" id="totalAmount" th:field="*{totalAmount}" required><br>
