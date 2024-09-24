@@ -6,7 +6,7 @@
 <body>
 <h1>Create New Branch</h1>
 
-<form action="#" th:action="@{/branches/save}" th:object="${branch}" method="post">
+<form th:action="@{/branches/save}" th:object="${branch}" method="post">
     <label for="branchName">Branch Name:</label>
     <input type="text" id="branchName" th:field="*{branchName}" required/>
     <br/>
@@ -19,8 +19,20 @@
     <input type="text" id="manager" th:field="*{manager}" required/>
     <br/>
 
+    <label for="contactNumber">Contact Number:</label>
+    <input type="text" id="contactNumber" th:field="*{contactNumber}" />
+    <br/>
+
+    <label for="latitude">Latitude:</label>
+    <input type="number" step="any" id="latitude" th:field="*{latitude}" />
+    <br/>
+
+    <label for="longitude">Longitude:</label>
+    <input type="number" step="any" id="longitude" th:field="*{longitude}" />
+    <br/>
+
     <button type="submit">Save</button>
-    <a href="/branches">Cancel</a>
+    <a th:href="@{/branches}">Cancel</a>
 </form>
 </body>
 </html>
