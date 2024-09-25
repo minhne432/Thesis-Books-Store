@@ -73,14 +73,7 @@ public class PurchaseOrderController {
         List<PurchaseOrderDetails> purchaseOrderDetails = purchaseOrder.getPurchaseOrderDetails();
         model.addAttribute("purchaseOrder", purchaseOrder);
         model.addAttribute("purchaseOrderDetails", purchaseOrderDetails);
-        return "purchase_order_details";  // Tên của file HTML dùng Thymeleaf để hiển thị chi tiết
+        return "purchase-order/purchase_order_details";  // Tên của file HTML dùng Thymeleaf để hiển thị chi tiết
     }
 
-    // Hiển thị danh sách PurchaseOrder
-    @GetMapping("/list")
-    public String getAllPurchaseOrders(Model model) {
-        List<PurchaseOrder> purchaseOrders = purchaseOrderService.getAllPurchaseOrders();
-        model.addAttribute("purchaseOrders", purchaseOrders);
-        return "purchase_orders";  // Tên của file HTML dùng Thymeleaf để hiển thị danh sách
-    }
 }

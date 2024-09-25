@@ -28,6 +28,8 @@
             <a th:href="@{/purchase-orders/edit/{id}(id=${purchaseOrder.purchaseOrderId})}">Sửa</a> |
             <a th:href="@{/purchase-orders/delete/{id}(id=${purchaseOrder.purchaseOrderId})}"
                onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+            <a th:href="@{/purchase-orders/{id}/details(id=${purchaseOrder.purchaseOrderId})}">Xem chi tiết</a>
+
         </td>
     </tr>
     </tbody>
