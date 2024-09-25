@@ -20,6 +20,11 @@ public class PurchaseOrder {
     @JoinColumn(name = "SupplierID", nullable = false)
     private Supplier supplier;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BranchID", nullable = false) // Add the new relation
+    private Branch branch;
+
+
     @Column(name = "OrderDate", nullable = false)
     private LocalDate orderDate;
 
@@ -31,6 +36,9 @@ public class PurchaseOrder {
 
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PurchaseOrderDetails> purchaseOrderDetails;
+
+
+
 
     // Constructors
     public PurchaseOrder() {}
@@ -107,6 +115,16 @@ public class PurchaseOrder {
                 .map(PurchaseOrderDetails::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
 
     // You might want to add equals(), hashCode(), and toString() methods here
     @Override

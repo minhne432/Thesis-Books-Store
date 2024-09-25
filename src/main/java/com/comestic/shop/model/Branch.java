@@ -40,6 +40,10 @@ public class Branch {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PurchaseOrder> purchaseOrders = new ArrayList<>(); // Add purchase orders
+
+
     // Constructors
     public Branch() {}
 
@@ -144,6 +148,26 @@ public class Branch {
     public void removeOrder(Order order) {
         orders.remove(order);
         order.setBranch(null);
+    }
+
+    // New method to handle the bidirectional relationship
+    public void addPurchaseOrder(PurchaseOrder purchaseOrder) {
+        purchaseOrders.add(purchaseOrder);
+        purchaseOrder.setBranch(this);
+    }
+
+    public void removePurchaseOrder(PurchaseOrder purchaseOrder) {
+        purchaseOrders.remove(purchaseOrder);
+        purchaseOrder.setBranch(null);
+    }
+
+    // Getters and setters for purchaseOrders
+    public List<PurchaseOrder> getPurchaseOrders() {
+        return purchaseOrders;
+    }
+
+    public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
+        this.purchaseOrders = purchaseOrders;
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here
