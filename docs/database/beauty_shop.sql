@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 25, 2024 at 09:57 AM
+-- Generation Time: Sep 25, 2024 at 05:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -350,35 +350,36 @@ CREATE TABLE `purchase_order` (
   `order_date` date NOT NULL,
   `status` varchar(255) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
-  `supplierid` bigint(20) NOT NULL
+  `supplierid` bigint(20) NOT NULL,
+  `branchid` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_order`
 --
 
-INSERT INTO `purchase_order` (`purchase_orderid`, `order_date`, `status`, `total_amount`, `supplierid`) VALUES
-(1, '2024-09-11', 'Completed', 0.00, 1),
-(2, '2024-09-24', 'Completed', 0.00, 2),
-(3, '2024-09-24', 'Completed', 0.00, 3),
-(4, '2024-09-07', 'Processing', 18350.00, 4),
-(5, '2024-09-09', 'Completed', 8500.00, 5),
-(6, '2024-09-11', 'In Transit', 19700.00, 6),
-(7, '2024-09-13', 'Processing', 7500.00, 7),
-(8, '2024-09-15', 'Completed', 11200.00, 8),
-(9, '2024-09-17', 'In Transit', 11000.00, 9),
-(10, '2024-09-04', 'Processing', 0.00, 10),
-(11, '2024-09-21', 'Completed', 8900.00, 11),
-(12, '2024-09-22', 'Processing', 13500.00, 12),
-(13, '2024-09-23', 'In Transit', 19000.00, 13),
-(14, '2024-09-24', 'Processing', 10500.00, 14),
-(15, '2024-09-24', 'Processing', 17200.00, 15),
-(16, '2024-08-15', 'Completed', 18500.00, 1),
-(17, '2024-08-20', 'Completed', 21000.00, 2),
-(18, '2024-08-25', 'Completed', 16800.00, 3),
-(19, '2024-08-30', 'Completed', 13200.00, 4),
-(20, '2024-09-02', 'Completed', 10800.00, 5),
-(21, '2024-09-24', 'Processing', 0.00, 1);
+INSERT INTO `purchase_order` (`purchase_orderid`, `order_date`, `status`, `total_amount`, `supplierid`, `branchid`) VALUES
+(1, '2024-09-11', 'Completed', 0.00, 1, 1),
+(2, '2024-09-24', 'Completed', 0.00, 2, 1),
+(3, '2024-09-24', 'Completed', 0.00, 3, 2),
+(4, '2024-09-10', 'Processing', 18350.00, 4, 3),
+(5, '2024-09-09', 'Completed', 8500.00, 5, 4),
+(6, '2024-09-11', 'In Transit', 19700.00, 6, 5),
+(7, '2024-09-13', 'Processing', 7500.00, 7, 1),
+(8, '2024-09-15', 'Completed', 11200.00, 8, 2),
+(9, '2024-09-17', 'In Transit', 11000.00, 9, 3),
+(10, '2024-09-04', 'Processing', 0.00, 10, 4),
+(11, '2024-09-21', 'Completed', 8900.00, 11, 5),
+(12, '2024-09-22', 'Processing', 13500.00, 12, 1),
+(13, '2024-09-23', 'In Transit', 19000.00, 13, 2),
+(14, '2024-09-24', 'Processing', 10500.00, 14, 3),
+(15, '2024-09-24', 'Processing', 17200.00, 15, 4),
+(16, '2024-08-15', 'Completed', 18500.00, 1, 5),
+(17, '2024-08-20', 'Completed', 21000.00, 2, 1),
+(18, '2024-08-25', 'Completed', 16800.00, 3, 2),
+(19, '2024-08-30', 'Completed', 13200.00, 4, 3),
+(20, '2024-09-02', 'Completed', 10800.00, 5, 4),
+(21, '2024-09-24', 'Processing', 0.00, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -703,7 +704,8 @@ ALTER TABLE `provinces`
 --
 ALTER TABLE `purchase_order`
   ADD PRIMARY KEY (`purchase_orderid`),
-  ADD KEY `FKq4yhqqwlr5f4282obqkepn04t` (`supplierid`);
+  ADD KEY `FKq4yhqqwlr5f4282obqkepn04t` (`supplierid`),
+  ADD KEY `FKqx05yol5q7x3d7ycw87oupx6w` (`branchid`);
 
 --
 -- Indexes for table `purchase_order_details`
@@ -953,7 +955,8 @@ ALTER TABLE `payment`
 -- Constraints for table `purchase_order`
 --
 ALTER TABLE `purchase_order`
-  ADD CONSTRAINT `FKq4yhqqwlr5f4282obqkepn04t` FOREIGN KEY (`supplierid`) REFERENCES `supplier` (`supplierid`);
+  ADD CONSTRAINT `FKq4yhqqwlr5f4282obqkepn04t` FOREIGN KEY (`supplierid`) REFERENCES `supplier` (`supplierid`),
+  ADD CONSTRAINT `FKqx05yol5q7x3d7ycw87oupx6w` FOREIGN KEY (`branchid`) REFERENCES `branch` (`branchid`);
 
 --
 -- Constraints for table `purchase_order_details`
