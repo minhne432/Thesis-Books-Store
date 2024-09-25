@@ -1,0 +1,196 @@
+erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    CUSTOMER ||--|| CART : has
+    CUSTOMER ||--o{ REVIEW : writes
+    CUSTOMER ||--o{ LOGIN_HISTORY : has
+    ORDER ||--|{ ORDER_DETAILS : contains
+    ORDER ||--|| PAYMENT : has
+    ORDER ||--o| COUPON : "applies"
+    PRODUCT ||--o{ ORDER_DETAILS : "is part of"
+    PRODUCT ||--o{ CART_ITEM : "is added to"
+    PRODUCT ||--o{ REVIEW : receives
+    CART ||--|{ CART_ITEM : contains
+    SUPPLIER ||--o{ PURCHASE_ORDER : receives
+    PURCHASE_ORDER ||--|{ PURCHASE_ORDER_DETAILS : contains
+    PRODUCT ||--o{ PURCHASE_ORDER_DETAILS : "is part of"
+    BRANCH ||--|{ INVENTORY : manages
+    PRODUCT ||--o{ INVENTORY : "is stored in"
+    BRANCH ||--o{ ORDER : fulfills
+    BRANCH ||--o{ PURCHASE_ORDER : places
+    CUSTOMER ||--o{ USER_ROLE : has
+    ROLE ||--o{ USER_ROLE : "is assigned to"
+    ROLE ||--o{ ROLE_PERMISSION : has
+    PERMISSION ||--o{ ROLE_PERMISSION : "is granted to"
+
+    CUSTOMER {
+        int CustomerID PK
+        string CustomerType
+        string Username
+        string Email
+        string PasswordHash
+        string Salt
+        string FirstName
+        string LastName
+        string Phone
+        string Address
+        decimal Latitude
+        decimal Longitude
+        date DateOfBirth
+        date DateJoined
+        date LastLoginDate
+        boolean IsActive
+        string ProfilePicture
+        string PreferredLanguage
+        string SecurityQuestion
+        string SecurityAnswerHash
+    }
+
+    LOGIN_HISTORY {
+        int LoginID PK
+        int CustomerID FK
+        datetime LoginTimestamp
+        string IPAddress
+        string DeviceInfo
+        string LoginStatus
+    }
+
+    PRODUCT {
+        int ProductID PK
+        string ProductName
+        string Brand
+        string Category
+        string Description
+        decimal Price
+        int StockQuantity
+    }
+
+    ORDER {
+        int OrderID PK
+        date OrderDate
+        decimal TotalAmount
+        string Status
+        string PaymentMethod
+        int CustomerID FK
+        int BranchID FK
+        int CouponID FK
+    }
+
+    ORDER_DETAILS {
+        int OrderDetailID PK
+        int OrderID FK
+        int ProductID FK
+        int Quantity
+        decimal UnitPrice
+    }
+
+    CART {
+        int CartID PK
+        int CustomerID FK
+        date CreatedDate
+    }
+
+    CART_ITEM {
+        int CartItemID PK
+        int CartID FK
+        int ProductID FK
+        int Quantity
+    }
+
+    PAYMENT {
+        int PaymentID PK
+        int OrderID FK
+        date PaymentDate
+        decimal AmountPaid
+        string PaymentStatus
+    }
+
+    REVIEW {
+        int ReviewID PK
+        int ProductID FK
+        int CustomerID FK
+        int Rating
+        string Comment
+        date ReviewDate
+    }
+
+    SUPPLIER {
+        int SupplierID PK
+        string SupplierName
+        string ContactPerson
+        string Phone
+        string Email
+        string Address
+    }
+
+    INVENTORY {
+        int InventoryID PK
+        int BranchID FK
+        int ProductID FK
+        int Quantity
+        date LastUpdatedDate
+    }
+
+    BRANCH {
+        int BranchID PK
+        string BranchName
+        string Location
+        decimal Latitude
+        decimal Longitude
+        string ContactNumber
+        string Manager
+    }
+
+    PURCHASE_ORDER {
+        int PurchaseOrderID PK
+        int SupplierID FK
+        int BranchID FK
+        date OrderDate
+        decimal TotalAmount
+        string Status
+    }
+
+    PURCHASE_ORDER_DETAILS {
+        int PurchaseOrderDetailID PK
+        int PurchaseOrderID FK
+        int ProductID FK
+        int Quantity
+        decimal UnitPrice
+        date ReceivedDate
+    }
+
+    COUPON {
+        int CouponID PK
+        string Code
+        string Description
+        string DiscountType
+        decimal DiscountValue
+        date StartDate
+        date EndDate
+        decimal MinimumOrderValue
+        int MaxUsageLimit
+        boolean IsActive
+    }
+
+    ROLE {
+        int RoleID PK
+        string RoleName
+        string Description
+    }
+
+    PERMISSION {
+        int PermissionID PK
+        string PermissionName
+        string Description
+    }
+
+    USER_ROLE {
+        int UserRoleID PK
+        int CustomerID FK
+        int RoleID FK
+    }
+
+    ROLE_PERMISSION {
+        int RolePermissionID PK
+        int RoleID FK
+        int PermissionID FK
+    }
