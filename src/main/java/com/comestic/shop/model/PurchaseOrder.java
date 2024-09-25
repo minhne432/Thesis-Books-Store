@@ -30,7 +30,7 @@ public class PurchaseOrder {
     private String status;
 
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<PurchaseOrderDetails> purchaseOrderDetails = new ArrayList<>();
+    private List<PurchaseOrderDetails> purchaseOrderDetails;
 
     // Constructors
     public PurchaseOrder() {}

@@ -27,38 +27,42 @@ public class PurchaseOrderService {
         return purchaseOrderRepository.save(purchaseOrder);
     }
 
-    public PurchaseOrder updatePurchaseOrder(Long id, PurchaseOrder purchaseOrderDetails) {
+    public PurchaseOrder updatePurchaseOrder(Long id, PurchaseOrder updatedPurchaseOrder) {
         Optional<PurchaseOrder> optionalPurchaseOrder = purchaseOrderRepository.findById(id);
         if (optionalPurchaseOrder.isPresent()) {
-            PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+            PurchaseOrder existingPurchaseOrder = optionalPurchaseOrder.get();
 
-            // Cập nhật các thuộc tính của PurchaseOrder
-            purchaseOrder.setSupplier(purchaseOrderDetails.getSupplier());
-            purchaseOrder.setOrderDate(purchaseOrderDetails.getOrderDate());
-            purchaseOrder.setStatus(purchaseOrderDetails.getStatus());
+            // Cập nhật các thuộc tính cơ bản
+            existingPurchaseOrder.setSupplier(updatedPurchaseOrder.getSupplier());
+            existingPurchaseOrder.setOrderDate(updatedPurchaseOrder.getOrderDate());
+            existingPurchaseOrder.setTotalAmount(updatedPurchaseOrder.getTotalAmount());
+            existingPurchaseOrder.setStatus(updatedPurchaseOrder.getStatus());
 
-            // Xử lý danh sách purchaseOrderDetails một cách cẩn thận
-            List<PurchaseOrderDetails> existingDetails = purchaseOrder.getPurchaseOrderDetails();
+            // Cập nhật danh sách PurchaseOrderDetails
+            List<PurchaseOrderDetails> newDetails = updatedPurchaseOrder.getPurchaseOrderDetails();
+            List<PurchaseOrderDetails> existingDetails = existingPurchaseOrder.getPurchaseOrderDetails();
 
-            // Xóa các chi tiết đơn hàng không còn trong danh sách mới
-            existingDetails.removeIf(existingDetail ->
-                    !purchaseOrderDetails.getPurchaseOrderDetails().contains(existingDetail)
-            );
+            // Xóa các chi tiết không còn trong danh sách mới
+            existingDetails.removeIf(existingDetail -> !newDetails.contains(existingDetail));
 
-            // Thêm các chi tiết đơn hàng mới
-            for (PurchaseOrderDetails newDetail : purchaseOrderDetails.getPurchaseOrderDetails()) {
+            // Thêm hoặc cập nhật các chi tiết mới
+            for (PurchaseOrderDetails newDetail : newDetails) {
                 if (!existingDetails.contains(newDetail)) {
-                    purchaseOrder.addPurchaseOrderDetail(newDetail); // Phải thêm qua helper method
+                    // Thêm chi tiết mới
+                    existingPurchaseOrder.addPurchaseOrderDetail(newDetail);
+                } else {
+                    // Cập nhật chi tiết đã có (nếu có logic cần cập nhật)
+                    // Tùy vào yêu cầu, bạn có thể thêm logic cập nhật thuộc tính của PurchaseOrderDetails tại đây
                 }
             }
 
-            // Cập nhật tổng tiền sau khi thay đổi chi tiết đơn hàng
-            purchaseOrder.updateTotalAmount();
+            // Cập nhật tổng số tiền sau khi cập nhật chi tiết
+            existingPurchaseOrder.updateTotalAmount();
 
-            // Lưu purchase order sau khi cập nhật
-            return purchaseOrderRepository.save(purchaseOrder);
+            // Lưu PurchaseOrder đã được cập nhật
+            return purchaseOrderRepository.save(existingPurchaseOrder);
         } else {
-            return null; // Hoặc có thể ném ra ngoại lệ tùy theo logic của bạn
+            return null; // Hoặc bạn có thể ném ra ngoại lệ tùy vào yêu cầu
         }
     }
 

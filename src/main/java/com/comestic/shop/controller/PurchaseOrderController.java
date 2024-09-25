@@ -40,8 +40,10 @@ public class PurchaseOrderController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<PurchaseOrder> purchaseOrder = purchaseOrderService.getPurchaseOrderById(id);
+
         if (purchaseOrder.isPresent()) {
             model.addAttribute("purchaseOrder", purchaseOrder.get());
+            model.addAttribute("purchaseOrderDetails", purchaseOrder.get().getPurchaseOrderDetails());
             return "purchase-order/edit";
         } else {
             return "redirect:/purchase-orders";

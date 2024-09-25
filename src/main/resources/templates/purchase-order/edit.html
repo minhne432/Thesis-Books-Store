@@ -18,6 +18,8 @@
     <label for="status">Trạng Thái:</label>
     <input type="text" id="status" th:field="*{status}" required><br>
 
+    <input type="hidden" th:field="*{purchaseOrderDetails}">
+
     <button type="submit">Cập Nhật</button>
 </form>
 </body>
