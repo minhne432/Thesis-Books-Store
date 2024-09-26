@@ -1,32 +1,8 @@
 erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    CUSTOMER ||--|| CART : has
-    CUSTOMER ||--o{ REVIEW : writes
-    CUSTOMER ||--o{ LOGIN_HISTORY : has
-    CUSTOMER ||--o{ COUPON_USAGE : redeems
-    CUSTOMER ||--o{ USER_ROLE : has
-    ORDER ||--|{ ORDER_DETAILS : contains
-    ORDER ||--|| PAYMENT : has
-    ORDER ||--o| COUPON : "applies"
-    PRODUCT ||--o{ ORDER_DETAILS : "is part of"
-    COUPON ||--o{ COUPON_USAGE : "is used in"
-    ORDER_DETAILS ||--o{ REVIEW : "has"
-    PRODUCT ||--o{ CART_ITEM : "is added to"
-    PRODUCT ||--o{ REVIEW : receives
-    CART ||--|{ CART_ITEM : contains
-    SUPPLIER ||--o{ PURCHASE_ORDER : receives
-    PURCHASE_ORDER ||--|{ PURCHASE_ORDER_DETAILS : contains
-    PRODUCT ||--o{ PURCHASE_ORDER_DETAILS : "is part of"
-    BRANCH ||--|{ INVENTORY : manages
-    PRODUCT ||--o{ INVENTORY : "is stored in"
-    BRANCH ||--o{ ORDER : fulfills
-    BRANCH ||--o{ PURCHASE_ORDER : places
-    ROLE ||--o{ USER_ROLE : "is assigned to"
-    ROLE ||--o{ ROLE_PERMISSION : has
-    PERMISSION ||--o{ ROLE_PERMISSION : "is granted to"
- 
-    
-    
+
+%% ------------------------------
+%% CUSTOMER-RELATED ENTITIES
+%% ------------------------------
 
     CUSTOMER {
         int CustomerID PK
@@ -38,9 +14,6 @@ erDiagram
         string FirstName
         string LastName
         string Phone
-        string Address
-        decimal Latitude
-        decimal Longitude
         date DateOfBirth
         date DateJoined
         date LastLoginDate
@@ -50,7 +23,7 @@ erDiagram
         string SecurityQuestion
         string SecurityAnswerHash
     }
-
+    
     LOGIN_HISTORY {
         int LoginID PK
         int CustomerID FK
@@ -59,6 +32,26 @@ erDiagram
         string DeviceInfo
         string LoginStatus
     }
+    
+    ADDRESS {
+        int AddressID PK
+        int CustomerID FK
+        int WardID FK
+        string StreetAddress
+        string PostalCode
+        boolean IsDefault
+    }
+
+    CUSTOMER ||--o{ ADDRESS : "has"
+    CUSTOMER ||--o{ LOGIN_HISTORY : "has"
+    CUSTOMER ||--|| CART : "has"
+    CUSTOMER ||--o{ REVIEW : "writes"
+    CUSTOMER ||--o{ COUPON_USAGE : "redeems"
+    CUSTOMER ||--o{ USER_ROLE : "has"
+
+%% ------------------------------
+%% PRODUCT-RELATED ENTITIES
+%% ------------------------------
 
     PRODUCT {
         int ProductID PK
@@ -68,25 +61,6 @@ erDiagram
         string Description
         decimal Price
         int StockQuantity
-    }
-
-    ORDER {
-        int OrderID PK
-        date OrderDate
-        decimal TotalAmount
-        string Status
-        string PaymentMethod
-        int CustomerID FK
-        int BranchID FK
-        int CouponID FK
-    }
-
-    ORDER_DETAILS {
-        int OrderDetailID PK
-        int OrderID FK
-        int ProductID FK
-        int Quantity
-        decimal UnitPrice
     }
 
     CART {
@@ -102,6 +76,43 @@ erDiagram
         int Quantity
     }
 
+    REVIEW {
+        int ReviewID PK
+        int OrderDetailID FK
+        int Rating
+        string Comment
+        date ReviewDate
+    }
+
+    CART ||--|{ CART_ITEM : "contains"
+    PRODUCT ||--o{ CART_ITEM : "is added to"
+    PRODUCT ||--o{ REVIEW : "receives"
+    ORDER_DETAILS ||--o{ REVIEW : "has"
+
+%% ------------------------------
+%% ORDER-RELATED ENTITIES
+%% ------------------------------
+
+    ORDER {
+        int OrderID PK
+        date OrderDate
+        decimal TotalAmount
+        string Status
+        string PaymentMethod
+        int CustomerID FK
+        int BranchID FK
+        int CouponID FK
+        int AddressID FK
+    }
+
+    ORDER_DETAILS {
+        int OrderDetailID PK
+        int OrderID FK
+        int ProductID FK
+        int Quantity
+        decimal UnitPrice
+    }
+
     PAYMENT {
         int PaymentID PK
         int OrderID FK
@@ -110,23 +121,43 @@ erDiagram
         string PaymentStatus
     }
 
-    REVIEW {
-    int ReviewID PK
-    int OrderDetailID FK
-    int Rating
-    string Comment
-    date ReviewDate
+    COUPON_USAGE {
+        int CouponUsageID PK
+        int CouponID FK
+        int CustomerID FK
+        int OrderID FK
+        date RedemptionDate
+        decimal DiscountAmount
     }
 
-
-    SUPPLIER {
-        int SupplierID PK
-        string SupplierName
-        string ContactPerson
-        string Phone
-        string Email
-        string Address
+    COUPON {
+        int CouponID PK
+        string Code
+        string Description
+        string DiscountType
+        decimal DiscountValue
+        date StartDate
+        date EndDate
+        decimal MinimumOrderValue
+        int MaxUsageLimit
+        boolean IsActive
     }
+
+    CUSTOMER ||--o{ ORDER : "places"
+    ORDER ||--|{ ORDER_DETAILS : "contains"
+    ORDER ||--|| PAYMENT : "has"
+    ORDER }o--|| ADDRESS : "delivered to"
+    ORDER ||--o{ COUPON_USAGE : "applies to"
+    ORDER ||--|| BRANCH : "fulfilled by"
+    ORDER_DETAILS ||--|| ORDER : "belongs to"
+    ORDER_DETAILS ||--|| PRODUCT : "includes"
+    PRODUCT ||--o{ ORDER_DETAILS : "is part of"
+    COUPON ||--o{ COUPON_USAGE : "is used in"
+    CUSTOMER ||--o{ COUPON_USAGE : "redeems"
+
+%% ------------------------------
+%% INVENTORY AND SUPPLY ENTITIES
+%% ------------------------------
 
     INVENTORY {
         int InventoryID PK
@@ -144,6 +175,15 @@ erDiagram
         decimal Longitude
         string ContactNumber
         string Manager
+    }
+
+    SUPPLIER {
+        int SupplierID PK
+        string SupplierName
+        string ContactPerson
+        string Phone
+        string Email
+        string Address
     }
 
     PURCHASE_ORDER {
@@ -164,18 +204,17 @@ erDiagram
         date ReceivedDate
     }
 
-    COUPON {
-        int CouponID PK
-        string Code
-        string Description
-        string DiscountType
-        decimal DiscountValue
-        date StartDate
-        date EndDate
-        decimal MinimumOrderValue
-        int MaxUsageLimit
-        boolean IsActive
-    }
+    BRANCH ||--|{ INVENTORY : "manages"
+    PRODUCT ||--o{ INVENTORY : "is stored in"
+    BRANCH ||--o{ ORDER : "fulfills"
+    BRANCH ||--o{ PURCHASE_ORDER : "places"
+    SUPPLIER ||--o{ PURCHASE_ORDER : "receives"
+    PURCHASE_ORDER ||--|{ PURCHASE_ORDER_DETAILS : "contains"
+    PRODUCT ||--o{ PURCHASE_ORDER_DETAILS : "is part of"
+
+%% ------------------------------
+%% ROLE AND PERMISSION ENTITIES
+%% ------------------------------
 
     ROLE {
         int RoleID PK
@@ -201,11 +240,35 @@ erDiagram
         int PermissionID FK
     }
 
-    COUPON_USAGE {
-    int CouponUsageID PK
-    int CouponID FK
-    int CustomerID FK
-    int OrderID FK
-    date RedemptionDate
-    decimal DiscountAmount
+    CUSTOMER ||--o{ USER_ROLE : "has"
+    ROLE ||--o{ USER_ROLE : "is assigned to"
+    ROLE ||--o{ ROLE_PERMISSION : "has"
+    PERMISSION ||--o{ ROLE_PERMISSION : "is granted to"
+
+%% ------------------------------
+%% GEOGRAPHICAL ENTITIES
+%% ------------------------------
+
+    PROVINCE {
+        int ProvinceID PK
+        string ProvinceName
     }
+
+    DISTRICT {
+        int DistrictID PK
+        int ProvinceID FK
+        string DistrictName
+    }
+
+    WARD {
+        int WardID PK
+        int DistrictID FK
+        string WardName
+        decimal Latitude
+        decimal Longitude
+    }
+
+    PROVINCE ||--o{ DISTRICT : "contains"
+    DISTRICT ||--o{ WARD : "contains"
+    WARD ||--o{ ADDRESS : "includes"
+
