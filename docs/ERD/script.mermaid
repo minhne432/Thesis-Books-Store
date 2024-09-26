@@ -3,10 +3,14 @@ erDiagram
     CUSTOMER ||--|| CART : has
     CUSTOMER ||--o{ REVIEW : writes
     CUSTOMER ||--o{ LOGIN_HISTORY : has
+    CUSTOMER ||--o{ COUPON_USAGE : redeems
+    CUSTOMER ||--o{ USER_ROLE : has
     ORDER ||--|{ ORDER_DETAILS : contains
     ORDER ||--|| PAYMENT : has
     ORDER ||--o| COUPON : "applies"
     PRODUCT ||--o{ ORDER_DETAILS : "is part of"
+    COUPON ||--o{ COUPON_USAGE : "is used in"
+    ORDER_DETAILS ||--o{ REVIEW : "has"
     PRODUCT ||--o{ CART_ITEM : "is added to"
     PRODUCT ||--o{ REVIEW : receives
     CART ||--|{ CART_ITEM : contains
@@ -17,10 +21,12 @@ erDiagram
     PRODUCT ||--o{ INVENTORY : "is stored in"
     BRANCH ||--o{ ORDER : fulfills
     BRANCH ||--o{ PURCHASE_ORDER : places
-    CUSTOMER ||--o{ USER_ROLE : has
     ROLE ||--o{ USER_ROLE : "is assigned to"
     ROLE ||--o{ ROLE_PERMISSION : has
     PERMISSION ||--o{ ROLE_PERMISSION : "is granted to"
+ 
+    
+    
 
     CUSTOMER {
         int CustomerID PK
@@ -105,13 +111,13 @@ erDiagram
     }
 
     REVIEW {
-        int ReviewID PK
-        int ProductID FK
-        int CustomerID FK
-        int Rating
-        string Comment
-        date ReviewDate
+    int ReviewID PK
+    int OrderDetailID FK
+    int Rating
+    string Comment
+    date ReviewDate
     }
+
 
     SUPPLIER {
         int SupplierID PK
@@ -193,4 +199,13 @@ erDiagram
         int RolePermissionID PK
         int RoleID FK
         int PermissionID FK
+    }
+
+    COUPON_USAGE {
+    int CouponUsageID PK
+    int CouponID FK
+    int CustomerID FK
+    int OrderID FK
+    date RedemptionDate
+    decimal DiscountAmount
     }
