@@ -40,10 +40,10 @@ public class Customer {
     // Quan hệ với các entity khác
 
     // Quan hệ với Address
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer")
     private List<Address> addresses;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer")
     private Cart cart;
 
     @OneToMany(mappedBy = "customer")
@@ -55,12 +55,24 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private Set<LoginHistory> loginHistories;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
 
-    // Getter và Setter
+    @OneToMany(mappedBy = "customer")
+    private List<CouponUsage> couponUsages;
+
+
+// Getter và Setter
     // ...
 
+
+    public List<CouponUsage> getCouponUsages() {
+    return couponUsages;
+    }
+
+    public void setCouponUsages(List<CouponUsage> couponUsages) {
+        this.couponUsages = couponUsages;
+    }
 
     public List<Address> getAddresses() {
         return addresses;
@@ -253,4 +265,6 @@ public class Customer {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
+
+
 }

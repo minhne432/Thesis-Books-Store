@@ -94,16 +94,16 @@ erDiagram
 %% ------------------------------
 
     ORDER {
-        int OrderID PK
-        date OrderDate
-        decimal TotalAmount
-        string Status
-        string PaymentMethod
-        int CustomerID FK
-        int BranchID FK
-        int CouponID FK
-        int AddressID FK
+    int OrderID PK
+    date OrderDate
+    decimal TotalAmount
+    string Status
+    string PaymentMethod
+    int CustomerID FK
+    int BranchID FK
+    int AddressID FK
     }
+
 
     ORDER_DETAILS {
         int OrderDetailID PK

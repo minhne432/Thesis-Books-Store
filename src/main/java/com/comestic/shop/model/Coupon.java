@@ -3,6 +3,7 @@ package com.comestic.shop.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "COUPON")
@@ -39,6 +40,25 @@ public class Coupon {
 
     @Column(name = "IsActive", nullable = false)
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
+    private List<CouponUsage> couponUsages;
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public List<CouponUsage> getCouponUsages() {
+        return couponUsages;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public void setCouponUsages(List<CouponUsage> couponUsages) {
+        this.couponUsages = couponUsages;
+    }
 
     // Constructors
     public Coupon() {}

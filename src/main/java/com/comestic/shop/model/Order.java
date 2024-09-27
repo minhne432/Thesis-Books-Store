@@ -5,6 +5,7 @@ import com.comestic.shop.model.Branch;
 import com.comestic.shop.model.Customer;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,9 +32,6 @@ public class Order {
     @JoinColumn(name = "branchID")
     private Branch branch;
 
-    @ManyToOne
-    @JoinColumn(name = "couponID")
-    private Coupon coupon;
 
     // Quan hệ với các entity khác
     @OneToMany(mappedBy = "order")
@@ -42,8 +40,22 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
+    // Quan hệ với CouponUsage (nếu cần)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<CouponUsage> couponUsages;
+
+
     // Getter và Setter
     // ...
+
+
+    public List<CouponUsage> getCouponUsages() {
+        return couponUsages;
+    }
+
+    public void setCouponUsages(List<CouponUsage> couponUsages) {
+        this.couponUsages = couponUsages;
+    }
 
     public void setOrderID(int orderID) {
         this.orderID = orderID;
@@ -74,9 +86,6 @@ public class Order {
         this.branch = branch;
     }
 
-    public void setCoupon(Coupon coupon) {
-        this.coupon = coupon;
-    }
 
     public void setOrderDetails(Set<OrderDetails> orderDetails) {
         this.orderDetails = orderDetails;
@@ -114,9 +123,7 @@ public class Order {
         return branch;
     }
 
-    public Coupon getCoupon() {
-        return coupon;
-    }
+
 
     public Set<OrderDetails> getOrderDetails() {
         return orderDetails;

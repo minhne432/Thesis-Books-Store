@@ -36,7 +36,7 @@ public class OrderService {
             order.setPaymentMethod(orderDetails.getPaymentMethod());
             order.setCustomer(orderDetails.getCustomer());
             order.setBranch(orderDetails.getBranch());
-            order.setCoupon(orderDetails.getCoupon());
+//            order.setCoupon(orderDetails.getCoupon());
             order.setOrderDetails(orderDetails.getOrderDetails());
             order.setPayment(orderDetails.getPayment());
             return orderRepository.save(order);

@@ -1,25 +1,24 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Đăng nhập</title>
+    <title>Login</title>
 </head>
 <body>
-<h1>Đăng nhập</h1>
+<h1>Login</h1>
 <form th:action="@{/login}" method="post">
-    <div>
-        <label>Tên đăng nhập:</label>
-        <input type="text" name="username"/>
-    </div>
-    <div>
-        <label>Mật khẩu:</label>
-        <input type="password" name="password"/>
-    </div>
-    <div>
-        <button type="submit">Đăng nhập</button>
-    </div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required />
+
+    <button type="submit">Login</button>
+
     <div th:if="${param.error}">
-        Sai tên đăng nhập hoặc mật khẩu.
+        <p>Invalid username or password</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p>You have been logged out successfully</p>
     </div>
 </form>
 </body>

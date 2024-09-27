@@ -4,6 +4,8 @@ import com.comestic.shop.model.Customer;
 import com.comestic.shop.model.Address;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,29 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private AddressService addressService; // Tiêm AddressService để xử lý địa chỉ
+
+    public void saveCustomer(Customer customer) {
+        // Get the raw password from the customer
+        String rawPassword = customer.getPasswordHash();
+        System.out.println("rawPassword : "+rawPassword);
+
+        // Encode the raw password before saving
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        customer.setPasswordHash(encodedPassword); // Save the encoded (hashed) password
+
+        // Save the customer with the hashed password
+        customerRepository.save(customer);
+    }
+
+
+    public boolean emailExists(String email) {
+        // Logic to check if email already exists in the database
+        return customerRepository.findByEmail(email).isPresent();
+    }
 
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
