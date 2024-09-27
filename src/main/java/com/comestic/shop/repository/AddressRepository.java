@@ -1,0 +1,16 @@
+package com.comestic.shop.repository;
+
+import com.comestic.shop.model.Address;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface AddressRepository extends JpaRepository<Address, Integer> {
+    // Phương thức tìm tất cả các Address theo CustomerID
+    List<Address> findByCustomer_CustomerID(int customerID);
+
+    // Phương thức tìm tất cả các Address theo WardID
+    List<Address> findByWard_WardID(int wardID);
+}

@@ -6,6 +6,7 @@ import com.comestic.shop.model.UserRole;
 import com.comestic.shop.model.Cart;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,6 +38,11 @@ public class Customer {
     private String securityAnswerHash;
 
     // Quan hệ với các entity khác
+
+    // Quan hệ với Address
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Address> addresses;
+
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Cart cart;
 
@@ -54,6 +60,11 @@ public class Customer {
 
     // Getter và Setter
     // ...
+
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
 
     public int getCustomerID() {
         return customerID;
@@ -237,5 +248,9 @@ public class Customer {
 
     public void setUserRoles(Set<UserRole> userRoles) {
         this.userRoles = userRoles;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }

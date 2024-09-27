@@ -1,6 +1,7 @@
 package com.comestic.shop.service;
 
 import com.comestic.shop.model.Customer;
+import com.comestic.shop.model.Address;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private AddressService addressService; // Tiêm AddressService để xử lý địa chỉ
 
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
@@ -30,7 +34,7 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer updateCustomer(int id, Customer customerDetails) {
+    public Customer updateCustomer(int id, Customer customerDetails, Address newAddress) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (optionalCustomer.isPresent()) {
             Customer customer = optionalCustomer.get();
@@ -38,9 +42,15 @@ public class CustomerService {
             customer.setLastName(customerDetails.getLastName());
             customer.setEmail(customerDetails.getEmail());
             customer.setPhone(customerDetails.getPhone());
-            customer.setAddress(customerDetails.getAddress());
             customer.setActive(customerDetails.isActive());
             customer.setProfilePicture(customerDetails.getProfilePicture());
+
+            // Nếu cần cập nhật địa chỉ, thực hiện qua AddressService
+            if (newAddress != null) {
+                newAddress.setCustomer(customer); // Gắn địa chỉ mới cho khách hàng
+                addressService.saveAddress(newAddress); // Lưu địa chỉ mới
+            }
+
             return customerRepository.save(customer);
         } else {
             return null; // Hoặc bạn có thể ném ra ngoại lệ tùy theo logic của bạn
@@ -48,6 +58,15 @@ public class CustomerService {
     }
 
     public void deleteCustomer(int id) {
+        // Xóa tất cả các địa chỉ của khách hàng trước khi xóa khách hàng
+        List<Address> customerAddresses = addressService.getAddressesByCustomerId(id);
+        if (!customerAddresses.isEmpty()) {
+            for (Address address : customerAddresses) {
+                addressService.deleteAddress(address.getAddressID());
+            }
+        }
+
+        // Xóa khách hàng
         customerRepository.deleteById(id);
     }
 }
