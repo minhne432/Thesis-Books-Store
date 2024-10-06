@@ -16,11 +16,11 @@ public class PurchaseOrder {
     @Column(name = "PurchaseOrderID")
     private Long purchaseOrderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SupplierID", nullable = false)
     private Supplier supplier;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BranchID", nullable = false) // Add the new relation
     private Branch branch;
 

@@ -1,0 +1,26 @@
+<!-- layout/layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:fragment="layout">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">My Application</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Header -->
+<div layout:insert="~{layout/fragments/header :: header}"></div>
+
+<!-- Main content area -->
+<div layout:fragment="content">
+    <!-- Nội dung mặc định nếu không có nội dung được cung cấp -->
+    <p>This is default content.</p>
+</div>
+
+<!-- Footer -->
+<div layout:insert="~{layout/fragments/footer :: footer}"></div>
+
+</body>
+</html>

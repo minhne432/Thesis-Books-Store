@@ -29,7 +29,7 @@ public class Supplier {
     @Column(name = "Address")
     private String address;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "supplier", orphanRemoval = true)
     private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
     // Constructors

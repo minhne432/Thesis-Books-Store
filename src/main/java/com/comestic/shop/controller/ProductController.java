@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -16,10 +18,21 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+
+
+    @GetMapping("/test")
+    public String TestLayout(Model model) {
+        model.addAttribute("pageTitle", "Layout");
+//        model.addAttribute("products", productService.getAllProducts());
+        return "layout/layout"; // Giao diện Thymeleaf để hiển thị danh sách sản phẩm
+    }
+
     @GetMapping
     public String listProducts(Model model) {
+        model.addAttribute("pageTitle", "Products List");
         model.addAttribute("products", productService.getAllProducts());
         return "product/list"; // Giao diện Thymeleaf để hiển thị danh sách sản phẩm
+
     }
 
     @GetMapping("/create")

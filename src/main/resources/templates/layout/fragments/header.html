@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<!-- layout/fragments/header.html -->
+<header layout:fragment="header">
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/products}">Products</a></li>
+            <li><a th:href="@{/about}">About</a></li>
+            <li><a th:href="@{/contact}">Contact</a></li>
+            <!-- Check if user is authenticated -->
+            <li th:if="${#authentication.authenticated}">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+            <li th:if="${!#authentication.authenticated}">
+                <a th:href="@{/login}">Login</a>
+            </li>
+        </ul>
+    </nav>
+</header>

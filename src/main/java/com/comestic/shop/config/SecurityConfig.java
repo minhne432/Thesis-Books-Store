@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // Use requestMatchers
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // Restrict access based on roles
+//                        .requestMatchers("/admin/**").hasRole("ADMIN") // Restrict access based on roles
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .formLogin((form) -> form
@@ -34,13 +34,13 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/products", true) // Redirect to /home on successful login
                         .failureUrl("/login?error=true") // Redirect to /login on failure
                 )
+//                .sessionManagement((session) -> session
+//                        .invalidSessionUrl("/login?session=invalid") // Handle invalid sessions
+//                )
                 .logout((logout) -> logout
-                        .permitAll()
+                                .permitAll()
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true") // Redirect on logout
-                )
-                .sessionManagement((session) -> session
-                        .invalidSessionUrl("/login?session=invalid") // Handle invalid sessions
                 );
         return http.build();
     }
