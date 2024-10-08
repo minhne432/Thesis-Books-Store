@@ -47,4 +47,10 @@ public class CustomerController {
         // Redirect to success page or login page after successful registration
         return "redirect:/login";
     }
+
+    @GetMapping("/TrangChu")
+    public  String trangChu(){
+        return "home";
+    }
+
 }

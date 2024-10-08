@@ -1,6 +1,5 @@
 package com.comestic.shop.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,38 +8,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final CustomLoginSuccessHandler customLoginSuccessHandler;
+
+    public SecurityConfig(CustomLoginSuccessHandler customLoginSuccessHandler) {
+        this.customLoginSuccessHandler = customLoginSuccessHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Session-based security configuration
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // Use requestMatchers
-//                        .requestMatchers("/admin/**").hasRole("ADMIN") // Restrict access based on roles
-                        .anyRequest().authenticated() // All other requests require authentication
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/products", true) // Redirect to /home on successful login
-                        .failureUrl("/login?error=true") // Redirect to /login on failure
+                        .successHandler(customLoginSuccessHandler) // Use custom success handler
+                        .failureUrl("/login?error=true")
                 )
-//                .sessionManagement((session) -> session
-//                        .invalidSessionUrl("/login?session=invalid") // Handle invalid sessions
-//                )
                 .logout((logout) -> logout
-                                .permitAll()
+                        .permitAll()
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true") // Redirect on logout
+                        .logoutSuccessUrl("/login?logout=true")
                 );
         return http.build();
     }
