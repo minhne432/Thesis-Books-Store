@@ -1,0 +1,17 @@
+<!-- templates/admin/province-add.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm mới Tỉnh</title>
+</head>
+<body>
+<h1>Thêm mới Tỉnh</h1>
+<form th:action="@{/admin/provinces/add}" th:object="${province}" method="post">
+    <label for="provinceName">Tên Tỉnh:</label>
+    <input type="text" id="provinceName" th:field="*{provinceName}" required />
+    <br/>
+    <button type="submit">Lưu</button>
+    <a th:href="@{/admin/provinces}">Hủy</a>
+</form>
+</body>
+</html>

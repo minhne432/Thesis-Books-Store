@@ -1,0 +1,33 @@
+<!-- templates/admin/district-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Quận/Huyện</title>
+</head>
+<body>
+<h1>Danh sách Quận/Huyện</h1>
+<a th:href="@{/admin/districts/add}">Thêm mới Quận/Huyện</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Quận/Huyện</th>
+        <th>Tỉnh</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="district : ${districts}">
+        <td th:text="${district.districtID}">1</td>
+        <td th:text="${district.districtName}">Tên Quận/Huyện</td>
+        <td th:text="${district.province.provinceName}">Tên Tỉnh</td>
+        <td>
+            <a th:href="@{'/admin/districts/edit/' + ${district.districtID}}">Chỉnh sửa</a>
+            <a th:href="@{'/admin/districts/delete/' + ${district.districtID}}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

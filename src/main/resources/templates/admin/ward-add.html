@@ -1,0 +1,70 @@
+<!-- templates/admin/ward-add.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm mới Phường/Xã</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Bao gồm jQuery -->
+</head>
+<body>
+<h1>Thêm mới Phường/Xã</h1>
+<form th:action="@{/admin/wards/add}" th:object="${ward}" method="post">
+    <label for="wardName">Tên Phường/Xã:</label>
+    <input type="text" id="wardName" th:field="*{wardName}" required />
+    <br/>
+    <label for="province">Thuộc Tỉnh:</label>
+    <select id="province" required>
+        <option value="">Chọn Tỉnh</option>
+        <option th:each="province : ${provinces}"
+                th:value="${province.provinceID}"
+                th:text="${province.provinceName}">
+        </option>
+    </select>
+    <br/>
+    <label for="district">Thuộc Quận/Huyện:</label>
+    <select id="district" th:field="*{district.districtID}" required>
+        <option value="">Chọn Quận/Huyện</option>
+        <option th:each="district : ${districts}"
+                th:value="${district.districtID}"
+                th:text="${district.districtName}">
+        </option>
+    </select>
+    <br/>
+    <label for="latitude">Vĩ độ (Latitude):</label>
+    <input type="text" id="latitude" th:field="*{latitude}" />
+    <br/>
+    <label for="longitude">Kinh độ (Longitude):</label>
+    <input type="text" id="longitude" th:field="*{longitude}" />
+    <br/>
+    <button type="submit">Lưu</button>
+    <a th:href="@{/admin/wards}">Hủy</a>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#province').on('change', function() {
+            var provinceId = $(this).val();
+            if(provinceId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId, // Sử dụng cú pháp Thymeleaf cho URL
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data) {
+                        $('#district').empty();
+                        $('#district').append('<option value="">Chọn Quận/Huyện</option>');
+                        $.each(data, function(key, value) {
+                            $('#district').append('<option value="'+ value.districtID +'">'+ value.districtName +'</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#district').empty();
+                $('#district').append('<option value="">Chọn Quận/Huyện</option>');
+            }
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

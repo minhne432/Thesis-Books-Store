@@ -1,0 +1,18 @@
+<!-- templates/admin/province-edit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Tỉnh</title>
+</head>
+<body>
+<h1>Chỉnh sửa Tỉnh</h1>
+<form th:action="@{/admin/provinces/edit}" th:object="${province}" method="post">
+    <input type="hidden" th:field="*{provinceID}" />
+    <label for="provinceName">Tên Tỉnh:</label>
+    <input type="text" id="provinceName" th:field="*{provinceName}" required />
+    <br/>
+    <button type="submit">Cập nhật</button>
+    <a th:href="@{/admin/provinces}">Hủy</a>
+</form>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!-- templates/admin/district-edit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Quận/Huyện</title>
+</head>
+<body>
+<h1>Chỉnh sửa Quận/Huyện</h1>
+<form th:action="@{/admin/districts/edit}" th:object="${district}" method="post">
+    <input type="hidden" th:field="*{districtID}" />
+    <label for="districtName">Tên Quận/Huyện:</label>
+    <input type="text" id="districtName" th:field="*{districtName}" required />
+    <br/>
+    <label for="province">Thuộc Tỉnh:</label>
+    <select id="province" th:field="*{province}" required>
+        <option th:each="province : ${provinces}"
+                th:value="${province.provinceID}"
+                th:text="${province.provinceName}"
+                th:selected="${province.provinceID == district.province.provinceID}">
+        </option>
+    </select>
+    <br/>
+    <button type="submit">Cập nhật</button>
+    <a th:href="@{/admin/districts}">Hủy</a>
+</form>
+</body>
+</html>

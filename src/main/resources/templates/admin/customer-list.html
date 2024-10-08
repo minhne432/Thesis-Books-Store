@@ -1,0 +1,44 @@
+<!-- templates/admin/customer-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách khách hàng</title>
+    <!-- Bao gồm các file CSS hoặc JS cần thiết tại đây -->
+</head>
+<body>
+<h1>Danh sách khách hàng</h1>
+
+<!-- Hiển thị thông báo thành công hoặc lỗi nếu có -->
+<div th:if="${param.success}">
+    <p style="color: green;">[[${param.success}]]</p>
+</div>
+<div th:if="${param.error}">
+    <p style="color: red;">Đã xảy ra lỗi: [[${param.error}]]</p>
+</div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên người dùng</th>
+        <th>Email</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.customerID}">1</td>
+        <td th:text="${customer.username}">username</td>
+        <td th:text="${customer.email}">email@example.com</td>
+        <td>
+            <a th:href="@{'/admin/customers/' + ${customer.customerID} + '/roles'}">Chỉnh sửa quyền</a>
+            <!-- Bạn có thể thêm các hành động khác nếu cần -->
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Tùy chọn: thêm phân trang nếu danh sách quá dài -->
+
+</body>
+</html>

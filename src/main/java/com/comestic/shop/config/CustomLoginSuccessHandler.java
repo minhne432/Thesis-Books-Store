@@ -19,7 +19,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // Check user roles and redirect accordingly
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            response.sendRedirect("/products");
+            response.sendRedirect("/admin/customers");
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             response.sendRedirect("/TrangChu");
         } else {

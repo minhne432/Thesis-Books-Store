@@ -1,0 +1,25 @@
+<!-- templates/admin/district-add.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm mới Quận/Huyện</title>
+</head>
+<body>
+<h1>Thêm mới Quận/Huyện</h1>
+<form th:action="@{/admin/districts/add}" th:object="${district}" method="post">
+    <label for="districtName">Tên Quận/Huyện:</label>
+    <input type="text" id="districtName" th:field="*{districtName}" required />
+    <br/>
+    <label for="province">Thuộc Tỉnh:</label>
+    <select id="province" th:field="*{province.provinceID}" required>
+        <option th:each="province : ${provinces}"
+                th:value="${province.provinceID}"
+                th:text="${province.provinceName}">
+        </option>
+    </select>
+    <br/>
+    <button type="submit">Lưu</button>
+    <a th:href="@{/admin/districts}">Hủy</a>
+</form>
+</body>
+</html>

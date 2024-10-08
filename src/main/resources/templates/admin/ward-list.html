@@ -1,0 +1,35 @@
+<!-- templates/admin/ward-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Phường/Xã</title>
+</head>
+<body>
+<h1>Danh sách Phường/Xã</h1>
+<a th:href="@{/admin/wards/add}">Thêm mới Phường/Xã</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Phường/Xã</th>
+        <th>Quận/Huyện</th>
+        <th>Tỉnh</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ward : ${wards}">
+        <td th:text="${ward.wardID}">1</td>
+        <td th:text="${ward.wardName}">Tên Phường/Xã</td>
+        <td th:text="${ward.district.districtName}">Tên Quận/Huyện</td>
+        <td th:text="${ward.district.province.provinceName}">Tên Tỉnh</td>
+        <td>
+            <a th:href="@{'/admin/wards/edit/' + ${ward.wardID}}">Chỉnh sửa</a>
+            <a th:href="@{'/admin/wards/delete/' + ${ward.wardID}}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

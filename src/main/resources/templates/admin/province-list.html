@@ -1,0 +1,31 @@
+<!-- templates/admin/province-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Tỉnh</title>
+</head>
+<body>
+<h1>Danh sách Tỉnh</h1>
+<a th:href="@{/admin/provinces/add}">Thêm mới Tỉnh</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Tỉnh</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="province : ${provinces}">
+        <td th:text="${province.provinceID}">1</td>
+        <td th:text="${province.provinceName}">Tên Tỉnh</td>
+        <td>
+            <a th:href="@{'/admin/provinces/edit/' + ${province.provinceID}}">Chỉnh sửa</a>
+            <a th:href="@{'/admin/provinces/delete/' + ${province.provinceID}}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

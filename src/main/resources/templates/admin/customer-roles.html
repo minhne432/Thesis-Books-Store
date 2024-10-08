@@ -1,0 +1,38 @@
+<!-- templates/admin/customer-roles.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa quyền cho khách hàng</title>
+    <!-- Bao gồm các file CSS hoặc JS cần thiết tại đây -->
+</head>
+<body>
+<h1>Chỉnh sửa quyền cho khách hàng: [[${customer.username}]]</h1>
+
+<!-- Hiển thị thông báo thành công hoặc lỗi nếu có -->
+<div th:if="${success}">
+    <p style="color: green;" th:text="${success}">Cập nhật quyền thành công!</p>
+</div>
+<div th:if="${error}">
+    <p style="color: red;" th:text="${error}">Đã xảy ra lỗi khi cập nhật quyền!</p>
+</div>
+
+<form th:action="@{'/admin/customers/' + ${customer.customerID} + '/roles'}" method="post">
+    <div>
+        <h2>Quyền khả dụng:</h2>
+        <ul>
+            <li th:each="role : ${allRoles}">
+                <input type="checkbox" name="roleIds"
+                       th:value="${role.roleID}"
+                       th:checked="${assignedRoleIds.contains(role.roleID)}"/>
+                <span th:text="${role.roleName}">Tên quyền</span>
+            </li>
+        </ul>
+    </div>
+    <button type="submit">Cập nhật quyền</button>
+</form>
+
+<p>
+    <a th:href="@{'/admin/customers'}">Quay lại danh sách khách hàng</a>
+</p>
+</body>
+</html>

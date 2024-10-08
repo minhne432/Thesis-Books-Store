@@ -7,7 +7,8 @@ import java.util.List;
 public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int districtID;
+    private Integer districtID; // Chuyển từ int sang Integer
+
 
     @ManyToOne
     @JoinColumn(name = "provinceID", nullable = false)
@@ -21,7 +22,7 @@ public class District {
 
     // Getters and Setters
 
-    public int getDistrictID() {
+    public Integer getDistrictID() {
         return districtID;
     }
 

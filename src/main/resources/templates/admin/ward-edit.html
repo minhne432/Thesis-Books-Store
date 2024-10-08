@@ -1,0 +1,33 @@
+<!-- templates/admin/ward-edit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Phường/Xã</title>
+</head>
+<body>
+<h1>Chỉnh sửa Phường/Xã</h1>
+<form th:action="@{/admin/wards/edit}" th:object="${ward}" method="post">
+    <input type="hidden" th:field="*{wardID}" />
+    <label for="wardName">Tên Phường/Xã:</label>
+    <input type="text" id="wardName" th:field="*{wardName}" required />
+    <br/>
+    <label for="district">Thuộc Quận/Huyện:</label>
+    <select id="district" th:field="*{district}" required>
+        <option th:each="district : ${districts}"
+                th:value="${district}"
+                th:text="${district.districtName}"
+                th:selected="${district.districtID == ward.district.districtID}">
+        </option>
+    </select>
+    <br/>
+    <label for="latitude">Vĩ độ (Latitude):</label>
+    <input type="text" id="latitude" th:field="*{latitude}" />
+    <br/>
+    <label for="longitude">Kinh độ (Longitude):</label>
+    <input type="text" id="longitude" th:field="*{longitude}" />
+    <br/>
+    <button type="submit">Cập nhật</button>
+    <a th:href="@{/admin/wards}">Hủy</a>
+</form>
+</body>
+</html>

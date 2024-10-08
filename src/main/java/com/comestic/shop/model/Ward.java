@@ -8,12 +8,11 @@ import java.util.List;
 public class Ward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int wardID;
+    private Integer wardID; // Chuyển từ int sang Integer
 
     @ManyToOne
     @JoinColumn(name = "districtID", nullable = false)
     private District district;
-
     @Column(nullable = false)
     private String wardName;
 
@@ -52,7 +51,7 @@ public class Ward {
         return addresses;
     }
 
-    public void setWardID(int wardID) {
+    public void setWardID(Integer wardID) {
         this.wardID = wardID;
     }
 
