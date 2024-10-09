@@ -1,10 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Chỉnh sửa chi nhánh</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<div class="container">
+    <h1>Chỉnh sửa chi nhánh</h1>
+
+    <!-- Form chỉnh sửa chi nhánh -->
+    <form th:action="@{/branches/edit}" th:object="${branch}" method="post">
+        <!-- Lưu branchId dưới dạng hidden -->
+        <input type="hidden" th:value="*{branchId}" name="branchId"/>
+
+        <!-- Tên chi nhánh -->
+        <div>
+            <label for="branchName">Tên chi nhánh:</label>
+            <input type="text" id="branchName" name="branchName" th:value="*{branchName}" required>
+        </div>
+
+        <!-- Số điện thoại -->
+        <div>
+            <label for="contactNumber">Số điện thoại:</label>
+            <input type="text" id="contactNumber" name="contactNumber" th:value="*{contactNumber}">
+        </div>
+
+        <!-- Người quản lý -->
+        <div>
+            <label for="manager">Người quản lý:</label>
+            <input type="text" id="manager" name="manager" th:value="*{manager}">
+        </div>
+
+        <h2>Thông tin địa chỉ</h2>
+
+        <!-- Dropdown Tỉnh/Thành phố -->
+        <div>
+            <label for="province">Tỉnh/Thành phố:</label>
+            <select id="province" name="provinceId" required>
+                <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                <th:block th:each="province : ${provinces}">
+                    <option th:value="${province.provinceID}" th:text="${province.provinceName}"
+                            th:selected="${branch.address.ward.district.province.provinceID == province.provinceID}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <!-- Dropdown Quận/Huyện -->
+        <div>
+            <label for="district">Quận/Huyện:</label>
+            <select id="district" name="districtId" required>
+                <option value="">-- Chọn Quận/Huyện --</option>
+                <th:block th:each="district : ${districts}">
+                    <option th:value="${district.districtID}" th:text="${district.districtName}"
+                            th:selected="${branch.address.ward.district.districtID == district.districtID}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <!-- Dropdown Phường/Xã -->
+        <div>
+            <label for="ward">Phường/Xã:</label>
+            <select id="ward" name="wardId" required>
+                <option value="">-- Chọn Phường/Xã --</option>
+                <th:block th:each="ward : ${wards}">
+                    <option th:value="${ward.wardID}" th:text="${ward.wardName}"
+                            th:selected="${branch.address.ward.wardID == ward.wardID}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <!-- Địa chỉ đường phố -->
+        <div>
+            <label for="streetAddress">Địa chỉ đường phố:</label>
+            <input type="text" id="streetAddress" name="streetAddress" th:value="*{address.streetAddress}" required>
+        </div>
+
+        <!-- Mã bưu điện -->
+        <div>
+            <label for="postalCode">Mã bưu điện:</label>
+            <input type="text" id="postalCode" name="postalCode" th:value="*{address.postalCode}">
+        </div>
+
+        <!-- Nút Lưu thay đổi -->
+        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    </form>
+
+    <!-- Hiển thị thông báo thành công hoặc lỗi -->
+    <div th:if="${success}">
+        <p th:text="${success}" style="color: green;"></p>
+    </div>
+    <div th:if="${error}">
+        <p th:text="${error}" style="color: red;"></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Khi chọn Tỉnh/Thành phố
+        $('#province').change(function() {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#district').empty();
+                        $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
+                        $.each(data, function(key, value) {
+                            $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
+                        });
+                        $('#ward').empty();
+                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+                    }
+                });
+            } else {
+                $('#district').empty();
+                $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
+                $('#ward').empty();
+                $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+            }
+        });
+
+        // Khi chọn Quận/Huyện
+        $('#district').change(function() {
+            var districtId = $(this).val();
+            if (districtId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/by-district/}]]" + districtId,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#ward').empty();
+                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+                        $.each(data, function(key, value) {
+                            $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#ward').empty();
+                $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
