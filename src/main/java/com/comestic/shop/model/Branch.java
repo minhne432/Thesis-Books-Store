@@ -3,7 +3,6 @@ package com.comestic.shop.model;
 import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Order;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,20 +18,15 @@ public class Branch {
     @Column(name = "BranchName", nullable = false)
     private String branchName;
 
-    @Column(name = "Location", nullable = false)
-    private String location;
-
-    @Column(name = "Latitude", precision = 10, scale = 8)
-    private BigDecimal latitude;
-
-    @Column(name = "Longitude", precision = 11, scale = 8)
-    private BigDecimal longitude;
-
     @Column(name = "ContactNumber")
     private String contactNumber;
 
     @Column(name = "Manager")
     private String manager;
+
+    @ManyToOne
+    @JoinColumn(name = "AddressID", referencedColumnName = "AddressID", nullable = false)
+    private Address address;  // Added relationship to Address
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inventory> inventories = new ArrayList<>();
@@ -41,19 +35,17 @@ public class Branch {
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PurchaseOrder> purchaseOrders = new ArrayList<>(); // Add purchase orders
+    private List<PurchaseOrder> purchaseOrders = new ArrayList<>(); // Purchase Orders
 
 
     // Constructors
     public Branch() {}
 
-    public Branch(String branchName, String location, BigDecimal latitude, BigDecimal longitude, String contactNumber, String manager) {
+    public Branch(String branchName, String contactNumber, String manager, Address address) {
         this.branchName = branchName;
-        this.location = location;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.contactNumber = contactNumber;
         this.manager = manager;
+        this.address = address;  // Initialize address
     }
 
     // Getters and Setters
@@ -73,30 +65,6 @@ public class Branch {
         this.branchName = branchName;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
-
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
-    }
-
     public String getContactNumber() {
         return contactNumber;
     }
@@ -111,6 +79,14 @@ public class Branch {
 
     public void setManager(String manager) {
         this.manager = manager;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public List<Inventory> getInventories() {
@@ -150,7 +126,7 @@ public class Branch {
         order.setBranch(null);
     }
 
-    // New method to handle the bidirectional relationship
+    // Methods to manage Purchase Orders
     public void addPurchaseOrder(PurchaseOrder purchaseOrder) {
         purchaseOrders.add(purchaseOrder);
         purchaseOrder.setBranch(this);
@@ -161,7 +137,6 @@ public class Branch {
         purchaseOrder.setBranch(null);
     }
 
-    // Getters and setters for purchaseOrders
     public List<PurchaseOrder> getPurchaseOrders() {
         return purchaseOrders;
     }
@@ -170,14 +145,14 @@ public class Branch {
         this.purchaseOrders = purchaseOrders;
     }
 
-    // You might want to add equals(), hashCode(), and toString() methods here
+    // equals(), hashCode(), and toString() methods
     @Override
     public String toString() {
         return "Branch{" +
                 "branchID=" + branchId +
                 ", branchName='" + branchName + '\'' +
-                ", location='" + location + '\'' +
                 ", manager='" + manager + '\'' +
+                ", address=" + address +  // Include address in toString
                 '}';
     }
 }

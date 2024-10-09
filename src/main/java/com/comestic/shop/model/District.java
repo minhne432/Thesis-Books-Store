@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class District {
         return wards;
     }
 
-    public void setDistrictID(int districtID) {
+    public void setDistrictID(Integer districtID) {
         this.districtID = districtID;
     }
 

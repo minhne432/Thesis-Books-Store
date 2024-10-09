@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface WardRepository extends JpaRepository<Ward, Integer> {
     // Phương thức tìm tất cả các Ward theo DistrictID
-    List<Ward> findByDistrict_DistrictID(int districtID);
+    List<Ward> findByDistrict_DistrictID(Integer districtID);
 }

@@ -19,18 +19,13 @@ public class AddressService {
         return addressRepository.findAll();
     }
 
-    // Lấy danh sách các Address theo CustomerID
-    public List<Address> getAddressesByCustomerId(int customerID) {
-        return addressRepository.findByCustomer_CustomerID(customerID);
-    }
-
     // Lấy danh sách các Address theo WardID
     public List<Address> getAddressesByWardId(int wardID) {
         return addressRepository.findByWard_WardID(wardID);
     }
 
-    // Lấy thông tin Address theo ID
-    public Optional<Address> getAddressById(int id) {
+    // Lấy thông tin Address theo ID (chuyển đổi kiểu dữ liệu từ int sang Long)
+    public Optional<Address> getAddressById(Long id) {
         return addressRepository.findById(id);
     }
 
@@ -39,8 +34,8 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    // Xóa Address theo ID
-    public void deleteAddress(int id) {
+    // Xóa Address theo ID (chuyển đổi kiểu dữ liệu từ int sang Long)
+    public void deleteAddress(Long id) {
         addressRepository.deleteById(id);
     }
 }

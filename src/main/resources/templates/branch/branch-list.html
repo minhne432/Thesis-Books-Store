@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Danh sách chi nhánh</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container">
+    <h1>Danh sách chi nhánh</h1>
 
+    <!-- Nút tạo mới chi nhánh -->
+    <a th:href="@{/branches/create}" class="btn btn-primary mb-3">Tạo mới chi nhánh</a>
+
+    <!-- Bảng hiển thị danh sách chi nhánh -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên chi nhánh</th>
+            <th>Người quản lý</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="branch : ${branches}">
+            <td th:text="${branch.branchId}"></td>
+            <td th:text="${branch.branchName}"></td>
+            <td th:text="${branch.manager}"></td>
+            <td th:text="${branch.contactNumber}"></td>
+            <td th:text="${branch.address.streetAddress} + ', ' + ${branch.address.ward.wardName} + ', ' + ${branch.address.ward.district.districtName} + ', ' + ${branch.address.ward.district.province.provinceName}"></td>
+            <td>
+                <a th:href="@{/branches/edit/{id}(id=${branch.branchId})}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                <a th:href="@{/branches/delete/{id}(id=${branch.branchId})}" class="btn btn-danger btn-sm">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

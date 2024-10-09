@@ -1,10 +1,10 @@
 package com.comestic.shop.service;
 
 import com.comestic.shop.model.Customer;
+import com.comestic.shop.model.CustomerAddress;
 import com.comestic.shop.model.Address;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,43 +21,42 @@ public class CustomerService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AddressService addressService; // Tiêm AddressService để xử lý địa chỉ
+    private CustomerAddressService customerAddressService; // Tiêm CustomerAddressService để xử lý địa chỉ
 
+    // Lưu khách hàng với mật khẩu được mã hóa
     public void saveCustomer(Customer customer) {
-        // Get the raw password from the customer
         String rawPassword = customer.getPasswordHash();
-        System.out.println("rawPassword : "+rawPassword);
-
-        // Encode the raw password before saving
         String encodedPassword = passwordEncoder.encode(rawPassword);
-        customer.setPasswordHash(encodedPassword); // Save the encoded (hashed) password
-
-        // Save the customer with the hashed password
+        customer.setPasswordHash(encodedPassword);
         customerRepository.save(customer);
     }
 
-
+    // Kiểm tra xem email đã tồn tại chưa
     public boolean emailExists(String email) {
-        // Logic to check if email already exists in the database
         return customerRepository.findByEmail(email).isPresent();
     }
 
+    // Lấy tất cả khách hàng
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
+    // Lấy khách hàng theo ID
     public Optional<Customer> getCustomerById(int id) {
         return customerRepository.findById(id);
     }
 
+    // Lấy khách hàng theo email
     public Optional<Customer> getCustomerByEmail(String email) {
         return customerRepository.findByEmail(email);
     }
 
+    // Thêm khách hàng mới
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
+    // Cập nhật thông tin khách hàng và địa chỉ của họ
     public Customer updateCustomer(int id, Customer customerDetails, Address newAddress) {
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (optionalCustomer.isPresent()) {
@@ -69,28 +68,32 @@ public class CustomerService {
             customer.setActive(customerDetails.isActive());
             customer.setProfilePicture(customerDetails.getProfilePicture());
 
-            // Nếu cần cập nhật địa chỉ, thực hiện qua AddressService
+            // Nếu cần cập nhật địa chỉ, thực hiện qua CustomerAddressService
             if (newAddress != null) {
-                newAddress.setCustomer(customer); // Gắn địa chỉ mới cho khách hàng
-                addressService.saveAddress(newAddress); // Lưu địa chỉ mới
+                CustomerAddress customerAddress = new CustomerAddress(customer, newAddress, true);
+                customerAddressService.addCustomerAddress(customerAddress); // Lưu địa chỉ mới
             }
 
             return customerRepository.save(customer);
         } else {
-            return null; // Hoặc bạn có thể ném ra ngoại lệ tùy theo logic của bạn
+            return null; // Hoặc ném ra ngoại lệ tùy theo logic của bạn
         }
     }
 
+    // Xóa khách hàng và tất cả các địa chỉ của họ
     public void deleteCustomer(int id) {
-        // Xóa tất cả các địa chỉ của khách hàng trước khi xóa khách hàng
-        List<Address> customerAddresses = addressService.getAddressesByCustomerId(id);
+        // Chuyển đổi từ int sang Long nếu cần
+        List<CustomerAddress> customerAddresses = customerAddressService.getAddressesByCustomerId(Long.valueOf(id));
+
         if (!customerAddresses.isEmpty()) {
-            for (Address address : customerAddresses) {
-                addressService.deleteAddress(address.getAddressID());
+            for (CustomerAddress customerAddress : customerAddresses) {
+                customerAddressService.deleteCustomerAddress(customerAddress.getCustomerAddressID());
             }
         }
 
         // Xóa khách hàng
         customerRepository.deleteById(id);
     }
+
+
 }

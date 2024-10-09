@@ -3,75 +3,86 @@ package com.comestic.shop.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "ADDRESS")
 public class Address {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "AddressID")
     private int addressID;
 
     @ManyToOne
-    @JoinColumn(name = "customerID", nullable = false)
-    private Customer customer;
-
-    @ManyToOne
-    @JoinColumn(name = "wardID", nullable = false)
+    @JoinColumn(name = "WardID", nullable = false)
     private Ward ward;
 
-    @Column(nullable = false)
+    @Column(name = "StreetAddress", nullable = false)
     private String streetAddress;
 
-    @Column(nullable = false)
+    @Column(name = "PostalCode", nullable = false)
     private String postalCode;
 
-    @Column(nullable = false)
+    @Column(name = "IsDefault", nullable = false)
     private boolean isDefault;
 
-    // Getters and Setters
+    // Constructors
+    public Address() {}
 
+    public Address(Ward ward, String streetAddress, String postalCode, boolean isDefault) {
+        this.ward = ward;
+        this.streetAddress = streetAddress;
+        this.postalCode = postalCode;
+        this.isDefault = isDefault;
+    }
+
+    // Getters and Setters
     public int getAddressID() {
         return addressID;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public Ward getWard() {
-        return ward;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
     }
 
     public void setAddressID(int addressID) {
         this.addressID = addressID;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public Ward getWard() {
+        return ward;
     }
 
     public void setWard(Ward ward) {
         this.ward = ward;
     }
 
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
     }
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
+    public boolean isDefault() {
+        return isDefault;
+    }
+
     public void setDefault(boolean aDefault) {
         isDefault = aDefault;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressID=" + addressID +
+                ", ward=" + ward +
+                ", streetAddress='" + streetAddress + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", isDefault=" + isDefault +
+                '}';
     }
 }

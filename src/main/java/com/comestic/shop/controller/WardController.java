@@ -1,6 +1,7 @@
 package com.comestic.shop.controller;
 
 import com.comestic.shop.dto.DistrictDTO;
+import com.comestic.shop.dto.WardDTO;
 import com.comestic.shop.model.Ward;
 import com.comestic.shop.model.District;
 import com.comestic.shop.service.ProvinceService;
@@ -107,5 +108,17 @@ public class WardController {
     public String deleteWard(@PathVariable("id") int id) {
         wardService.deleteWard(id);
         return "redirect:/admin/wards";
+    }
+
+    // Lấy danh sách Ward theo DistrictID
+    @GetMapping("/by-district/{districtId}")
+    @ResponseBody
+    public List<WardDTO> getWardsByDistrictId(@PathVariable int districtId) {
+        List<Ward> wards = wardService.getWardsByDistrictId(districtId);
+        List<WardDTO> wardDTOs = new ArrayList<>();
+        for (Ward ward : wards) {
+            wardDTOs.add(new WardDTO(ward.getWardID(), ward.getWardName()));
+        }
+        return wardDTOs;
     }
 }

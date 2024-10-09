@@ -23,7 +23,14 @@ erDiagram
         string SecurityQuestion
         string SecurityAnswerHash
     }
-    
+
+    CUSTOMER_ADDRESS {
+        int CustomerAddressID PK
+        int CustomerID FK
+        int AddressID FK
+        boolean IsDefault
+    }
+
     LOGIN_HISTORY {
         int LoginID PK
         int CustomerID FK
@@ -32,17 +39,17 @@ erDiagram
         string DeviceInfo
         string LoginStatus
     }
-    
+
     ADDRESS {
         int AddressID PK
-        int CustomerID FK
         int WardID FK
         string StreetAddress
         string PostalCode
         boolean IsDefault
     }
 
-    CUSTOMER ||--o{ ADDRESS : "has"
+    %% Relationships
+    CUSTOMER ||--o{ CUSTOMER_ADDRESS : "has"
     CUSTOMER ||--o{ LOGIN_HISTORY : "has"
     CUSTOMER ||--|| CART : "has"
     CUSTOMER ||--o{ REVIEW : "writes"
@@ -84,6 +91,7 @@ erDiagram
         date ReviewDate
     }
 
+    %% Relationships
     CART ||--|{ CART_ITEM : "contains"
     PRODUCT ||--o{ CART_ITEM : "is added to"
     PRODUCT ||--o{ REVIEW : "receives"
@@ -94,16 +102,15 @@ erDiagram
 %% ------------------------------
 
     ORDER {
-    int OrderID PK
-    date OrderDate
-    decimal TotalAmount
-    string Status
-    string PaymentMethod
-    int CustomerID FK
-    int BranchID FK
-    int AddressID FK
+        int OrderID PK
+        date OrderDate
+        decimal TotalAmount
+        string Status
+        string PaymentMethod
+        int CustomerID FK
+        int BranchID FK
+        int AddressID FK
     }
-
 
     ORDER_DETAILS {
         int OrderDetailID PK
@@ -143,6 +150,7 @@ erDiagram
         boolean IsActive
     }
 
+    %% Relationships
     CUSTOMER ||--o{ ORDER : "places"
     ORDER ||--|{ ORDER_DETAILS : "contains"
     ORDER ||--|| PAYMENT : "has"
@@ -167,14 +175,14 @@ erDiagram
         date LastUpdatedDate
     }
 
+    %% Updated BRANCH entity: Removed Location, Latitude, Longitude attributes
+    %% Added AddressID FK to link BRANCH to ADDRESS
     BRANCH {
         int BranchID PK
         string BranchName
-        string Location
-        decimal Latitude
-        decimal Longitude
         string ContactNumber
         string Manager
+        int AddressID FK
     }
 
     SUPPLIER {
@@ -204,6 +212,8 @@ erDiagram
         date ReceivedDate
     }
 
+    %% Relationships
+    BRANCH ||--|| ADDRESS : "is located at"
     BRANCH ||--|{ INVENTORY : "manages"
     PRODUCT ||--o{ INVENTORY : "is stored in"
     BRANCH ||--o{ ORDER : "fulfills"
@@ -240,6 +250,7 @@ erDiagram
         int PermissionID FK
     }
 
+    %% Relationships
     CUSTOMER ||--o{ USER_ROLE : "has"
     ROLE ||--o{ USER_ROLE : "is assigned to"
     ROLE ||--o{ ROLE_PERMISSION : "has"
@@ -268,7 +279,7 @@ erDiagram
         decimal Longitude
     }
 
+    %% Relationships
     PROVINCE ||--o{ DISTRICT : "contains"
     DISTRICT ||--o{ WARD : "contains"
     WARD ||--o{ ADDRESS : "includes"
-

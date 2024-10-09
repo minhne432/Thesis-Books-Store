@@ -7,10 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AddressRepository extends JpaRepository<Address, Integer> {
-    // Phương thức tìm tất cả các Address theo CustomerID
-    List<Address> findByCustomer_CustomerID(int customerID);
-
-    // Phương thức tìm tất cả các Address theo WardID
+public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findByWard_WardID(int wardID);
 }

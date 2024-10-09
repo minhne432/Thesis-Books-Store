@@ -1,10 +1,117 @@
+<!-- templates/branch_create.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Tạo Chi Nhánh Mới</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+
+<h1>Tạo Chi Nhánh Mới</h1>
+
+<form th:action="@{/branches/create}" th:object="${branch}" method="post">
+    <div>
+        <label for="branchName">Tên Chi Nhánh:</label>
+        <input type="text" id="branchName" name="branchName" th:value="*{branchName}" required>
+    </div>
+    <div>
+        <label for="contactNumber">Số Điện Thoại:</label>
+        <input type="text" id="contactNumber" name="contactNumber" th:value="*{contactNumber}">
+    </div>
+    <div>
+        <label for="manager">Người Quản Lý:</label>
+        <input type="text" id="manager" name="manager" th:value="*{manager}">
+    </div>
+
+    <h2>Thông Tin Địa Chỉ</h2>
+    <div>
+        <label for="province">Tỉnh/Thành Phố:</label>
+        <select id="province" name="provinceId" required>
+            <option value="">-- Chọn Tỉnh/Thành Phố --</option>
+            <th:block th:each="province : ${provinces}">
+                <option th:value="${province.provinceID}" th:text="${province.provinceName}"></option>
+            </th:block>
+        </select>
+    </div>
+    <div>
+        <label for="district">Quận/Huyện:</label>
+        <select id="district" name="districtId" required>
+            <option value="">-- Chọn Quận/Huyện --</option>
+        </select>
+    </div>
+    <div>
+        <label for="ward">Phường/Xã:</label>
+        <select id="ward" name="wardId" required>
+            <option value="">-- Chọn Phường/Xã --</option>
+        </select>
+    </div>
+    <div>
+        <label for="streetAddress">Địa Chỉ Đường Phố:</label>
+        <input type="text" id="streetAddress" name="streetAddress" required>
+    </div>
+    <div>
+        <label for="postalCode">Mã Bưu Điện:</label>
+        <input type="text" id="postalCode" name="postalCode">
+    </div>
+
+    <button type="submit">Thêm Chi Nhánh</button>
+</form>
+
+<!-- Hiển thị thông báo -->
+<div th:if="${success}">
+    <p th:text="${success}" style="color: green;"></p>
+</div>
+<div th:if="${error}">
+    <p th:text="${error}" style="color: red;"></p>
+</div>
+<!-- Nội dung khác -->
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Khi chọn Tỉnh/Thành Phố
+        $('#province').change(function() {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#district').empty();
+                        $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
+                        $.each(data, function(key, value) {
+                            $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#district').empty();
+                $('#ward').empty();
+            }
+        });
+
+        // Khi chọn Quận/Huyện
+        $('#district').change(function() {
+            var districtId = $(this).val();
+            if (districtId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/by-district/}]]" + districtId,
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("data ne: "+data);
+                        $('#ward').empty();
+                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+                        $.each(data, function(key, value) {
+                            $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#ward').empty();
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

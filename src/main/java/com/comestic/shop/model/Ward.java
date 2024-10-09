@@ -1,5 +1,6 @@
 package com.comestic.shop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Ward {
 
     // Getters and Setters
 
-    public int getWardID() {
+    public Integer getWardID() {
         return wardID;
     }
 

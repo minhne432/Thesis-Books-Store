@@ -20,7 +20,7 @@ public class WardService {
     }
 
     // Lấy danh sách các Ward theo DistrictID
-    public List<Ward> getWardsByDistrictId(int districtID) {
+    public List<Ward> getWardsByDistrictId(Integer districtID) {
         return wardRepository.findByDistrict_DistrictID(districtID);
     }
 

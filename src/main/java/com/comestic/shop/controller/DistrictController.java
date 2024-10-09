@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -68,5 +70,12 @@ public class DistrictController {
     public String deleteDistrict(@PathVariable("id") int id) {
         districtService.deleteDistrict(id);
         return "redirect:/admin/districts";
+    }
+
+    // Lấy danh sách District theo ProvinceID
+    @GetMapping("/by-province/{provinceId}")
+    @ResponseBody // Đảm bảo rằng phương thức này trả về JSON
+    public List<District> getDistrictsByProvinceId(@PathVariable int provinceId) {
+        return districtService.getDistrictsByProvinceId(provinceId);
     }
 }
