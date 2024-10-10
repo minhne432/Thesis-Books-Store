@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Thêm nhà cung cấp</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-
+<div class="container">
+    <h1>Thêm nhà cung cấp</h1>
+    <form th:action="@{/suppliers/add}" th:object="${supplier}" method="post">
+        <div class="form-group">
+            <label for="supplierName">Tên nhà cung cấp:</label>
+            <input type="text" id="supplierName" name="supplierName" th:value="*{supplierName}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="contactPerson">Người liên hệ:</label>
+            <input type="text" id="contactPerson" name="contactPerson" th:value="*{contactPerson}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="phone">Số điện thoại:</label>
+            <input type="text" id="phone" name="phone" th:value="*{phone}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:value="*{email}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="address">Địa chỉ:</label>
+            <input type="text" id="address" name="address" th:value="*{address}" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Thêm nhà cung cấp</button>
+        <a th:href="@{/suppliers}" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
 </body>
 </html>
