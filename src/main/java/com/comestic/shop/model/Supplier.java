@@ -1,6 +1,8 @@
 package com.comestic.shop.model;
 
 import com.comestic.shop.model.PurchaseOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,8 @@ public class Supplier {
     private String address;
 
     @OneToMany(mappedBy = "supplier", orphanRemoval = true)
+    @JsonManagedReference // Đây là phía "quản lý" của mối quan hệ
+    @JsonIgnore
     private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
     // Constructors

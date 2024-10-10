@@ -1,6 +1,7 @@
 package com.comestic.shop.model;
 
 import com.comestic.shop.model.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,8 +15,9 @@ public class PurchaseOrderDetails {
     @Column(name = "PurchaseOrderDetailID")
     private Long purchaseOrderDetailId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "PurchaseOrderID", nullable = false)
+    @JsonBackReference
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

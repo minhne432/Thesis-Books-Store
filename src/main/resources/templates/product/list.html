@@ -1,30 +1,28 @@
-<!-- products.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title layout:fragment="title" th:text="${pageTitle}">Product List</title>
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+<body>
+<div class="container">
+    <h1>Danh sách sản phẩm</h1>
+    <a th:href="@{/products/add}" class="btn btn-primary mb-3">Thêm sản phẩm</a>
 
-<div layout:fragment="content">
-    <h1>Product List</h1>
-    <a th:href="@{/products/create}">Add New Product</a>
+    <!-- Hiển thị thông báo -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <div th:if="${products.size() == 0}">
-        <p>No products available.</p>
-    </div>
-
-    <table border="1" th:if="${products.size() > 0}">
+    <table class="table table-striped">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Actions</th>
+            <th>Mã SP</th>
+            <th>Tên sản phẩm</th>
+            <th>Thương hiệu</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Số lượng tồn</th>
+            <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
@@ -33,15 +31,17 @@
             <td th:text="${product.productName}"></td>
             <td th:text="${product.brand}"></td>
             <td th:text="${product.category}"></td>
+            <!-- Sử dụng định dạng thập phân với 2 chữ số sau dấu phẩy -->
             <td th:text="${product.price}"></td>
             <td th:text="${product.stockQuantity}"></td>
             <td>
-                <a th:href="@{/products/edit/{id}(id=${product.productID})}">Edit</a> |
-                <a th:href="@{/products/delete/{id}(id=${product.productID})}" onclick="return confirm('Are you sure?');">Delete</a>
+                <a th:href="@{/products/edit/{id}(id=${product.productID})}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                <a th:href="@{/products/delete/{id}(id=${product.productID})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-
+</body>
 </html>

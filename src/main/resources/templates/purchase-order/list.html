@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Danh sách Đơn Đặt Hàng</title>
+    <title>Danh sách đơn đặt hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Danh sách Đơn Đặt Hàng</h1>
-<a href="/purchase-orders/create">Thêm mới Đơn Đặt Hàng</a>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nhà Cung Cấp</th>
-        <th>Ngày Đặt Hàng</th>
-        <th>Tổng Tiền</th>
-        <th>Trạng Thái</th>
-        <th>Thao Tác</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="purchaseOrder : ${purchaseOrders}">
-        <td th:text="${purchaseOrder.purchaseOrderId}"></td>
-        <td th:text="${purchaseOrder.supplier.supplierName}"></td> <!-- Tùy thuộc vào cách bạn hiển thị tên nhà cung cấp -->
-        <td th:text="${purchaseOrder.orderDate}"></td>
-        <td th:text="${purchaseOrder.totalAmount}"></td>
-        <td th:text="${purchaseOrder.status}"></td>
-        <td>
-            <a th:href="@{/purchase-orders/edit/{id}(id=${purchaseOrder.purchaseOrderId})}">Sửa</a> |
-            <a th:href="@{/purchase-orders/delete/{id}(id=${purchaseOrder.purchaseOrderId})}"
-               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
-            <a th:href="@{/purchase-orders/{id}/details(id=${purchaseOrder.purchaseOrderId})}">Xem chi tiết</a>
+<div class="container">
+    <h1>Danh sách đơn đặt hàng</h1>
+    <a th:href="@{/purchase-orders/add}" class="btn btn-primary mb-3">Tạo đơn đặt hàng mới</a>
 
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Nhà cung cấp</th>
+            <th>Chi nhánh</th>
+            <th>Ngày đặt hàng</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${purchaseOrders}">
+            <td th:text="${order.purchaseOrderId}"></td>
+            <td th:text="${order.supplier.supplierName}"></td>
+            <td th:text="${order.branch.branchName}"></td>
+            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${order.totalAmount}"></td>
+            <td th:text="${order.status}"></td>
+            <td>
+                <!-- Thêm các nút xem chi tiết, chỉnh sửa, xóa nếu cần -->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

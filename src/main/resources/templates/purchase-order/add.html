@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tạo đơn đặt hàng mới</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Thêm CSS và JS nếu cần -->
+</head>
+<body>
+<div class="container">
+    <h1>Tạo đơn đặt hàng mới</h1>
+
+    <form th:action="@{/purchase-orders/add}" th:object="${purchaseOrderDTO}" method="post">
+        <!-- Chọn nhà cung cấp -->
+        <div class="form-group">
+            <label for="supplier">Nhà cung cấp:</label>
+            <select class="form-control" id="supplier" th:field="*{supplierId}" required>
+                <option value="" disabled selected>Chọn nhà cung cấp</option>
+                <option th:each="supplier : ${suppliers}"
+                        th:value="${supplier.supplierId}"
+                        th:text="${supplier.supplierName}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Chọn chi nhánh -->
+        <div class="form-group">
+            <label for="branch">Chi nhánh:</label>
+            <select class="form-control" id="branch" th:field="*{branchId}" required>
+                <option value="" disabled selected>Chọn chi nhánh</option>
+                <option th:each="branch : ${branches}"
+                        th:value="${branch.branchId}"
+                        th:text="${branch.branchName}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Ngày đặt hàng -->
+        <div class="form-group">
+            <label for="orderDate">Ngày đặt hàng:</label>
+            <input type="date" class="form-control" id="orderDate" th:field="*{orderDate}" required>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="form-group">
+            <label for="status">Trạng thái:</label>
+            <input type="text" class="form-control" id="status" th:field="*{status}" required>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <h3>Sản phẩm</h3>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody id="productRows">
+            <!-- Hàng mẫu để thêm sản phẩm, sẽ được xử lý bằng JavaScript -->
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-secondary" onclick="addProductRow()">Thêm sản phẩm</button>
+
+        <!-- Nút submit -->
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Tạo đơn đặt hàng</button>
+            <a th:href="@{/purchase-orders}" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript để thêm/xóa sản phẩm -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var products = /*[[${products}]]*/ [];
+    var productIndex = 0;
+
+    function addProductRow() {
+        var productOptions = '';
+        for (var i = 0; i < products.length; i++) {
+            productOptions += '<option value="' + products[i].productId + '">' + products[i].productName + '</option>';
+        }
+
+        var row = `
+            <tr id="row-${productIndex}">
+                <td>
+                    <select name="purchaseOrderDetails[${productIndex}].productId" class="form-control" onchange="updateUnitPrice(${productIndex})" required>
+                        <option value="" disabled selected>Chọn sản phẩm</option>
+                        ${productOptions}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="purchaseOrderDetails[${productIndex}].unitPrice" class="form-control" min="0" step="0.01" onchange="updateTotalPrice(${productIndex})" required>
+                </td>
+                <td>
+                    <input type="number" name="purchaseOrderDetails[${productIndex}].quantity" class="form-control" min="1" onchange="updateTotalPrice(${productIndex})" required>
+                </td>
+                <td>
+                    <input type="number" class="form-control" readonly id="totalPrice-${productIndex}">
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="removeProductRow(${productIndex})">Xóa</button>
+                </td>
+            </tr>
+        `;
+        document.getElementById('productRows').insertAdjacentHTML('beforeend', row);
+        productIndex++;
+    }
+
+    function removeProductRow(index) {
+        var row = document.getElementById('row-' + index);
+        row.parentNode.removeChild(row);
+    }
+
+    function updateUnitPrice(index) {
+        // Bạn có thể thêm logic để tự động điền đơn giá khi chọn sản phẩm
+    }
+
+    function updateTotalPrice(index) {
+        var unitPrice = parseFloat(document.getElementsByName(`purchaseOrderDetails[${index}].unitPrice`)[0].value) || 0;
+        var quantity = parseInt(document.getElementsByName(`purchaseOrderDetails[${index}].quantity`)[0].value) || 0;
+        var totalPrice = unitPrice * quantity;
+        document.getElementById(`totalPrice-${index}`).value = totalPrice.toFixed(2);
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

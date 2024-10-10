@@ -1,6 +1,9 @@
 package com.comestic.shop.model;
 
 import com.comestic.shop.model.Supplier;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +21,7 @@ public class PurchaseOrder {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SupplierID", nullable = false)
+    @JsonBackReference // Đây là phía "ngược" của mối quan hệ
     private Supplier supplier;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -34,8 +38,9 @@ public class PurchaseOrder {
     @Column(name = "Status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PurchaseOrderDetails> purchaseOrderDetails;
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PurchaseOrderDetails> purchaseOrderDetails = new ArrayList<>();
 
 
 
@@ -126,15 +131,7 @@ public class PurchaseOrder {
     }
 
 
+
     // You might want to add equals(), hashCode(), and toString() methods here
-    @Override
-    public String toString() {
-        return "PurchaseOrder{" +
-                "purchaseOrderId=" + purchaseOrderId +
-                ", supplier='" + supplier + '\'' +
-                ", orderDate=" + orderDate +
-                ", totalAmount=" + totalAmount +
-                ", status='" + status + '\'' +
-                '}';
-    }
+
 }
