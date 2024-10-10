@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    #sidebar {
+        width: 250px; /* Fixed width */
+        position: fixed; /* Fix the sidebar on the left */
+        height: 100%; /* Full height */
+        top: 0;
+        left: 0;
+        background-color: #f8f9fa;
+        padding-top: 20px;
+        z-index: 100; /* Ensure it stays on top */
+    }
+
+    .sidebar-header {
+        padding: 10px;
+        background: #6c757d;
+        color: #fff;
+        text-align: center;
+    }
+
+    .components a {
+        padding: 10px;
+        font-size: 16px;
+        color: #343a40;
+        display: block;
+        text-decoration: none;
+    }
+
+    .components a:hover {
+        background-color: #e9ecef;
+        color: #343a40;
+    }
+
+    .components ul {
+        padding-left: 20px;
+    }
+
+    /* Content area */
+    .content {
+        margin-left: 250px; /* Make space for the sidebar */
+        padding: 20px;
+    }
+</style>
+
+</head>
+<body>
+   
+   <!-- layout/fragments/sidebar.html -->
+<nav id="sidebar" class="bg-light">
+    <div class="sidebar-header">
+        <h4>Admin Dashboard</h4>
+    </div>
+    <ul class="list-unstyled components">
+        <li>
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+            <ul class="collapse list-unstyled" id="homeSubmenu">
+                <li><a th:href="@{/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/overview}">Overview</a></li>
+                <li><a th:href="@{/statistics}">Statistics</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Products</a>
+            <ul class="collapse list-unstyled" id="productSubmenu">
+                <li><a th:href="@{/products/list}">Product List</a></li>
+                <li><a th:href="@{/products/add}">Add Product</a></li>
+            </ul>
+        </li>
+        <li><a th:href="@{/orders}">Orders</a></li>
+        <li>
+            <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
+            <ul class="collapse list-unstyled" id="userSubmenu">
+                <li><a th:href="@{/users/list}">User List</a></li>
+                <li><a th:href="@{/users/add}">Add User</a></li>
+            </ul>
+        </li>
+        <li><a th:href="@{/settings}">Settings</a></li>
+    </ul>
+</nav>
+
+
+    <!-- Bootstrap JS and dependencies (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
