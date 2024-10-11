@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Danh sách chi nhánh</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title layout:fragment="title">Danh sách chi nhánh</title>
 </head>
 <body>
-<div class="container">
+<div layout:fragment="content" class="container">
     <h1>Danh sách chi nhánh</h1>
 
     <!-- Nút tạo mới chi nhánh -->

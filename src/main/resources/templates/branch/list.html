@@ -1,38 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Branch List</title>
+    <!-- Sử dụng layout:fragment thay cho th:fragment -->
+    <title layout:fragment="title">Branch List</title>
 </head>
 <body>
-<h1>Branch List</h1>
+<!-- Sử dụng layout:fragment để nối vào fragment content của layout -->
+<div layout:fragment="content">
+    <h1>Branch List</h1>
 
-<!-- Table to display branches -->
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Branch Name</th>
-        <th>Location</th>
-        <th>Manager</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Iterate over the list of branches -->
-    <tr th:each="branch : ${branches}">
-        <td th:text="${branch.branchId}"></td>
-        <td th:text="${branch.branchName}"></td>
-        <td th:text="${branch.location}"></td>
-        <td th:text="${branch.manager}"></td>
-        <td>
-            <a th:href="@{branches/edit/{id}(id=${branch.branchId})}">Edit</a> |
-            <a th:href="@{'branches/delete/' + ${branch.branchId}}" onclick="return confirm('Are you sure?');">Delete</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Bảng hiển thị danh sách các chi nhánh -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Branch Name</th>
+            <th>Location</th>
+            <th>Manager</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua danh sách các chi nhánh -->
+        <tr th:each="branch : ${branches}">
+            <td th:text="${branch.branchId}"></td>
+            <td th:text="${branch.branchName}"></td>
+            <td th:text="${branch.location}"></td>
+            <td th:text="${branch.manager}"></td>
+            <td>
+                <a th:href="@{branches/edit/{id}(id=${branch.branchId})}">Edit</a> |
+                <a th:href="@{'branches/delete/' + ${branch.branchId}}" onclick="return confirm('Are you sure?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<!-- Button to create a new branch -->
-<a href="/branches/new">Create New Branch</a>
+    <!-- Nút tạo chi nhánh mới -->
+    <a class="btn btn-primary" href="/branches/new">Create New Branch</a>
+</div>
 </body>
 </html>
