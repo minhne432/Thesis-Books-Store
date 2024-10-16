@@ -1,10 +1,13 @@
 <!-- templates/admin/ward-list.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <title>Danh sách Phường/Xã</title>
 </head>
 <body>
+<div layout:fragment="content" class="container">
 <h1>Danh sách Phường/Xã</h1>
 <a th:href="@{/admin/wards/add}">Thêm mới Phường/Xã</a>
 <table border="1">
@@ -31,5 +34,6 @@
     </tr>
     </tbody>
 </table>
+</div>
 </body>
 </html>

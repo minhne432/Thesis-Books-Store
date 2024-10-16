@@ -14,7 +14,7 @@
     <label for="district">Thuộc Quận/Huyện:</label>
     <select id="district" th:field="*{district}" required>
         <option th:each="district : ${districts}"
-                th:value="${district}"
+                th:value="${district.districtID}"
                 th:text="${district.districtName}"
                 th:selected="${district.districtID == ward.district.districtID}">
         </option>

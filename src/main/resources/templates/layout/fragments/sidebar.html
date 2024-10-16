@@ -34,6 +34,14 @@
             </ul>
         </li>
         <li>
+            <a href="#adminRegionsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Administrative Regions</a>
+            <ul class="collapse list-unstyled" id="adminRegionsSubmenu">
+                <li><a th:href="@{/admin/provinces}">Provinces Administration</a></li>
+                <li><a th:href="@{/admin/districts}">Districts Administration</a></li>
+                <li><a th:href="@{/admin/wards}">Wards Administration</a></li>
+            </ul>
+        </li>
+        <li>
             <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
             <ul class="collapse list-unstyled" id="userSubmenu">
                 <li><a th:href="@{/users/list ?: '#'}">User List</a></li>

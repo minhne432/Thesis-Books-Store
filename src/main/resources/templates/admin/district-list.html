@@ -1,10 +1,13 @@
 <!-- templates/admin/district-list.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <title>Danh sách Quận/Huyện</title>
 </head>
 <body>
+<div layout:fragment="content" class="container">
 <h1>Danh sách Quận/Huyện</h1>
 <a th:href="@{/admin/districts/add}">Thêm mới Quận/Huyện</a>
 <table border="1">
@@ -29,5 +32,6 @@
     </tr>
     </tbody>
 </table>
+</div>
 </body>
 </html>
