@@ -1,10 +1,13 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.model.Branch;
 import com.comestic.shop.model.Inventory;
+import com.comestic.shop.model.Product;
 import com.comestic.shop.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,5 +45,24 @@ public class InventoryService {
 
     public void deleteInventory(Long id) {
         inventoryRepository.deleteById(id);
+    }
+
+    public void increaseInventoryQuantity(Branch branch, Product product, int quantity) {
+        Inventory inventory = inventoryRepository.findByBranchAndProduct(branch, product);
+
+        if (inventory != null) {
+            // Tăng số lượng hiện có
+            inventory.setQuantity(inventory.getQuantity() + quantity);
+            inventory.setLastUpdatedDate(LocalDate.now());
+        } else {
+            // Nếu chưa có Inventory cho Branch và Product này, tạo mới
+            inventory = new Inventory();
+            inventory.setBranch(branch);
+            inventory.setProduct(product);
+            inventory.setQuantity(quantity);
+            inventory.setLastUpdatedDate(LocalDate.now());
+        }
+
+        inventoryRepository.save(inventory);
     }
 }

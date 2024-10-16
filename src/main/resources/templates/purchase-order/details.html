@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Chi tiết Đơn đặt hàng</title>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+  <h1>Chi tiết Đơn đặt hàng</h1>
+
+  <!-- Thông tin chung của đơn đặt hàng -->
+  <div class="card mb-3">
+    <div class="card-header">
+      Thông tin Đơn đặt hàng
+    </div>
+    <div class="card-body" th:attr="data-purchase-order-id=${purchaseOrder.purchaseOrderId}">
+      <p><strong>ID Đơn hàng:</strong> <span th:text="${purchaseOrder.purchaseOrderId}"></span></p>
+      <p><strong>Nhà cung cấp:</strong> <span th:text="${purchaseOrder.supplier.supplierName}"></span></p>
+      <p><strong>Chi nhánh:</strong> <span th:text="${purchaseOrder.branch.branchName}"></span></p>
+      <p><strong>Ngày đặt hàng:</strong> <span th:text="${purchaseOrder.orderDate}"></span></p>
+      <p><strong>Trạng thái:</strong>
+        <select id="statusSelect" class="form-control">
+          <option th:each="status : ${statuses}"
+                  th:value="${status}"
+                  th:text="${status}"
+                  th:selected="${status == purchaseOrder.status}">
+          </option>
+        </select>
+      </p>
+      <p><strong>Tổng số tiền:</strong> <span id="totalAmount"></span></p>
+    </div>
+
+
+
+  <!-- Danh sách sản phẩm trong đơn đặt hàng -->
+  <h3>Sản phẩm trong đơn đặt hàng</h3>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Sản phẩm</th>
+      <th>Đơn giá</th>
+      <th>Số lượng</th>
+      <th>Thành tiền</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="detail : ${purchaseOrder.purchaseOrderDetails}">
+      <td th:text="${detail.product.productName}"></td>
+      <td th:text="${detail.unitPrice}" class="unit-price"></td>
+      <td th:text="${detail.quantity}" class="quantity"></td>
+      <td class="total-price"></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Nút quay lại -->
+  <div class="mt-3">
+    <a th:href="@{/purchase-orders}" class="btn btn-secondary">Quay lại danh sách đơn đặt hàng</a>
+  </div>
+</div>
+
+<!-- JavaScript để tính toán thành tiền và cập nhật trạng thái -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Tính toán tổng tiền cho từng sản phẩm và tổng số tiền toàn bộ đơn hàng
+      let totalAmount = 0;
+
+      // Duyệt qua tất cả các hàng sản phẩm
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        const unitPrice = parseFloat(row.querySelector('.unit-price').textContent) || 0;
+        const quantity = parseInt(row.querySelector('.quantity').textContent) || 0;
+        const totalPrice = unitPrice * quantity;
+
+        // Hiển thị thành tiền cho từng sản phẩm
+        row.querySelector('.total-price').textContent = totalPrice.toFixed(2);
+
+        // Cộng dồn vào tổng số tiền
+        totalAmount += totalPrice;
+      });
+
+      // Hiển thị tổng số tiền
+      document.getElementById('totalAmount').textContent = totalAmount.toFixed(2);
+
+      // Xử lý sự kiện thay đổi trạng thái
+      const statusSelect = document.getElementById('statusSelect');
+      statusSelect.addEventListener('change', function () {
+        const newStatus = this.value;
+        const purchaseOrderId = document.querySelector('.card-body').getAttribute('data-purchase-order-id');
+
+        // Lấy CSRF token từ thẻ meta
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // Gọi hàm cập nhật trạng thái
+        updateStatus(purchaseOrderId, newStatus, csrfToken, csrfHeaderName);
+      });
+    });
+
+    function updateStatus(purchaseOrderId, newStatus, csrfToken, csrfHeaderName) {
+      fetch(`/purchase-orders/${purchaseOrderId}/update-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          [csrfHeaderName]: csrfToken  // Đặt header CSRF hợp lệ
+        },
+        body: `status=${encodeURIComponent(newStatus)}`
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw new Error('Có lỗi xảy ra khi cập nhật trạng thái.');
+        }
+      })
+      .then(data => {
+        alert('Trạng thái đã được cập nhật thành công.');
+        location.reload();
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+    }
+  </script>
+
+
+</div>
+</body>
+</html>

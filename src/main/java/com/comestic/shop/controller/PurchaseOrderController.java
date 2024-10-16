@@ -4,6 +4,7 @@ import com.comestic.shop.dto.*;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,35 +34,6 @@ public class PurchaseOrderController {
 
     @Autowired
     private ProductService productService;
-
-//    @GetMapping("/add")
-//    public String showAddPurchaseOrderForm(Model model) {
-//        PurchaseOrder purchaseOrder = new PurchaseOrder();
-//        purchaseOrder.setOrderDate(LocalDate.now());
-//        purchaseOrder.setStatus("Pending");
-//
-//        List<PurchaseOrderDetails> detailsList = new ArrayList<>();
-//        purchaseOrder.setPurchaseOrderDetails(detailsList);
-//
-//        List<SupplierDTO> supplierDTOs = supplierService.getAllSuppliers().stream()
-//                .map(supplier -> new SupplierDTO(supplier.getSupplierId(), supplier.getSupplierName()))
-//                .collect(Collectors.toList());
-//
-//        List<BranchDTO> branchDTOs = branchService.getAllBranches().stream()
-//                .map(branch -> new BranchDTO(branch.getBranchId(), branch.getBranchName()))
-//                .collect(Collectors.toList());
-//
-//        List<ProductDTO> productDTOs = productService.getAllProducts().stream()
-//                .map(product -> new ProductDTO(product.getProductID(), product.getProductName()))
-//                .collect(Collectors.toList());
-//
-//        model.addAttribute("purchaseOrder", purchaseOrder);
-//        model.addAttribute("suppliers", supplierDTOs);
-//        model.addAttribute("branches", branchDTOs);
-//        model.addAttribute("products", productDTOs);
-//
-//        return "purchase-order/add";
-//    }
 
     @GetMapping("/add")
     public String showAddPurchaseOrderForm(Model model) {
@@ -92,57 +65,6 @@ public class PurchaseOrderController {
     }
 
 
-//    @PostMapping("/add")
-//    public String addPurchaseOrder(@ModelAttribute("purchaseOrder") PurchaseOrder purchaseOrder,
-//                                   BindingResult result,
-//                                   Model model) {
-//
-//        if (result.hasErrors()) {
-//            model.addAttribute("suppliers", supplierService.getAllSuppliers());
-//            model.addAttribute("branches", branchService.getAllBranches());
-//            model.addAttribute("products", productService.getAllProducts());
-//            return "purchase-order/add";
-//        }
-//
-//        // Lấy Supplier từ cơ sở dữ liệu
-//        Optional<Supplier> supplierOpt = supplierService.getSupplierById(purchaseOrder.getSupplier().getSupplierId());
-//        if (supplierOpt.isPresent()) {
-//            purchaseOrder.setSupplier(supplierOpt.get());
-//        } else {
-//            // Xử lý khi không tìm thấy Supplier
-//        }
-//
-//        // Lấy Branch từ cơ sở dữ liệu
-//        Optional<Branch> branchOpt = branchService.getBranchById(purchaseOrder.getBranch().getBranchId());
-//        if (branchOpt.isPresent()) {
-//            purchaseOrder.setBranch(branchOpt.get());
-//        } else {
-//            // Xử lý khi không tìm thấy Branch
-//        }
-//
-//        // Xử lý các PurchaseOrderDetails
-//        List<PurchaseOrderDetails> detailsList = purchaseOrder.getPurchaseOrderDetails();
-//        for (PurchaseOrderDetails detail : detailsList) {
-//            // Thiết lập PurchaseOrder cho mỗi detail
-//            detail.setPurchaseOrder(purchaseOrder);
-//
-//            // Lấy Product từ cơ sở dữ liệu
-//            Optional<Product> productOpt = productService.getProductById(detail.getProduct().getProductID());
-//            if (productOpt.isPresent()) {
-//                detail.setProduct(productOpt.get());
-//            } else {
-//                // Xử lý khi không tìm thấy Product
-//            }
-//        }
-//
-//        // Tính tổng số tiền
-//        purchaseOrder.updateTotalAmount();
-//
-//        // Lưu đơn đặt hàng
-//        purchaseOrderService.addPurchaseOrder(purchaseOrder);
-//
-//        return "redirect:/purchase-orders"; // Điều hướng đến trang danh sách đơn đặt hàng
-//    }
 @PostMapping("/add")
 public String addPurchaseOrder(@ModelAttribute("purchaseOrderDTO") PurchaseOrderDTO purchaseOrderDTO,
                                BindingResult result,
@@ -212,5 +134,34 @@ public String addPurchaseOrder(@ModelAttribute("purchaseOrderDTO") PurchaseOrder
         return "purchase-order/list";
     }
 
+
+
+    @GetMapping("/details/{id}")
+    public String viewPurchaseOrderDetails(@PathVariable("id") Long id, Model model) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = purchaseOrderService.getPurchaseOrderById(id);
+        if (optionalPurchaseOrder.isPresent()) {
+            PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+            model.addAttribute("purchaseOrder", purchaseOrder);
+
+            // Danh sách trạng thái
+            List<String> statuses = Arrays.asList("Pending", "Confirmed", "Processing", "Shipped", "Received", "Partially Received", "Completed", "Cancelled", "Returned", "Failed");
+            model.addAttribute("statuses", statuses);
+
+            return "purchase-order/details";
+        } else {
+            // Xử lý khi không tìm thấy đơn đặt hàng
+            return "redirect:/purchase-orders?error=notfound";
+        }
+    }
+
+
     // Các phương thức khác như chỉnh sửa, xóa nếu cần thiết
+    @PostMapping("/{id}/update-status")
+    @ResponseBody
+    public ResponseEntity<String> updateStatus(@PathVariable("id") Long purchaseOrderId,
+                                               @RequestParam("status") String newStatus) {
+        purchaseOrderService.updatePurchaseOrderStatus(purchaseOrderId, newStatus);
+        return ResponseEntity.ok("Status updated successfully.");
+    }
+
 }

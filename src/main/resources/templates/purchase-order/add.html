@@ -43,8 +43,17 @@
         <!-- Trạng thái -->
         <div class="form-group">
             <label for="status">Trạng thái:</label>
-            <input type="text" class="form-control" id="status" th:field="*{status}" required>
+            <select class="form-control" id="status" th:field="*{status}" required>
+                <option value="" disabled selected>Chọn trạng thái</option>
+                <option value="Pending">Pending (Chờ xử lý)</option>
+                <option value="Confirmed">Confirmed (Đã xác nhận)</option>
+                <option value="Processing">Processing (Đang xử lý)</option>
+                <option value="Shipped">Shipped (Đã giao hàng)</option>
+                <option value="Received">Received (Đã nhận hàng)</option>
+                <option value="Cancelled">Cancelled (Đã hủy)</option>
+            </select>
         </div>
+
 
         <!-- Danh sách sản phẩm -->
         <h3>Sản phẩm</h3>

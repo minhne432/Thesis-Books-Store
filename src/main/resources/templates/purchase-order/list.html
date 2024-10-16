@@ -33,7 +33,7 @@
             <td th:text="${order.totalAmount}"></td>
             <td th:text="${order.status}"></td>
             <td>
-                <!-- Thêm các nút xem chi tiết, chỉnh sửa, xóa nếu cần -->
+                <a th:href="@{/purchase-orders/details/{id}(id=${order.purchaseOrderId})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
             </td>
         </tr>
         </tbody>

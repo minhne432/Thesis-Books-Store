@@ -97,9 +97,11 @@ public class PurchaseOrderDetails {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
+
     public void markAsReceived() {
         this.receivedDate = LocalDate.now();
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here
+
 }

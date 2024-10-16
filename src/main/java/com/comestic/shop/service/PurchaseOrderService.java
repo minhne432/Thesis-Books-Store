@@ -1,5 +1,8 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.exception.ResourceNotFoundException;
+import com.comestic.shop.model.Branch;
+import com.comestic.shop.model.Product;
 import com.comestic.shop.model.PurchaseOrder;
 import com.comestic.shop.model.PurchaseOrderDetails;
 import com.comestic.shop.repository.PurchaseOrderRepository;
@@ -14,6 +17,10 @@ public class PurchaseOrderService {
 
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository;
+
+
+    @Autowired
+    private InventoryService inventoryService;
 
     public List<PurchaseOrder> getAllPurchaseOrders() {
         return purchaseOrderRepository.findAll();
@@ -69,6 +76,36 @@ public class PurchaseOrderService {
 
     public void deletePurchaseOrder(Long id) {
         purchaseOrderRepository.deleteById(id);
+    }
+
+    public void updatePurchaseOrderStatus(Long purchaseOrderId, String newStatus) {
+        Optional<PurchaseOrder> optionalPurchaseOrder = purchaseOrderRepository.findById(purchaseOrderId);
+        if (optionalPurchaseOrder.isPresent()) {
+            PurchaseOrder purchaseOrder = optionalPurchaseOrder.get();
+            purchaseOrder.setStatus(newStatus);
+
+            // Kiểm tra nếu trạng thái là "received successfully"
+            if ("Received".equalsIgnoreCase(newStatus)) {
+                // Gọi phương thức để cập nhật kho
+                updateInventoryForReceivedOrder(purchaseOrder);
+            }
+
+            purchaseOrderRepository.save(purchaseOrder);
+        } else {
+            throw new ResourceNotFoundException("PurchaseOrder not found with ID: " + purchaseOrderId);
+        }
+    }
+
+    private void updateInventoryForReceivedOrder(PurchaseOrder purchaseOrder) {
+        // Duyệt qua tất cả các PurchaseOrderDetails
+        for (PurchaseOrderDetails detail : purchaseOrder.getPurchaseOrderDetails()) {
+            Product product = detail.getProduct();
+            Branch branch = purchaseOrder.getBranch();
+            int receivedQuantity = detail.getQuantity();
+
+            // Cập nhật Inventory
+            inventoryService.increaseInventoryQuantity(branch, product, receivedQuantity);
+        }
     }
 
 }
