@@ -20,6 +20,20 @@
         </li>
         <li><a th:href="@{/orders ?: '#'}">Orders</a></li>
         <li>
+            <a href="#branchSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Branches</a>
+            <ul class="collapse list-unstyled" id="branchSubmenu">
+                <li><a th:href="@{/branches}">Branch List</a></li>
+                <li><a th:href="@{/branches/add ?: '#'}">Add Branch</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#supplierOrderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Supplier Orders</a>
+            <ul class="collapse list-unstyled" id="supplierOrderSubmenu">
+                <li><a th:href="@{/purchase-orders}">Order List</a></li>
+                <li><a th:href="@{/supplier-orders/add ?: '#'}">Create Order</a></li>
+            </ul>
+        </li>
+        <li>
             <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
             <ul class="collapse list-unstyled" id="userSubmenu">
                 <li><a th:href="@{/users/list ?: '#'}">User List</a></li>
