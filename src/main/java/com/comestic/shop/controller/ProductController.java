@@ -1,11 +1,14 @@
 package com.comestic.shop.controller;
 
+import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
 import com.comestic.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -67,7 +70,13 @@ public class ProductController {
     public String viewProductDetails(@PathVariable("id") int id, Model model) {
         Optional<Product> optionalProduct = productService.getProductById(id);
         if(optionalProduct.isPresent()) {
-            model.addAttribute("product", optionalProduct.get());
+            Product product = optionalProduct.get();
+            model.addAttribute("product", product);
+
+            // Lấy danh sách Inventory cho sản phẩm này
+            List<Inventory> inventories = productService.getInventoriesByProduct(product);
+            model.addAttribute("inventories", inventories);
+
             return "product/details";
         } else {
             return "redirect:/products";

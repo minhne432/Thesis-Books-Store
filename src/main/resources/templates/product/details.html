@@ -31,9 +31,35 @@
     <span th:text="${product.price}"></span>
 </div>
 <div>
-    <label>Số lượng:</label>
+    <label>Số lượng tổng:</label>
     <span th:text="${product.stockQuantity}"></span>
 </div>
+
+<h2>Kho hàng tại các chi nhánh</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Chi nhánh</th>
+        <th>Địa chỉ</th>
+        <th>Số lượng còn lại</th>
+        <th>Ngày cập nhật cuối</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="inventory : ${inventories}">
+        <td th:text="${inventory.branch.branchName}"></td>
+        <td>
+            <span th:text="${inventory.branch.address.streetAddress}"></span>,
+            <span th:text="${inventory.branch.address.ward.wardName}"></span>,
+            <span th:text="${inventory.branch.address.ward.district.districtName}"></span>,
+            <span th:text="${inventory.branch.address.ward.district.province.provinceName}"></span>
+        </td>
+        <td th:text="${inventory.quantity}"></td>
+        <td th:text="${#temporals.format(inventory.lastUpdatedDate, 'dd/MM/yyyy')}"></td>
+    </tr>
+    </tbody>
+</table>
+
 <div>
     <a th:href="@{'/products/edit/' + ${product.productID}}">Chỉnh sửa</a>
     <a th:href="@{'/products/delete/' + ${product.productID}}" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>

@@ -1,6 +1,8 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
+import com.comestic.shop.repository.InventoryRepository;
 import com.comestic.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -45,4 +50,9 @@ public class ProductService {
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
     }
+
+    public List<Inventory> getInventoriesByProduct(Product product) {
+        return inventoryRepository.findByProduct(product);
+    }
+
 }
