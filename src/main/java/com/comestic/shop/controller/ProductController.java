@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -21,52 +18,59 @@ public class ProductController {
     // Hiển thị danh sách sản phẩm
     @GetMapping
     public String listProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
-        model.addAttribute("products", products);
+        model.addAttribute("products", productService.getAllProducts());
         return "product/list";
     }
 
-    // Hiển thị form thêm mới sản phẩm
+    // Hiển thị form thêm sản phẩm mới
     @GetMapping("/add")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
-        return "product/add-product";
+        return "product/add";
     }
 
-    // Xử lý lưu sản phẩm mới
+    // Xử lý thêm sản phẩm mới
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute("product") Product product, RedirectAttributes redirectAttributes) {
+    public String addProduct(@ModelAttribute("product") Product product) {
         productService.addProduct(product);
-        redirectAttributes.addFlashAttribute("success", "Thêm sản phẩm thành công!");
         return "redirect:/products";
     }
 
     // Hiển thị form chỉnh sửa sản phẩm
     @GetMapping("/edit/{id}")
-    public String showEditProductForm(@PathVariable("id") int id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditProductForm(@PathVariable("id") int id, Model model) {
         Optional<Product> optionalProduct = productService.getProductById(id);
-        if (optionalProduct.isPresent()) {
+        if(optionalProduct.isPresent()) {
             model.addAttribute("product", optionalProduct.get());
             return "product/edit";
         } else {
-            redirectAttributes.addFlashAttribute("error", "Sản phẩm không tồn tại!");
             return "redirect:/products";
         }
     }
 
     // Xử lý cập nhật sản phẩm
-    @PostMapping("/edit")
-    public String editProduct(@ModelAttribute("product") Product product, RedirectAttributes redirectAttributes) {
-        productService.updateProduct(product.getProductID(), product);
-        redirectAttributes.addFlashAttribute("success", "Cập nhật sản phẩm thành công!");
+    @PostMapping("/edit/{id}")
+    public String editProduct(@PathVariable("id") int id, @ModelAttribute("product") Product productDetails) {
+        productService.updateProduct(id, productDetails);
         return "redirect:/products";
     }
 
     // Xóa sản phẩm
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+    public String deleteProduct(@PathVariable("id") int id) {
         productService.deleteProduct(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa sản phẩm thành công!");
         return "redirect:/products";
+    }
+
+    // Xem chi tiết sản phẩm
+    @GetMapping("/{id}")
+    public String viewProductDetails(@PathVariable("id") int id, Model model) {
+        Optional<Product> optionalProduct = productService.getProductById(id);
+        if(optionalProduct.isPresent()) {
+            model.addAttribute("product", optionalProduct.get());
+            return "product/details";
+        } else {
+            return "redirect:/products";
+        }
     }
 }

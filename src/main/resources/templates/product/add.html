@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Chỉnh sửa sản phẩm</title>
+    <title>Thêm sản phẩm</title>
     <!-- Thêm CSS nếu cần -->
 </head>
 <body>
-<h1>Chỉnh sửa sản phẩm</h1>
-<form th:action="@{'/products/edit/' + ${product.productID}}" th:object="${product}" method="post">
+<h1>Thêm sản phẩm mới</h1>
+<form th:action="@{/products/add}" th:object="${product}" method="post">
     <div>
         <label>Tên sản phẩm:</label>
         <input type="text" th:field="*{productName}" required/>
@@ -32,7 +32,7 @@
         <input type="number" th:field="*{stockQuantity}" required/>
     </div>
     <div>
-        <button type="submit">Lưu</button>
+        <button type="submit">Thêm</button>
         <a href="/products">Hủy</a>
     </div>
 </form>

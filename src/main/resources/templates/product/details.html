@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết sản phẩm</title>
+    <!-- Thêm CSS nếu cần -->
+</head>
+<body>
+<h1>Chi tiết sản phẩm</h1>
+<div>
+    <label>ID:</label>
+    <span th:text="${product.productID}"></span>
+</div>
+<div>
+    <label>Tên sản phẩm:</label>
+    <span th:text="${product.productName}"></span>
+</div>
+<div>
+    <label>Thương hiệu:</label>
+    <span th:text="${product.brand}"></span>
+</div>
+<div>
+    <label>Danh mục:</label>
+    <span th:text="${product.category}"></span>
+</div>
+<div>
+    <label>Mô tả:</label>
+    <span th:text="${product.description}"></span>
+</div>
+<div>
+    <label>Giá:</label>
+    <span th:text="${product.price}"></span>
+</div>
+<div>
+    <label>Số lượng:</label>
+    <span th:text="${product.stockQuantity}"></span>
+</div>
+<div>
+    <a th:href="@{'/products/edit/' + ${product.productID}}">Chỉnh sửa</a>
+    <a th:href="@{'/products/delete/' + ${product.productID}}" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+    <a href="/products">Quay lại danh sách</a>
+</div>
+</body>
+</html>
