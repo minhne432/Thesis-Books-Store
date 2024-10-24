@@ -6,6 +6,9 @@ import com.comestic.shop.repository.InventoryRepository;
 import com.comestic.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,5 +57,21 @@ public class ProductService {
     public List<Inventory> getInventoriesByProduct(Product product) {
         return inventoryRepository.findByProduct(product);
     }
+
+    public Page<Product> getProductsByPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return productRepository.findAll(pageable);
+    }
+
+
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.searchProducts(keyword);
+    }
+
+    public Page<Product> searchProductsByPage(String keyword, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return productRepository.findByProductNameContaining(keyword, pageable); // Giả sử bạn tìm kiếm theo tên sản phẩm
+    }
+
 
 }

@@ -4,6 +4,7 @@ import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
 import com.comestic.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -82,4 +83,35 @@ public class ProductController {
             return "redirect:/products";
         }
     }
+
+    @GetMapping("/shop/list")
+    public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
+        int pageSize = 10; // Số sản phẩm mỗi trang
+        Page<Product> productPage = productService.getProductsByPage(page, pageSize);
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
+        return "shop/product_list";
+    }
+
+    @GetMapping("/shop/search")
+    public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 Model model) {
+        int pageSize = 10;
+        Page<Product> productPage;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            productPage = productService.getProductsByPage(page, pageSize); // Sử dụng phân trang cho tất cả sản phẩm
+        } else {
+            productPage = productService.searchProductsByPage(keyword, page, pageSize); // Sử dụng phương thức tìm kiếm có phân trang
+        }
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("keyword", keyword);
+        return "shop/product_list";
+    }
+
+
+
+
+
 }
