@@ -1,37 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
-    <!-- Include your CSS files here -->
+    <title>Đăng ký tài khoản</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
-<h1>User Registration</h1>
-<form th:action="@{/register}" th:object="${customer}" method="post">
+<h1>Đăng ký tài khoản</h1>
+<form th:action="@{/register}" method="post">
+    <!-- Thông tin khách hàng -->
     <div>
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" th:field="*{firstName}" required />
+        <label>Họ:</label>
+        <input type="text" name="firstName" th:value="${customer.firstName}" required />
     </div>
     <div>
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" th:field="*{lastName}" required />
+        <label>Tên:</label>
+        <input type="text" name="lastName" th:value="${customer.lastName}" required />
     </div>
     <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" th:field="*{username}" required />
+        <label>Email:</label>
+        <input type="email" name="email" th:value="${customer.email}" required />
     </div>
     <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" th:field="*{email}" required />
+        <label>Tên đăng nhập:</label>
+        <input type="text" name="username" th:value="${customer.username}" required />
+        <!-- Hiển thị thông báo lỗi cho username nếu có -->
+        <div th:if="${usernameError}">
+            <p th:text="${usernameError}" style="color: red;"></p>
+        </div>
     </div>
     <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" th:field="*{passwordHash}" required />
+        <label>Mật khẩu:</label>
+        <input type="password" name="passwordHash" required />
     </div>
-    <!-- Add other fields as needed -->
+    <!-- Thông tin địa chỉ -->
+    <h3>Địa chỉ</h3>
     <div>
-        <button type="submit">Register</button>
+        <label for="province">Tỉnh/Thành Phố:</label>
+        <select id="province" name="provinceId" required>
+            <option value="">-- Chọn Tỉnh/Thành Phố --</option>
+            <th:block th:each="province : ${provinces}">
+                <option th:value="${province.provinceID}" th:text="${province.provinceName}"></option>
+            </th:block>
+        </select>
     </div>
+    <div>
+        <label for="district">Quận/Huyện:</label>
+        <select id="district" name="districtId" required>
+            <option value="">-- Chọn Quận/Huyện --</option>
+        </select>
+    </div>
+    <div>
+        <label for="ward">Phường/Xã:</label>
+        <select id="ward" name="wardId" required>
+            <option value="">-- Chọn Phường/Xã --</option>
+        </select>
+    </div>
+    <div>
+        <label>Địa chỉ đường phố:</label>
+        <input type="text" name="streetAddress" required />
+    </div>
+    <div>
+        <label>Mã bưu điện:</label>
+        <input type="text" name="postalCode" required />
+    </div>
+    <button type="submit">Đăng ký</button>
 </form>
-<p>Already have an account? <a th:href="@{/login}">Login here</a>.</p>
+<!-- Thêm các script để load dữ liệu động cho province, district, ward nếu cần -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Khi chọn Tỉnh/Thành Phố
+        $('#province').change(function() {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#district').empty();
+                        $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
+                        $.each(data, function(key, value) {
+                            $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#district').empty();
+                $('#ward').empty();
+            }
+        });
+
+        // Khi chọn Quận/Huyện
+        $('#district').change(function() {
+            var districtId = $(this).val();
+            if (districtId) {
+                $.ajax({
+                    url: "[[@{/admin/wards/by-district/}]]" + districtId,
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("data ne: "+data);
+                        $('#ward').empty();
+                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+                        $.each(data, function(key, value) {
+                            $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#ward').empty();
+            }
+        });
+    });
+</script>
 </body>
 </html>

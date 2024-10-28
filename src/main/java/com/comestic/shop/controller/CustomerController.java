@@ -1,12 +1,7 @@
 package com.comestic.shop.controller;
 
-
-import com.comestic.shop.model.Customer;
-import com.comestic.shop.model.Role;
-import com.comestic.shop.model.UserRole;
-import com.comestic.shop.service.CustomerService;
-import com.comestic.shop.service.RoleService;
-import com.comestic.shop.service.UserRoleService;
+import com.comestic.shop.model.*;
+import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,101 +25,85 @@ public class CustomerController {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private ProvinceService provinceService;
+
+    @Autowired
+    private WardService wardService;
+
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private CustomerAddressService customerAddressService;
+
     // GET method to show the registration form
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("customer", new Customer());
-        return "register"; // This should be the name of your Thymeleaf template (register.html)
+        List<Province> provinces = provinceService.getAllProvinces();
+        model.addAttribute("provinces", provinces);
+        return "register";
     }
 
     // POST method to handle form submission for user registration
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") @Valid Customer customer,
-                                   BindingResult result, Model model) {
-        // Validate the form fields
+                                   BindingResult result,
+                                   @RequestParam("provinceId") int provinceId,
+                                   @RequestParam("districtId") int districtId,
+                                   @RequestParam("wardId") int wardId,
+                                   @RequestParam("streetAddress") String streetAddress,
+                                   @RequestParam("postalCode") String postalCode,
+                                   Model model) {
+        // Kiểm tra lỗi
         if (result.hasErrors()) {
-            return "register"; // return back to the registration form if errors exist
+            // Load lại danh sách provinces nếu có lỗi
+            List<Province> provinces = provinceService.getAllProvinces();
+            model.addAttribute("provinces", provinces);
+            return "register";
         }
 
-        // Check if email is already registered
+        // Kiểm tra email đã tồn tại
         if (customerService.emailExists(customer.getEmail())) {
-            model.addAttribute("emailError", "Email is already registered");
-            return "register"; // return back with error
+            model.addAttribute("emailError", "Email đã được đăng ký");
+            // Load lại danh sách provinces nếu có lỗi
+            List<Province> provinces = provinceService.getAllProvinces();
+            model.addAttribute("provinces", provinces);
+            return "register";
         }
 
-        // Save the new customer
+        // Lưu thông tin khách hàng
         customerService.saveCustomer(customer);
 
-        // Redirect to success page or login page after successful registration
+        // Lưu thông tin địa chỉ
+        // Lấy thông tin ward
+        Ward ward = wardService.getWardById(wardId).orElse(null);
+        if (ward == null) {
+            model.addAttribute("addressError", "Vui lòng chọn phường/xã hợp lệ");
+            // Load lại danh sách provinces nếu có lỗi
+            List<Province> provinces = provinceService.getAllProvinces();
+            model.addAttribute("provinces", provinces);
+            return "register";
+        }
+
+        Address address = new Address();
+        address.setWard(ward);
+        address.setStreetAddress(streetAddress);
+        address.setPostalCode(postalCode);
+        address.setDefault(true); // Đặt địa chỉ này là mặc định
+        addressService.saveAddress(address);
+
+        // Tạo CustomerAddress để liên kết Customer và Address
+        CustomerAddress customerAddress = new CustomerAddress();
+        customerAddress.setCustomer(customer);
+        customerAddress.setAddress(address);
+        customerAddress.setDefault(true);
+        customerAddressService.addCustomerAddress(customerAddress);
+
+        // Redirect đến trang đăng nhập hoặc trang khác sau khi đăng ký thành công
         return "redirect:/login";
     }
 
-    @GetMapping("/TrangChu")
-    public  String trangChu(){
-        return "home";
-    }
-
-    // Hiển thị danh sách tất cả khách hàng
-    @GetMapping("/customers")
-    public String listCustomers(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
-        model.addAttribute("customers", customers);
-        return "customers/list"; // Trỏ tới template Thymeleaf: customers/list.html
-    }
-
-    // Hiển thị form gán Roles cho Customer
-    @GetMapping("/assign-roles/{id}")
-    public String showAssignRolesForm(@PathVariable("id") int customerId, Model model) {
-        Customer customer = customerService.getCustomerById(customerId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid customer ID: " + customerId));
-        List<Role> allRoles = roleService.getAllRoles();
-
-        // Lấy danh sách ID của các Roles đã được gán cho Customer
-        Set<Integer> assignedRoleIds = new HashSet<>();
-        if (customer.getUserRoles() != null) {
-            for (UserRole ur : customer.getUserRoles()) {
-                assignedRoleIds.add(ur.getRole().getRoleID());
-            }
-        }
-
-        model.addAttribute("customer", customer);
-        model.addAttribute("allRoles", allRoles);
-        model.addAttribute("assignedRoleIds", assignedRoleIds);
-
-        return "customers/assign-roles"; // Trỏ tới template Thymeleaf: customers/assign-roles.html
-    }
-
-    // Xử lý việc gán Roles cho Customer
-    @PostMapping("/assign-roles/{id}")
-    public String assignRolesToCustomer(@PathVariable("id") int customerId,
-                                        @RequestParam(value = "roleIds", required = false) List<Integer> roleIds) {
-
-        Customer customer = customerService.getCustomerById(customerId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid customer ID: " + customerId));
-
-        // Xóa tất cả các UserRole hiện tại của Customer này
-        Set<UserRole> currentUserRoles = customer.getUserRoles();
-        if (currentUserRoles != null) {
-            for (UserRole ur : currentUserRoles) {
-                userRoleService.deleteUserRole(ur.getUserRoleID());
-            }
-            customer.getUserRoles().clear();
-        }
-
-        // Nếu có Role được chọn, tạo mới UserRole
-        if (roleIds != null) {
-            for (Integer roleId : roleIds) {
-                Role role = roleService.getRoleById(roleId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + roleId));
-                UserRole userRole = new UserRole();
-                userRole.setCustomer(customer);
-                userRole.setRole(role);
-                userRoleService.addUserRole(userRole);
-            }
-        }
-
-        return "redirect:/customers";
-    }
-
-
+    // Các phương thức khác
 }
