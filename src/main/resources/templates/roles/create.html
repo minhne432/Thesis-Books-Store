@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tạo Role mới</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Tạo Role mới</h1>
+<form th:action="@{/roles/create}" method="post">
+    <div>
+        <label>Tên Role:</label>
+        <input type="text" name="roleName" th:value="${role.roleName}" required />
+    </div>
+    <div>
+        <label>Mô tả:</label>
+        <textarea name="description" th:text="${role.description}"></textarea>
+    </div>
+    <button type="submit">Lưu</button>
+</form>
+<a th:href="@{/roles}">Quay lại danh sách Role</a>
+</body>
+</html>

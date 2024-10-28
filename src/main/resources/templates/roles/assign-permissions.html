@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gán Permission cho Role</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Gán Permission cho Role: <span th:text="${role.roleName}"></span></h1>
+<form th:action="@{|/roles/assign-permissions/${role.roleID}|}" method="post">
+    <div>
+        <label><strong>Danh sách Permissions:</strong></label><br/>
+        <ul>
+            <li th:each="permission : ${allPermissions}">
+                <input type="checkbox" name="permissionIds"
+                       th:value="${permission.permissionID}"
+                       th:checked="${assignedPermissionIds.contains(permission.permissionID)}"/>
+                <span th:text="${permission.permissionName}"></span>
+            </li>
+        </ul>
+    </div>
+    <button type="submit">Lưu</button>
+</form>
+<a th:href="@{/roles}">Quay lại danh sách Role</a>
+</body>
+</html>

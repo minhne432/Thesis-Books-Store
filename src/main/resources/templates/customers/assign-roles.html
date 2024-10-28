@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gán Roles cho Khách hàng</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Gán Roles cho Khách hàng: <span th:text="${customer.username}"></span></h1>
+<form th:action="@{|/customers/assign-roles/${customer.customerID}|}" method="post">
+    <div>
+        <label><strong>Danh sách Roles:</strong></label><br/>
+        <ul>
+            <li th:each="role : ${allRoles}">
+                <input type="checkbox" name="roleIds"
+                       th:value="${role.roleID}"
+                       th:checked="${assignedRoleIds.contains(role.roleID)}"/>
+                <span th:text="${role.roleName}"></span>
+            </li>
+        </ul>
+    </div>
+    <button type="submit">Lưu</button>
+</form>
+<a th:href="@{/customers}">Quay lại danh sách Khách hàng</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Permission</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Chỉnh sửa Permission</h1>
+<form th:action="@{|/permissions/edit/${permission.permissionID}|}" method="post">
+    <div>
+        <label>Tên Permission:</label>
+        <input type="text" name="permissionName" th:value="${permission.permissionName}" required />
+    </div>
+    <div>
+        <label>Mô tả:</label>
+        <textarea name="description" th:text="${permission.description}"></textarea>
+    </div>
+    <button type="submit">Cập nhật</button>
+</form>
+<a th:href="@{/permissions}">Quay lại danh sách Permission</a>
+</body>
+</html>

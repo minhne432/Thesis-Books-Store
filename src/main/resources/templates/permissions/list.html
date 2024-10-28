@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Permission</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Danh sách Permission</h1>
+<a th:href="@{/permissions/create}">Tạo Permission mới</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Permission</th>
+        <th>Mô tả</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="permission : ${permissions}">
+        <td th:text="${permission.permissionID}"></td>
+        <td th:text="${permission.permissionName}"></td>
+        <td th:text="${permission.description}"></td>
+        <td>
+            <a th:href="@{|/permissions/edit/${permission.permissionID}|}">Chỉnh sửa</a> |
+            <a th:href="@{|/permissions/delete/${permission.permissionID}|}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/}">Quay lại trang chủ</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Role</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Chỉnh sửa Role</h1>
+<form th:action="@{|/roles/edit/${role.roleID}|}" method="post">
+    <div>
+        <label>Tên Role:</label>
+        <input type="text" name="roleName" th:value="${role.roleName}" required />
+    </div>
+    <div>
+        <label>Mô tả:</label>
+        <textarea name="description" th:text="${role.description}"></textarea>
+    </div>
+    <button type="submit">Cập nhật</button>
+</form>
+<a th:href="@{/roles}">Quay lại danh sách Role</a>
+</body>
+</html>
