@@ -26,17 +26,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF nếu cần thiết
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // thứ tự đặt url trong  nb
+                        .requestMatchers("/admin/wards/**").permitAll() // Cho phép truy cập công khai vào /admin/wards/**
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Hạn chế các URL khác trong /admin/ chỉ cho ADMIN
                         .requestMatchers("/products/shop/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
-                        .successHandler(customLoginSuccessHandler) // Use custom success handler
+                        .defaultSuccessUrl("/home")
                         .failureUrl("/login?error=true")
                 )
                 .logout((logout) -> logout
@@ -46,4 +47,5 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+
 }
