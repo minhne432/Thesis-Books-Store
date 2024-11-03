@@ -283,3 +283,14 @@ erDiagram
     PROVINCE ||--o{ DISTRICT : "contains"
     DISTRICT ||--o{ WARD : "contains"
     WARD ||--o{ ADDRESS : "includes"
+
+    %% Thực thể mới
+    BRANCH_DISTANCE {
+        int BranchID PK, FK
+        int WardID PK, FK
+        decimal Distance
+    }
+
+    %% Các mối quan hệ
+    BRANCH ||--o{ BRANCH_DISTANCE : "has distances to"
+    WARD ||--o{ BRANCH_DISTANCE : "is at distances from"

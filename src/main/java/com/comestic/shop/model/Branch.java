@@ -38,6 +38,30 @@ public class Branch {
     private List<PurchaseOrder> purchaseOrders = new ArrayList<>(); // Purchase Orders
 
 
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BranchDistance> branchDistances = new ArrayList<>();
+
+    // Getters and Setters
+    public List<BranchDistance> getBranchDistances() {
+        return branchDistances;
+    }
+
+    public void setBranchDistances(List<BranchDistance> branchDistances) {
+        this.branchDistances = branchDistances;
+    }
+
+    // Helper methods
+    public void addBranchDistance(BranchDistance branchDistance) {
+        branchDistances.add(branchDistance);
+        branchDistance.setBranch(this);
+    }
+
+    public void removeBranchDistance(BranchDistance branchDistance) {
+        branchDistances.remove(branchDistance);
+        branchDistance.setBranch(null);
+    }
+
+
     // Constructors
     public Branch() {}
 

@@ -3,6 +3,7 @@ package com.comestic.shop.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,30 @@ public class Ward {
 
     @OneToMany(mappedBy = "ward", cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "ward", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BranchDistance> branchDistances = new ArrayList<>();
+
+    // Getters and Setters
+    public List<BranchDistance> getBranchDistances() {
+        return branchDistances;
+    }
+
+    public void setBranchDistances(List<BranchDistance> branchDistances) {
+        this.branchDistances = branchDistances;
+    }
+
+    // Helper methods
+    public void addBranchDistance(BranchDistance branchDistance) {
+        branchDistances.add(branchDistance);
+        branchDistance.setWard(this);
+    }
+
+    public void removeBranchDistance(BranchDistance branchDistance) {
+        branchDistances.remove(branchDistance);
+        branchDistance.setWard(null);
+    }
+
 
     // Getters and Setters
 
