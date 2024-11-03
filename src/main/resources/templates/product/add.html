@@ -1,40 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Thêm sản phẩm</title>
+    <title layout:fragment="title">Thêm sản phẩm</title>
     <!-- Thêm CSS nếu cần -->
 </head>
 <body>
-<h1>Thêm sản phẩm mới</h1>
-<form th:action="@{/products/add}" th:object="${product}" method="post">
-    <div>
-        <label>Tên sản phẩm:</label>
-        <input type="text" th:field="*{productName}" required/>
-    </div>
-    <div>
-        <label>Thương hiệu:</label>
-        <input type="text" th:field="*{brand}" required/>
-    </div>
-    <div>
-        <label>Danh mục:</label>
-        <input type="text" th:field="*{category}" required/>
-    </div>
-    <div>
-        <label>Mô tả:</label>
-        <textarea th:field="*{description}"></textarea>
-    </div>
-    <div>
-        <label>Giá:</label>
-        <input type="number" step="0.01" th:field="*{price}" required/>
-    </div>
-    <div>
-        <label>Số lượng:</label>
-        <input type="number" th:field="*{stockQuantity}" required/>
-    </div>
-    <div>
-        <button type="submit">Thêm</button>
-        <a href="/products">Hủy</a>
-    </div>
-</form>
+<div layout:fragment="content" class="container">
+    <h1>Thêm sản phẩm mới</h1>
+    <form th:action="@{/products/add}" th:object="${product}" method="post">
+        <div>
+            <label>Tên sản phẩm:</label>
+            <input type="text" th:field="*{productName}" required/>
+        </div>
+        <div>
+            <label>Thương hiệu:</label>
+            <input type="text" th:field="*{brand}" required/>
+        </div>
+        <div>
+            <label>Danh mục:</label>
+            <input type="text" th:field="*{category}" required/>
+        </div>
+        <div>
+            <label>Mô tả:</label>
+            <textarea th:field="*{description}"></textarea>
+        </div>
+        <div>
+            <label>Giá:</label>
+            <input type="number" step="0.01" th:field="*{price}" required/>
+        </div>
+        <div>
+            <label>Số lượng:</label>
+            <input type="number" th:field="*{stockQuantity}" required/>
+        </div>
+        <div>
+            <button type="submit">Thêm</button>
+            <a href="/products">Hủy</a>
+        </div>
+    </form>
+
+</div>
 </body>
 </html>

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Tạo đơn đặt hàng mới</title>
+    <title layout:fragment="title">Tạo đơn đặt hàng mới</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Thêm CSS và JS nếu cần -->
 </head>
 <body>
-<div class="container">
+<div layout:fragment="content" class="container">
     <h1>Tạo đơn đặt hàng mới</h1>
 
     <form th:action="@{/purchase-orders/add}" th:object="${purchaseOrderDTO}" method="post">
@@ -82,60 +85,63 @@
 </div>
 
 <!-- JavaScript để thêm/xóa sản phẩm -->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var products = /*[[${products}]]*/ [];
-    var productIndex = 0;
+<div layout:fragment="pageScripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var products = /*[[${products}]]*/ [];
+        var productIndex = 0;
 
-    function addProductRow() {
-        var productOptions = '';
-        for (var i = 0; i < products.length; i++) {
-            productOptions += '<option value="' + products[i].productId + '">' + products[i].productName + '</option>';
+        function addProductRow() {
+            var productOptions = '';
+            for (var i = 0; i < products.length; i++) {
+                productOptions += '<option value="' + products[i].productId + '">' + products[i].productName + '</option>';
+            }
+
+            var row = `
+                <tr id="row-${productIndex}">
+                    <td>
+                        <select name="purchaseOrderDetails[${productIndex}].productId" class="form-control" onchange="updateUnitPrice(${productIndex})" required>
+                            <option value="" disabled selected>Chọn sản phẩm</option>
+                            ${productOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="purchaseOrderDetails[${productIndex}].unitPrice" class="form-control" min="0" step="0.01" onchange="updateTotalPrice(${productIndex})" required>
+                    </td>
+                    <td>
+                        <input type="number" name="purchaseOrderDetails[${productIndex}].quantity" class="form-control" min="1" onchange="updateTotalPrice(${productIndex})" required>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" readonly id="totalPrice-${productIndex}">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeProductRow(${productIndex})">Xóa</button>
+                    </td>
+                </tr>
+            `;
+            document.getElementById('productRows').insertAdjacentHTML('beforeend', row);
+            productIndex++;
         }
 
-        var row = `
-            <tr id="row-${productIndex}">
-                <td>
-                    <select name="purchaseOrderDetails[${productIndex}].productId" class="form-control" onchange="updateUnitPrice(${productIndex})" required>
-                        <option value="" disabled selected>Chọn sản phẩm</option>
-                        ${productOptions}
-                    </select>
-                </td>
-                <td>
-                    <input type="number" name="purchaseOrderDetails[${productIndex}].unitPrice" class="form-control" min="0" step="0.01" onchange="updateTotalPrice(${productIndex})" required>
-                </td>
-                <td>
-                    <input type="number" name="purchaseOrderDetails[${productIndex}].quantity" class="form-control" min="1" onchange="updateTotalPrice(${productIndex})" required>
-                </td>
-                <td>
-                    <input type="number" class="form-control" readonly id="totalPrice-${productIndex}">
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger" onclick="removeProductRow(${productIndex})">Xóa</button>
-                </td>
-            </tr>
-        `;
-        document.getElementById('productRows').insertAdjacentHTML('beforeend', row);
-        productIndex++;
-    }
+        function removeProductRow(index) {
+            var row = document.getElementById('row-' + index);
+            row.parentNode.removeChild(row);
+        }
 
-    function removeProductRow(index) {
-        var row = document.getElementById('row-' + index);
-        row.parentNode.removeChild(row);
-    }
+        function updateUnitPrice(index) {
+            // Bạn có thể thêm logic để tự động điền đơn giá khi chọn sản phẩm
+        }
 
-    function updateUnitPrice(index) {
-        // Bạn có thể thêm logic để tự động điền đơn giá khi chọn sản phẩm
-    }
+        function updateTotalPrice(index) {
+            var unitPrice = parseFloat(document.getElementsByName(`purchaseOrderDetails[${index}].unitPrice`)[0].value) || 0;
+            var quantity = parseInt(document.getElementsByName(`purchaseOrderDetails[${index}].quantity`)[0].value) || 0;
+            var totalPrice = unitPrice * quantity;
+            document.getElementById(`totalPrice-${index}`).value = totalPrice.toFixed(2);
+        }
 
-    function updateTotalPrice(index) {
-        var unitPrice = parseFloat(document.getElementsByName(`purchaseOrderDetails[${index}].unitPrice`)[0].value) || 0;
-        var quantity = parseInt(document.getElementsByName(`purchaseOrderDetails[${index}].quantity`)[0].value) || 0;
-        var totalPrice = unitPrice * quantity;
-        document.getElementById(`totalPrice-${index}`).value = totalPrice.toFixed(2);
-    }
+        /*]]>*/
+    </script>
+</div>
 
-    /*]]>*/
-</script>
 </body>
 </html>

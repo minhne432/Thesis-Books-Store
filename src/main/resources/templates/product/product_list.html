@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Danh sách sản phẩm</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+        <h1>Danh sách sản phẩm</h1>
+        <form class="form-inline my-2 my-lg-0" th:action="@{/products/shop/search}" method="get">
+            <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" th:value="${keyword}">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
+        </form>
+        <div class="row">
+            <div class="col-md-4" th:each="product : ${products}">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${product.productName}"></h5>
+                        <p class="card-text">Thương hiệu: <span th:text="${product.brand}"></span></p>
+                        <p class="card-text">Giá: <span th:text="${product.price}"></span> VND</p>
+                        <a th:href="@{'/products/' + ${product.productID}}" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination">
+            <a th:if="${productPage.hasPrevious()}" th:href="@{/shop/list(page=${productPage.number - 1})}">Previous</a>
+            <span>Page <span th:text="${productPage.number + 1}"></span> of <span th:text="${productPage.totalPages}"></span></span>
+            <a th:if="${productPage.hasNext()}" th:href="@{/shop/list(page=${productPage.number + 1})}">Next</a>
+        </div>
+        <div class="row">
+            <div th:if="${products.size() > 0}" th:each="product : ${products}">
+                <!-- Hiển thị sản phẩm -->
+            </div>
+            <div th:if="${products.size() == 0}">
+                <p>Không tìm thấy sản phẩm nào.</p>
+            </div>
+        </div>
+
+</div>
+
+</body>
+</html>

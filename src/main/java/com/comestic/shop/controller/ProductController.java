@@ -37,7 +37,7 @@ public class ProductController {
     @PostMapping("/add")
     public String addProduct(@ModelAttribute("product") Product product) {
         productService.addProduct(product);
-        return "redirect:/products";
+        return "redirect:/products/list";
     }
 
     // Hiển thị form chỉnh sửa sản phẩm
@@ -84,13 +84,13 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/shop/list")
+    @GetMapping("/list")
     public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
         int pageSize = 10; // Số sản phẩm mỗi trang
         Page<Product> productPage = productService.getProductsByPage(page, pageSize);
         model.addAttribute("productPage", productPage);
         model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
-        return "shop/product_list";
+        return "product/product_list";
     }
 
     @GetMapping("/shop/search")
@@ -107,7 +107,7 @@ public class ProductController {
         model.addAttribute("productPage", productPage);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("keyword", keyword);
-        return "shop/product_list";
+        return "product/product_list";
     }
 
 

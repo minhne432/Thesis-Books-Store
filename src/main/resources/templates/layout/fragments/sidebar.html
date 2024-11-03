@@ -14,8 +14,8 @@
         <li>
             <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Products</a>
             <ul class="collapse list-unstyled" id="productSubmenu">
-                <li><a th:href="@{/products/list ?: '#'}">Product List</a></li>
-                <li><a th:href="@{/products/add ?: '#'}">Add Product</a></li>
+                <li><a th:href="@{/products/list}">Product List</a></li>
+                <li><a th:href="@{/products/add}">Add Product</a></li>
             </ul>
         </li>
         <li><a th:href="@{/orders ?: '#'}">Orders</a></li>
@@ -23,14 +23,14 @@
             <a href="#branchSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Branches</a>
             <ul class="collapse list-unstyled" id="branchSubmenu">
                 <li><a th:href="@{/branches}">Branch List</a></li>
-                <li><a th:href="@{/branches/add ?: '#'}">Add Branch</a></li>
+                <li><a th:href="@{/branches/create}">Add Branch</a></li>
             </ul>
         </li>
         <li>
             <a href="#supplierOrderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Supplier Orders</a>
             <ul class="collapse list-unstyled" id="supplierOrderSubmenu">
                 <li><a th:href="@{/purchase-orders}">Order List</a></li>
-                <li><a th:href="@{/supplier-orders/add ?: '#'}">Create Order</a></li>
+                <li><a th:href="@{/purchase-orders/add}">Create Order</a></li>
             </ul>
         </li>
         <li>
@@ -49,5 +49,14 @@
             </ul>
         </li>
         <li><a th:href="@{/settings ?: '#'}">Settings</a></li>
+        <li>
+            <a href="#accessControlSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Access Control</a>
+            <ul class="collapse list-unstyled" id="accessControlSubmenu">
+                <li><a th:href="@{/roles}">Manage Roles</a></li>
+                <li><a th:href="@{/permissions}">Manage Permissions</a></li>
+                <li><a th:href="@{/admin/customers}">Assign Roles to Users</a></li>
+            </ul>
+        </li>
+
     </ul>
 </nav>
