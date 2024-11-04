@@ -51,7 +51,10 @@ public class DistanceCalculationService {
                 double wardLat = ward.getLatitude().doubleValue();
                 double wardLon = ward.getLongitude().doubleValue();
 
-                double distance = calculateDistance(branchLat, branchLon, wardLat, wardLon);
+                Double distance = calculateDistance(branchLat, branchLon, wardLat, wardLon);
+                if (distance == null) {
+                    continue; // Bỏ qua nếu khoảng cách là null (tức là tọa độ trùng nhau)
+                }
 
                 // Tạo đối tượng BranchDistance
                 BranchDistance branchDistance = new BranchDistance(
@@ -69,7 +72,12 @@ public class DistanceCalculationService {
     }
 
     // Hàm tính khoảng cách theo công thức Haversine
-    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    public static Double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        // Nếu tọa độ trùng nhau, trả về null
+        if (lat1 == lat2 && lon1 == lon2) {
+            return null;
+        }
+
         final int EARTH_RADIUS = 6371; // Bán kính Trái Đất tính bằng km
 
         double dLat = Math.toRadians(lat2 - lat1);
@@ -83,4 +91,6 @@ public class DistanceCalculationService {
 
         return EARTH_RADIUS * c; // Khoảng cách tính bằng km
     }
+
+
 }
