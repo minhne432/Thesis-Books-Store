@@ -51,6 +51,10 @@ public class CustomerService {
         return customerRepository.findByEmail(email);
     }
 
+    public Optional<Customer> getCustomerByUsername(String email) {
+        return customerRepository.findByUsername(email);
+    }
+
     // Thêm khách hàng mới
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);

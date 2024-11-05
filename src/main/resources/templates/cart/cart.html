@@ -1,10 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Giỏ hàng của bạn</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!-- Custom CSS (nếu cần) -->
+    <!-- <link rel="stylesheet" th:href="@{/css/style.css}"> -->
 </head>
 <body>
+<!-- Thanh điều hướng (Navbar) -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/}">Cosmetic Shop</a>
+    <!-- Các mục khác trong navbar -->
+</nav>
 
+<div class="container mt-5">
+    <h2 class="mb-4">Giỏ hàng của bạn</h2>
+    <div th:if="${#lists.isEmpty(cartItems)}">
+        <p>Giỏ hàng của bạn đang trống. <a th:href="@{/products}">Tiếp tục mua sắm</a>.</p>
+    </div>
+    <div th:if="${!#lists.isEmpty(cartItems)}">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Tổng cộng</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td>
+                    <div class="media">
+                        <!-- Uncomment and fix the image path if needed -->
+                        <!-- <img th:src="@{/images/{filename}(filename=${item.product.image})}" class="mr-3" alt="..." style="width: 64px; height: 64px;"> -->
+                        <div class="media-body">
+                            <h5 class="mt-0" th:text="${item.product.productName}">Tên sản phẩm</h5>
+                            <p th:text="${item.product.description}">Mô tả sản phẩm</p>
+                        </div>
+                    </div>
+                </td>
+                <td th:text="${item.product.price}">Giá</td>
+                <td>
+                    <form th:action="@{/cart/update}" method="post" class="form-inline">
+                        <input type="hidden" name="cartItemId" th:value="${item.cartItemID}" />
+                        <input type="number" name="quantity" class="form-control" th:value="${item.quantity}" min="1" style="width: 80px;" />
+                        <button type="submit" class="btn btn-sm btn-primary ml-2">Cập nhật</button>
+                    </form>
+                </td>
+                <td th:text="${item.product.price * item.quantity}">Tổng cộng</td>
+                <td>
+                    <form th:action="@{/cart/remove}" method="post">
+                        <input type="hidden" name="cartItemId" th:value="${item.cartItemID}" />
+                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-6">
+                <a th:href="@{/products}" class="btn btn-secondary">Tiếp tục mua sắm</a>
+            </div>
+            <div class="col-md-6 text-right">
+                <h4>Tổng tiền:
+                    <span th:text="${totalAmount}"></span>
+                </h4>
+                <a th:href="@{/checkout}" class="btn btn-success btn-lg">Tiến hành thanh toán</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS và các thư viện phụ thuộc -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+    // Function to calculate total amount
+    function calculateTotalAmount() {
+        let totalAmount = 0;
+
+        // Select all rows with items
+        document.querySelectorAll("tbody tr").forEach(row => {
+            const priceElement = row.querySelector("td:nth-child(2)");
+            const quantityElement = row.querySelector("input[name='quantity']");
+            const totalElement = row.querySelector("td:nth-child(4)");
+
+            // Parse price and quantity values
+            const price = parseFloat(priceElement.textContent.replace(/[^\d.-]/g, '')); // Remove currency symbols
+            const quantity = parseInt(quantityElement.value, 10);
+
+            // Calculate total for the item and add to totalAmount
+            const itemTotal = price * quantity;
+            totalAmount += itemTotal;
+
+            // Display item total in the 'Tổng cộng' cell
+            totalElement.textContent = itemTotal.toLocaleString("vi-VN") + " VND"; // Format as currency
+        });
+
+        // Display the total amount in the Tổng tiền section
+        document.querySelector("h4 span").textContent = totalAmount.toLocaleString("vi-VN") + " VND"; // Format as currency
+    }
+
+    // Attach event listener to quantity inputs to recalculate total on change
+    document.querySelectorAll("input[name='quantity']").forEach(input => {
+        input.addEventListener("input", calculateTotalAmount);
+    });
+
+    // Initial calculation on page load
+    calculateTotalAmount();
+</script>
 </body>
 </html>
