@@ -64,5 +64,30 @@ public class CartService {
     }
 
     // Các phương thức khác như cập nhật số lượng, xóa sản phẩm khỏi giỏ hàng...
+    // Cập nhật số lượng sản phẩm
+    public void updateCartItem(int cartItemId, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem không tồn tại"));
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+    }
+
+
+    // Xóa sản phẩm khỏi giỏ hàng
+    public void removeCartItem(int cartItemId) {
+        cartItemRepository.deleteById(cartItemId);
+    }
+
+
+    // Tính tổng tiền
+    public double calculateTotalAmount(Customer customer) {
+        Cart cart = getCartByCustomer(customer);
+        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+        return cartItems.stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+    }
+
+
 }
 
