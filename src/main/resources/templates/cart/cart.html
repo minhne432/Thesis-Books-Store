@@ -43,14 +43,14 @@
                             </div>
                         </div>
                     </td>
-                    <td th:text="${item.product.price}">Giá</td>
+                    <td class="price" th:text="${item.product.price}">Giá</td>
                     <td>
                         <!-- Use th:field with proper indexing -->
                         <input type="hidden" th:field="*{cartItems[__${iterStat.index}__].cartItemId}" />
                         <input type="number" th:field="*{cartItems[__${iterStat.index}__].quantity}"
-                               class="form-control" min="1" style="width: 80px;" />
+                               class="form-control quantity-input" min="1" style="width: 80px;" />
                     </td>
-                    <td th:text="${item.product.price * item.quantity}">Tổng cộng</td>
+                    <td class="item-total" th:text="${item.product.price * item.quantity}">Tổng cộng</td>
                     <td>
                         <a th:href="@{'/cart/remove/' + ${item.cartItemID}}" class="btn btn-sm btn-danger">Xóa</a>
                     </td>
@@ -69,10 +69,62 @@
                 <h4>Tổng tiền:
                     <span th:text="${totalAmount}"></span>
                 </h4>
-                <a th:href="@{/checkout}" class="btn btn-success btn-lg">Tiến hành thanh toán</a>
+                <!-- Proceed to Checkout Form -->
+                <form th:action="@{/cart/checkout}" method="post" style="display: inline;">
+                    <!-- CSRF Token -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-success btn-lg">Tiến hành thanh toán</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Bootstrap JS và các thư viện phụ thuộc -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Optional: JavaScript for Dynamic Total Calculation -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to format numbers as VND
+        function formatVND(number) {
+            return number.toLocaleString('vi-VN') + ' VND';
+        }
+
+        // Function to calculate the total amount
+        function calculateTotalAmount() {
+            let totalAmount = 0;
+            const rows = document.querySelectorAll("tbody tr");
+
+            rows.forEach(row => {
+                const priceText = row.querySelector(".price").textContent;
+                const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
+                const quantityInput = row.querySelector(".quantity-input");
+                const quantity = parseInt(quantityInput.value) || 0;
+                const itemTotalCell = row.querySelector(".item-total");
+
+                const itemTotal = price * quantity;
+                totalAmount += itemTotal;
+
+                // Update the 'Tổng cộng' cell
+                itemTotalCell.textContent = formatVND(itemTotal);
+            });
+
+            // Update the total amount in the summary
+            const totalAmountElement = document.querySelector("h4 span");
+            totalAmountElement.textContent = formatVND(totalAmount);
+        }
+
+        // Attach event listeners to all quantity inputs
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        quantityInputs.forEach(input => {
+            input.addEventListener("input", calculateTotalAmount);
+        });
+
+        // Initial calculation on page load
+        calculateTotalAmount();
+    });
+</script>
 </body>
+</html>

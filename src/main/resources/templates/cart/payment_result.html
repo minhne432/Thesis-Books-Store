@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kết quả thanh toán</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/}">Cosmetic Shop</a>
+    <!-- Các mục khác trong navbar -->
+</nav>
+
+<div class="container mt-5">
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Kết quả thanh toán</h4>
+        <p th:text="${message}">Thông báo kết quả thanh toán sẽ hiển thị ở đây.</p>
+        <hr>
+        <a th:href="@{/}" class="btn btn-primary">Về trang chủ</a>
+        <a th:href="@{/cart}" class="btn btn-secondary">Xem giỏ hàng</a>
+    </div>
+</div>
+
+<!-- Bootstrap JS và các thư viện phụ thuộc -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
