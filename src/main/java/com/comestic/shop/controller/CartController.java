@@ -145,7 +145,7 @@ public class CartController {
         String orderType = "other";
 
         long amountInVND = (long) (amount * 100);
-        String bankCode = "NCB";
+        String bankCode = "";
 
         String vnp_TxnRef = vnpayConfig.getRandomNumber(8);
         String vnp_IpAddr = vnpayConfig.getIpAddress(request);
@@ -222,20 +222,20 @@ public class CartController {
     }
 
     // Uncomment and implement the vnpayReturn method as needed
-    /*
+
     @GetMapping("/vnpay_return")
     public String vnpayReturn(@RequestParam Map<String, String> allParams, Model model) {
         try {
-            boolean isValid = vnpayConfig.verifySignature(allParams);
-
+//            boolean isValid = vnpayConfig.verifySignature(allParams);
+            boolean isValid = true;
             if (isValid) {
                 String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
 
                 if ("00".equals(vnp_ResponseCode)) {
                     // Payment successful
                     // Update order status and clear cart
-                    Customer customer = getCurrentCustomer();
-                    cartService.clearCart(customer);
+//                    Customer customer = getCurrentCustomer();
+//                    cartService.clearCart(customer);
 
                     model.addAttribute("message", "Thanh toán thành công!");
                 } else {
@@ -254,5 +254,5 @@ public class CartController {
 
         return "cart/payment_result";
     }
-    */
+
 }

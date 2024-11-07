@@ -1,5 +1,7 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.exception.InsufficientInventoryException;
+import com.comestic.shop.exception.InventoryNotFoundException;
 import com.comestic.shop.model.Branch;
 import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
@@ -65,4 +67,22 @@ public class InventoryService {
 
         inventoryRepository.save(inventory);
     }
+
+    public void decreaseInventoryQuantity(Branch branch, Product product, int quantity) throws InsufficientInventoryException {
+        Inventory inventory = inventoryRepository.findByBranchAndProduct(branch, product);
+
+        if (inventory != null) {
+            int newQuantity = inventory.getQuantity() - quantity;
+            if (newQuantity >= 0) {
+                inventory.setQuantity(newQuantity);
+                inventory.setLastUpdatedDate(LocalDate.now());
+                inventoryRepository.save(inventory);
+            } else {
+                throw new InsufficientInventoryException("Không đủ hàng trong kho cho sản phẩm: " + product.getProductName());
+            }
+        } else {
+            throw new InventoryNotFoundException("Không tìm thấy tồn kho cho sản phẩm: " + product.getProductName() + " tại chi nhánh: " + branch.getBranchName());
+        }
+    }
+
 }

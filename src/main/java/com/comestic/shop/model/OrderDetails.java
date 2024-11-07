@@ -27,12 +27,12 @@ public class OrderDetails {
     private Integer quantity;
 
     @Column(name = "UnitPrice", nullable = false, precision = 10, scale = 2)
-    private BigDecimal unitPrice;
+    private double unitPrice;
 
     // Constructors
     public OrderDetails() {}
 
-    public OrderDetails(Order order, Product product, Integer quantity, BigDecimal unitPrice) {
+    public OrderDetails(Order order, Product product, Integer quantity, double unitPrice) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
@@ -72,11 +72,11 @@ public class OrderDetails {
         this.quantity = quantity;
     }
 
-    public BigDecimal getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 

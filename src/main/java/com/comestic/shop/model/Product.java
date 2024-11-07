@@ -6,6 +6,7 @@ import com.comestic.shop.model.Review;
 import com.comestic.shop.model.OrderDetails;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
