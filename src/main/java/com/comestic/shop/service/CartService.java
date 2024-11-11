@@ -10,6 +10,7 @@ import com.comestic.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -84,7 +85,9 @@ public class CartService {
         Cart cart = getCartByCustomer(customer);
         List<CartItem> cartItems = cartItemRepository.findByCart(cart);
         return cartItems.stream()
-                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .mapToDouble(item -> item.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(item.getQuantity())) // Nhân BigDecimal với số lượng
+                        .doubleValue()) // Chuyển đổi kết quả sang kiểu double
                 .sum();
     }
 

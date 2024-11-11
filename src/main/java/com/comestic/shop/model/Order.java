@@ -1,6 +1,8 @@
 package com.comestic.shop.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +17,7 @@ public class Order {
 
     @Temporal(TemporalType.DATE)
     private Date orderDate;
-    private double totalAmount;
+    private BigDecimal totalAmount;
     private String status;
     private String paymentMethod;
 
@@ -63,11 +65,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

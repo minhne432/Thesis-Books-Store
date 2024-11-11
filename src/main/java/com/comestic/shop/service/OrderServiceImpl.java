@@ -1,7 +1,7 @@
 package com.comestic.shop.service;
 
-import com.comestic.shop.dto.OrderDto;
-import com.comestic.shop.dto.OrderItemDto;
+import com.comestic.shop.dto.OrderDTO;
+import com.comestic.shop.dto.OrderItemDTO;
 import com.comestic.shop.exception.InsufficientInventoryException;
 import com.comestic.shop.model.Order;
 import com.comestic.shop.model.OrderDetails;
@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order placeOrder(OrderDto orderDto) throws InsufficientInventoryException {
+    public Order placeOrder(OrderDTO orderDto) throws InsufficientInventoryException {
         // Tạo đối tượng Order
         Order order = new Order();
         order.setOrderDate(new Date());
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Tạo danh sách OrderDetails
         List<OrderDetails> orderDetailsList = new ArrayList<>();
-        for (OrderItemDto itemDto : orderDto.getItems()) {
+        for (OrderItemDTO itemDto : orderDto.getItems()) {
             OrderDetails orderDetails = new OrderDetails();
             Optional<Product> productOpt = productService.getProductById(itemDto.getProductId());
 

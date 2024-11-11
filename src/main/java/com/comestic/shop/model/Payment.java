@@ -81,12 +81,12 @@ public class Payment {
     // Helper methods
     // Helper methods
     public boolean isFullyPaid() {
-        BigDecimal totalAmount = BigDecimal.valueOf(this.order.getTotalAmount());
+        BigDecimal totalAmount = this.order.getTotalAmount();
         return this.amountPaid.compareTo(totalAmount) >= 0;
     }
 
     public BigDecimal getRemainingAmount() {
-        BigDecimal totalAmount = BigDecimal.valueOf(this.order.getTotalAmount());
+        BigDecimal totalAmount = this.order.getTotalAmount();
         return totalAmount.subtract(this.amountPaid);
     }
 

@@ -20,7 +20,7 @@ public class Product {
     private String brand;
     private String category;
     private String description;
-    private double price;
+    private BigDecimal price;
     private int stockQuantity;
 
     // Quan hệ với các entity khác
@@ -62,7 +62,7 @@ public class Product {
         return description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -110,7 +110,7 @@ public class Product {
         this.description = description;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

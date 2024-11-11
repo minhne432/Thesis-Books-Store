@@ -1,6 +1,6 @@
 package com.comestic.shop.dto;
 
-public class OrderItemDto {
+public class OrderItemDTO {
     private Integer productId;
     private Integer quantity;
 

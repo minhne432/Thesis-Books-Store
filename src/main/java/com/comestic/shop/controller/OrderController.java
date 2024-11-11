@@ -1,6 +1,6 @@
 package com.comestic.shop.controller;
 
-import com.comestic.shop.dto.OrderDto;
+import com.comestic.shop.dto.OrderDTO;
 import com.comestic.shop.exception.InsufficientInventoryException;
 import com.comestic.shop.model.Order;
 import com.comestic.shop.service.OrderServiceImpl;
@@ -20,7 +20,7 @@ public class OrderController {
     private OrderServiceImpl orderServiceImple;
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderDto orderDto) throws InsufficientInventoryException {
+    public ResponseEntity<Order> placeOrder(@RequestBody OrderDTO orderDto) throws InsufficientInventoryException {
         Order order = orderServiceImple.placeOrder(orderDto);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
