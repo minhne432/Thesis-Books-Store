@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     // Bạn có thể thêm các phương thức tùy chỉnh nếu cần, ví dụ:
     // List<Order> findByCustomerId(int customerId);
+    Order findByOrderCode(String orderCode);
+
 }

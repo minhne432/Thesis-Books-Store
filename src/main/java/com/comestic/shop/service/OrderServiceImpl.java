@@ -21,55 +21,48 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
     private InventoryService inventoryService;
-    @Autowired
-    private ProductService productService;
-    // Các service khác...
 
-    @Override
     @Transactional
-    public Order placeOrder(OrderDTO orderDto) throws InsufficientInventoryException {
-        // Tạo đối tượng Order
-        Order order = new Order();
-        order.setOrderDate(new Date());
-        order.setCustomer(orderDto.getCustomer());
-        order.setTotalAmount(orderDto.getTotalAmount());
-        order.setStatus("PLACED");
-        order.setPaymentMethod(orderDto.getPaymentMethod());
-        order.setShippingAddress(orderDto.getAddress());
-        order.setBranch(orderDto.getBranch());
-
-        // Tạo danh sách OrderDetails
-        List<OrderDetails> orderDetailsList = new ArrayList<>();
-        for (OrderItemDTO itemDto : orderDto.getItems()) {
-            OrderDetails orderDetails = new OrderDetails();
-            Optional<Product> productOpt = productService.getProductById(itemDto.getProductId());
-
-
-            if(productOpt.isPresent()){
-                Product product = productOpt.get();
-                // Giảm số lượng tồn kho
-                inventoryService.decreaseInventoryQuantity(orderDto.getBranch(), product, itemDto.getQuantity());
-
-                orderDetails.setProduct(product);
-                orderDetails.setQuantity(itemDto.getQuantity());
-                orderDetails.setUnitPrice(product.getPrice());
-                orderDetails.setOrder(order);
-
-                orderDetailsList.add(orderDetails);
-            }
-
+    @Override
+    public Order placeOrder(Order order) throws InsufficientInventoryException {
+        // Chỉ tiến hành nếu đơn hàng đang ở trạng thái "PENDING"
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new RuntimeException("Đơn hàng không ở trạng thái chờ xử lý.");
         }
 
-        order.setOrderDetails(orderDetailsList);
+        // Kiểm tra và cập nhật tồn kho
+        for (OrderDetails orderDetails : order.getOrderDetails()) {
+            Product product = orderDetails.getProduct();
+            int quantity = orderDetails.getQuantity();
+            inventoryService.decreaseInventoryQuantity(order.getBranch(), product, quantity);
+        }
 
-        // Lưu Order (cascading sẽ lưu cả OrderDetails)
-        Order savedOrder = orderRepository.save(order);
+        // Cập nhật trạng thái đơn hàng dựa trên phương thức thanh toán
+        if ("COD".equals(order.getPaymentMethod())) {
+            order.setStatus("NEW");
+        } else if ("VNPAY".equals(order.getPaymentMethod())) {
+            order.setStatus("PAID");
+        }
 
-        // Xử lý thanh toán nếu cần
-        // ...
-
-        return savedOrder;
+        // Lưu đơn hàng
+        return orderRepository.save(order);
     }
+
+
+    @Override
+    public Order saveOrder(Order order) {
+        // Lưu đơn hàng mà không cập nhật tồn kho
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order findByOrderCode(String orderCode) {
+        return orderRepository.findByOrderCode(orderCode);
+    }
+
 }
+
+

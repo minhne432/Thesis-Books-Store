@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt hàng thành công</title>
+    <!-- Thêm các liên kết CSS nếu cần -->
+</head>
+<body>
+<h2>Đặt hàng thành công!</h2>
+<p>Xin cảm ơn bạn đã đặt hàng tại Cosmetic Shop.</p>
+<p>Mã đơn hàng của bạn là: <strong th:text="${order.orderID}">123456</strong></p>
+<p>Phương thức thanh toán: <strong th:text="${order.paymentMethod == 'COD' ? 'Thanh toán khi nhận hàng' : 'Thanh toán qua VNPAY'}"></strong></p>
+<a th:href="@{/}">Quay về trang chủ</a>
+</body>
+</html>

@@ -1,9 +1,7 @@
 package com.comestic.shop.service;
 
-import com.comestic.shop.model.Cart;
-import com.comestic.shop.model.CartItem;
-import com.comestic.shop.model.Customer;
-import com.comestic.shop.model.Product;
+import com.comestic.shop.model.*;
+import com.comestic.shop.repository.BranchDistanceRepository;
 import com.comestic.shop.repository.CartItemRepository;
 import com.comestic.shop.repository.CartRepository;
 import com.comestic.shop.repository.ProductRepository;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +25,9 @@ public class CartService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private BranchDistanceRepository branchDistanceRepository;
 
     // Lấy giỏ hàng của khách hàng
     public Cart getCartByCustomer(Customer customer) {
@@ -89,6 +91,64 @@ public class CartService {
                         .multiply(BigDecimal.valueOf(item.getQuantity())) // Nhân BigDecimal với số lượng
                         .doubleValue()) // Chuyển đổi kết quả sang kiểu double
                 .sum();
+    }
+
+
+    public Order prepareOrder(Customer customer) {
+        Cart cart = getCartByCustomer(customer);
+        List<CartItem> cartItems = getCartItems(customer);
+
+        if (cartItems.isEmpty()) {
+            throw new RuntimeException("Giỏ hàng trống, không thể đặt hàng.");
+        }
+
+// Tạo đối tượng Order
+        Order order = new Order();
+        order.setCustomer(customer);
+        order.setOrderDate(new Date());
+        order.setStatus("NEW");
+        order.setTotalAmount(BigDecimal.valueOf(calculateTotalAmount(customer)));
+
+// Tìm Address từ Customer
+        Optional<CustomerAddress> defaultCustomerAddress = customer.getCustomerAddresses().stream()
+                .filter(CustomerAddress::isDefault)
+                .findFirst();
+
+        if (defaultCustomerAddress.isPresent()) {
+            Address shippingAddress = defaultCustomerAddress.get().getAddress();
+            order.setShippingAddress(shippingAddress);
+            System.out.println("Shipping address set successfully.");
+
+            order.setBranch(branchDistanceRepository.findNearestBranchByWardId(shippingAddress.getWard().getWardID()).getBranch());
+            System.out.println("Branch set successfully.");
+
+        } else {
+            System.err.println("No default shipping address found for the customer.");
+        }
+        // Bạn có thể thiết lập thêm các thuộc tính khác như PaymentMethod, Address, Branch...
+
+
+
+
+        List<OrderDetails> orderDetailsList = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetails.setProduct(cartItem.getProduct());
+            orderDetails.setQuantity(cartItem.getQuantity());
+            orderDetails.setUnitPrice(cartItem.getProduct().getPrice());
+            orderDetails.setOrder(order);
+
+            orderDetailsList.add(orderDetails);
+        }
+
+        order.setOrderDetails(orderDetailsList);
+
+        return order;
+    }
+
+    public void clearCart(Customer customer) {
+        Cart cart = getCartByCustomer(customer);
+        cartItemRepository.deleteAllByCart(cart);
     }
 
 

@@ -70,14 +70,38 @@
                     <span th:text="${totalAmount}"></span>
                 </h4>
                 <!-- Proceed to Checkout Form -->
-                <form th:action="@{/cart/checkout}" method="post" style="display: inline;">
+                <form th:action="@{/cart/placeOrder}" method="post">
                     <!-- CSRF Token -->
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <button type="submit" class="btn btn-success btn-lg">Tiến hành thanh toán</button>
+
+                    <!-- Thêm phần lựa chọn phương thức thanh toán -->
+                    <div class="payment-method">
+                        <h4>Chọn phương thức thanh toán:</h4>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+                            <label class="form-check-label" for="cod">
+                                Thanh toán khi nhận hàng (COD)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPAY">
+                            <label class="form-check-label" for="vnpay">
+                                Thanh toán qua VNPAY
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Nút đặt hàng -->
+                    <div class="text-right mt-3">
+                        <button type="submit" class="btn btn-success btn-lg">Đặt hàng</button>
+                    </div>
                 </form>
+
+
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Bootstrap JS và các thư viện phụ thuộc -->

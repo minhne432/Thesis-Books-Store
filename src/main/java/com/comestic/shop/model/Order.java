@@ -15,6 +15,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderID;
 
+    // Thêm trường orderCode để lưu mã tham chiếu
+    @Column(name = "order_code", unique = true)
+    private String orderCode;
+
     @Temporal(TemporalType.DATE)
     private Date orderDate;
     private BigDecimal totalAmount;
@@ -135,6 +139,15 @@ public class Order {
 
     public void setCouponUsages(List<CouponUsage> couponUsages) {
         this.couponUsages = couponUsages;
+    }
+
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
     }
 
     @Override

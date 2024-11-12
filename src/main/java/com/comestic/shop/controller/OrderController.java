@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderServiceImpl orderServiceImple;
-
-    @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderDTO orderDto) throws InsufficientInventoryException {
-        Order order = orderServiceImple.placeOrder(orderDto);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
-    }
+//    @Autowired
+//    private OrderServiceImpl orderServiceImple;
+//
+//    @PostMapping("/place")
+//    public ResponseEntity<Order> placeOrder(@RequestBody OrderDTO orderDto) throws InsufficientInventoryException {
+//        Order order = orderServiceImple.placeOrder(orderDto);
+//        return new ResponseEntity<>(order, HttpStatus.CREATED);
+//    }
 }

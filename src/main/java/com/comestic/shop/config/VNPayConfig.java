@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -126,4 +127,43 @@ public class VNPayConfig {
     public void setVnp_ApiUrl(String vnp_ApiUrl) {
         this.vnp_ApiUrl = vnp_ApiUrl;
     }
+
+    public boolean verifySignature(Map<String, String> fields) throws UnsupportedEncodingException {
+        String vnp_SecureHash = fields.get("vnp_SecureHash");
+        if (vnp_SecureHash == null) {
+            return false;
+        }
+
+        // Remove vnp_SecureHash parameter
+        fields.remove("vnp_SecureHash");
+        fields.remove("vnp_SecureHashType");
+
+        // Sort parameters
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
+        Collections.sort(fieldNames);
+
+        // Build hash data
+        StringBuilder hashData = new StringBuilder();
+        for (String fieldName : fieldNames) {
+            String fieldValue = fields.get(fieldName);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                hashData.append(fieldName);
+                hashData.append('=');
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
+                hashData.append('&');
+            }
+        }
+
+        // Remove last '&'
+        if (hashData.length() > 0) {
+            hashData.deleteCharAt(hashData.length() - 1);
+        }
+
+        // Compute hash
+        String secureHash = hmacSHA512(getVnp_HashSecret(), hashData.toString());
+
+        // Compare with provided hash
+        return secureHash.equals(vnp_SecureHash);
+    }
+
 }
