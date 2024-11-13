@@ -53,7 +53,7 @@ public class DistanceCalculationService {
 
                 Double distance = calculateDistance(branchLat, branchLon, wardLat, wardLon);
                 if (distance == null) {
-                    continue; // Bỏ qua nếu khoảng cách là null (tức là tọa độ trùng nhau)
+                    distance = 0.0; // Trường hợp tọa độ trùng nhau, tính khoảng cách bằng 0
                 }
 
                 // Tạo đối tượng BranchDistance
@@ -73,9 +73,9 @@ public class DistanceCalculationService {
 
     // Hàm tính khoảng cách theo công thức Haversine
     public static Double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        // Nếu tọa độ trùng nhau, trả về null
+        // Nếu tọa độ trùng nhau, trả về 0 (hoặc có thể trả về một giá trị tùy chọn)
         if (lat1 == lat2 && lon1 == lon2) {
-            return null;
+            return 0.0;  // Khoảng cách bằng 0 khi tọa độ trùng nhau
         }
 
         final int EARTH_RADIUS = 6371; // Bán kính Trái Đất tính bằng km
@@ -91,6 +91,4 @@ public class DistanceCalculationService {
 
         return EARTH_RADIUS * c; // Khoảng cách tính bằng km
     }
-
-
 }

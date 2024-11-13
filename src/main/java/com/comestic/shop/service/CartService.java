@@ -1,10 +1,7 @@
 package com.comestic.shop.service;
 
 import com.comestic.shop.model.*;
-import com.comestic.shop.repository.BranchDistanceRepository;
-import com.comestic.shop.repository.CartItemRepository;
-import com.comestic.shop.repository.CartRepository;
-import com.comestic.shop.repository.ProductRepository;
+import com.comestic.shop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +25,9 @@ public class CartService {
 
     @Autowired
     private BranchDistanceRepository branchDistanceRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
 
     // Lấy giỏ hàng của khách hàng
     public Cart getCartByCustomer(Customer customer) {
@@ -102,14 +102,14 @@ public class CartService {
             throw new RuntimeException("Giỏ hàng trống, không thể đặt hàng.");
         }
 
-// Tạo đối tượng Order
+        // Tạo đối tượng Order
         Order order = new Order();
         order.setCustomer(customer);
         order.setOrderDate(new Date());
         order.setStatus("NEW");
         order.setTotalAmount(BigDecimal.valueOf(calculateTotalAmount(customer)));
 
-// Tìm Address từ Customer
+        // Tìm Address từ Customer
         Optional<CustomerAddress> defaultCustomerAddress = customer.getCustomerAddresses().stream()
                 .filter(CustomerAddress::isDefault)
                 .findFirst();
@@ -119,17 +119,40 @@ public class CartService {
             order.setShippingAddress(shippingAddress);
             System.out.println("Shipping address set successfully.");
 
-            order.setBranch(branchDistanceRepository.findNearestBranchByWardId(shippingAddress.getWard().getWardID()).getBranch());
-            System.out.println("Branch set successfully.");
+            // Lấy danh sách các branch đã được sắp xếp theo khoảng cách
+            List<BranchDistance> branchDistances = branchDistanceRepository.findByWardIdOrderByDistanceAsc(shippingAddress.getWard().getWardID());
 
+            // Duyệt qua các branch đã được sắp xếp theo khoảng cách
+            for (BranchDistance branchDistance : branchDistances) {
+                Branch branch = branchDistance.getBranch();
+                boolean isStockAvailable = true;
+
+                // Kiểm tra xem chi nhánh này có đủ sản phẩm không
+                for (CartItem cartItem : cartItems) {
+                    Inventory inventory = inventoryRepository.findByBranchAndProduct(branch, cartItem.getProduct());
+                    if (inventory == null || inventory.getQuantity() < cartItem.getQuantity()) {
+                        isStockAvailable = false;
+                        break;
+                    }
+                }
+
+                // Nếu chi nhánh này có đủ hàng, chọn nó và gán vào order
+                if (isStockAvailable) {
+                    order.setBranch(branch);
+                    System.out.println("Branch set successfully.");
+                    break; // Thoát khỏi vòng lặp khi tìm thấy chi nhánh phù hợp
+                }
+            }
+
+            // Nếu không tìm thấy chi nhánh nào có đủ hàng, có thể ném exception hoặc thông báo lỗi
+            if (order.getBranch() == null) {
+                throw new RuntimeException("Không có chi nhánh nào có đủ hàng cho đơn đặt hàng.");
+            }
         } else {
             System.err.println("No default shipping address found for the customer.");
         }
-        // Bạn có thể thiết lập thêm các thuộc tính khác như PaymentMethod, Address, Branch...
 
-
-
-
+        // Thiết lập chi tiết đơn hàng
         List<OrderDetails> orderDetailsList = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
             OrderDetails orderDetails = new OrderDetails();
@@ -145,6 +168,7 @@ public class CartService {
 
         return order;
     }
+
 
     public void clearCart(Customer customer) {
         Cart cart = getCartByCustomer(customer);
