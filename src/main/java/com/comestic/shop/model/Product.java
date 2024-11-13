@@ -18,7 +18,11 @@ public class Product {
 
     private String productName;
     private String brand;
-    private String category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryID", nullable = false)
+    private Category category;  // Liên kết với Category entity
+
     private String description;
     private BigDecimal price;
     private int stockQuantity;
@@ -54,9 +58,6 @@ public class Product {
         return brand;
     }
 
-    public String getCategory() {
-        return category;
-    }
 
     public String getDescription() {
         return description;
@@ -102,9 +103,6 @@ public class Product {
         this.brand = brand;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -136,5 +134,13 @@ public class Product {
 
     public void setInventories(Set<Inventory> inventories) {
         this.inventories = inventories;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

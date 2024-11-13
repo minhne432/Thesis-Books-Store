@@ -27,7 +27,15 @@
         <div class="pagination">
             <a th:if="${productPage.hasPrevious()}" th:href="@{/shop/list(page=${productPage.number - 1})}">Previous</a>
             <span>Page <span th:text="${productPage.number + 1}"></span> of <span th:text="${productPage.totalPages}"></span></span>
-            <a th:if="${productPage.hasNext()}" th:href="@{/shop/list(page=${productPage.number + 1})}">Next</a>
+            <ul>
+                <li th:if="${productPage.hasPrevious()}">
+                    <a th:href="@{/products/list(page=${productPage.number - 1})}">Previous</a>
+                </li>
+                <li th:if="${productPage.hasNext()}">
+                    <a th:href="@{/products/list(page=${productPage.number + 1})}">Next</a>
+                </li>
+            </ul>
+
         </div>
         <div class="row">
             <div th:if="${products.size() > 0}" th:each="product : ${products}">

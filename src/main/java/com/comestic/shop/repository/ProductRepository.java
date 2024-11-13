@@ -19,7 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByBrandContainingIgnoreCase(String brand);
 
     // Tìm kiếm theo danh mục
-    List<Product> findByCategoryContainingIgnoreCase(String category);
+    // Thay đổi để tìm theo thuộc tính chuỗi trong Category (ví dụ: categoryName)
+    List<Product> findByCategory_CategoryNameContainingIgnoreCase(String categoryName);
 
     // Tìm kiếm kết hợp (tuỳ chọn)
     @Query("SELECT p FROM Product p WHERE lower(p.productName) LIKE lower(concat('%', :keyword, '%')) OR lower(p.brand) LIKE lower(concat('%', :keyword, '%')) OR lower(p.category) LIKE lower(concat('%', :keyword, '%'))")
