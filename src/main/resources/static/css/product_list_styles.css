@@ -1,0 +1,47 @@
+/* static/css/product_styles.css */
+
+/* Hiệu ứng phóng to hình ảnh khi hover */
+.hover-zoom img {
+    transition: transform 0.3s ease;
+}
+
+.hover-zoom:hover img {
+    transform: scale(1.05);
+}
+
+/* Định dạng hình ảnh sản phẩm */
+.product-image {
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Định dạng nút thêm vào giỏ hàng khi hover */
+.add-to-cart-btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Định dạng phân trang */
+.pagination .page-link {
+    border-radius: 0.25rem;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Tối ưu hóa trên các thiết bị nhỏ */
+@media (max-width: 768px) {
+    .product-image {
+        height: 200px;
+    }
+}
+

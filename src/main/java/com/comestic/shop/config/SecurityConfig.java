@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // thứ tự đặt url trong  nb
                         .requestMatchers("/admin/wards/**").permitAll() // Cho phép truy cập công khai vào /admin/wards/**
-                        .requestMatchers("/products/shop/**").permitAll()
+                        .requestMatchers("/shop/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -42,6 +42,10 @@ public class SecurityConfig {
                         .permitAll()
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
+                )
+
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/access-denied")
                 );
         return http.build();
     }

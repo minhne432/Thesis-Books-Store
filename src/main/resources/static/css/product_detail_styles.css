@@ -1,0 +1,60 @@
+/* static/css/product_detail_styles.css */
+
+/* Hiệu ứng phóng to hình ảnh khi hover */
+.hover-zoom img {
+    transition: transform 0.3s ease;
+}
+
+.hover-zoom:hover img {
+    transform: scale(1.05);
+}
+
+/* Định dạng hình ảnh sản phẩm */
+.product-detail-image {
+    height: 400px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .product-detail-image {
+        height: 300px;
+    }
+}
+
+/* Định dạng nút Thêm vào Giỏ Hàng khi hover */
+.btn-outline-success {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
+/* Định dạng nút Quay lại danh sách khi hover */
+.btn-secondary {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* Định dạng bảng kho hàng */
+.table thead th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* Định dạng tiêu đề trang */
+h2, h3 {
+    font-weight: bold;
+}

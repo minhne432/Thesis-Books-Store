@@ -1,0 +1,70 @@
+<!-- templates/layout/customer_layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:fragment="layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title layout:fragment="title">My Application</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pF5C9KJrN+TQzgzr4SxzNphjW3TfVfsqN6uZjq1s06GDZgYZhIE8OZgQo4Wj1eXgBm3JnM5PqJjE+gTkv+3Nkg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/customer_styles.css}">
+</head>
+<body>
+<!-- Header -->
+  <!-- Header content sẽ được nạp từ customer_header.html -->
+<!-- Header -->
+<div layout:insert="~{layout/fragments/customer_header :: header}"></div>
+
+<!-- Nút Toggle Sidebar (Chỉ hiển thị trên thiết bị nhỏ) -->
+<button class="btn btn-primary d-md-none position-fixed top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+  <i class="fas fa-bars"></i>
+</button>
+
+
+<!-- Main Content -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar for Large Devices -->
+    <nav class="col-md-3 col-lg-2 d-none d-md-block bg-light sidebar">
+      <div class="position-sticky pt-3">
+        <div layout:insert="~{layout/fragments/customer_sidebar :: sidebar}"></div>
+      </div>
+    </nav>
+
+    <!-- Offcanvas Sidebar for Small Devices -->
+    <div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Danh Mục Sản Phẩm</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div layout:insert="~{layout/fragments/customer_sidebar :: sidebar}"></div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div layout:fragment="content">
+        <!-- Nội dung trang sẽ được nạp từ các trang cụ thể -->
+      </div>
+    </main>
+  </div>
+</div>
+<!-- Footer -->
+<footer layout:insert="~{layout/fragments/customer_footer :: footer}" class="bg-dark text-white text-center py-4"></footer>
+
+
+<!-- Bootstrap 5 JS và các phụ thuộc -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Font Awesome JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-uV1IwT7wAvjP4bA0GddX8gGjpIGqfvghK0pTf24Sjrq9qIc/xmYbGEMwJYhVUxIoKd3sBhB0qX0Jb4kXbK6P6w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Custom JS -->
+<script th:src="@{/js/scripts.js}"></script>
+<div layout:fragment="pageScripts"></div>
+</body>
+</html>

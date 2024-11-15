@@ -1,0 +1,54 @@
+<!-- templates/layout/fragments/customer_header.html -->
+<header layout:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" th:href="@{/}">Mỹ Phẩm X</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Nội dung Navbar -->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <!-- Menu Danh Mục -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="danhMucDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Danh Mục
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="danhMucDropdown">
+                            <li><a class="dropdown-item" href="#" th:href="@{/categories/skincare}">Chăm sóc da</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/categories/makeup}">Trang điểm</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/categories/fragrance}">Nước hoa</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/categories/all}">Tất cả sản phẩm</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Giỏ Hàng và Đăng Nhập/Đăng Ký -->
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative" href="#" th:href="@{/cart}">
+                            <i class="fas fa-shopping-cart fa-lg"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" th:text="${cartItemCount}">
+                                0
+                                <span class="visually-hidden">items in cart</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i> Tài khoản
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#" th:href="@{/login}"><i class="fas fa-sign-in-alt me-2"></i> Đăng Nhập</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/register}"><i class="fas fa-user-plus me-2"></i> Đăng Ký</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/profile}"><i class="fas fa-user-circle me-2"></i> Hồ Sơ</a></li>
+                            <li><a class="dropdown-item" href="#" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

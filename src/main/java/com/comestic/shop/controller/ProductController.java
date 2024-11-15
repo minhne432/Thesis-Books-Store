@@ -93,6 +93,8 @@ public class ProductController {
         return "product/product_list";
     }
 
+
+
     @GetMapping("/shop/search")
     public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") int page,

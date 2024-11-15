@@ -1,0 +1,259 @@
+<!-- templates/layout/fragments/customer_sidebar.html -->
+<nav layout:fragment="sidebar">
+    <ul class="nav flex-column">
+        <!-- Danh Mục Sản Phẩm -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#productCategorySubmenu" role="button" aria-expanded="false" aria-controls="productCategorySubmenu">
+                <i class="fas fa-list me-2"></i> Danh Mục
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="productCategorySubmenu">
+                <ul class="nav flex-column ms-3">
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/categories/skincare}">
+                            <i class="fas fa-spa me-2"></i> Chăm sóc da
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/categories/makeup}">
+                            <i class="fas fa-paint-brush me-2"></i> Trang điểm
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/categories/fragrance}">
+                            <i class="fas fa-smile-wink me-2"></i> Nước hoa
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/categories/haircare}">
+                            <i class="fas fa-cut me-2"></i> Chăm sóc tóc
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/categories/sets}">
+                            <i class="fas fa-box-open me-2"></i> Bộ sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@{/categories/all}">
+                            <i class="fas fa-th me-2"></i> Tất cả sản phẩm
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <!-- Thương Hiệu -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#brandSubmenu" role="button" aria-expanded="false" aria-controls="brandSubmenu">
+                <i class="fas fa-copyright me-2"></i> Thương Hiệu
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="brandSubmenu">
+                <ul class="nav flex-column ms-3">
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/brands/nivea}">Nivea</a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/brands/loreal}">L'Oréal</a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/brands/lancome}">Lancôme</a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/brands/esteelauder}">Estee Lauder</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@{/brands/clinique}">Clinique</a>
+                    </li>
+                    <!-- Thêm các thương hiệu khác tại đây -->
+                </ul>
+            </div>
+        </li>
+
+        <!-- Lọc Sản Phẩm -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#filterSubmenu" role="button" aria-expanded="false" aria-controls="filterSubmenu">
+                <i class="fas fa-filter me-2"></i> Lọc Sản Phẩm
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="filterSubmenu">
+                <!-- Giá Cả -->
+                <ul class="nav flex-column ms-3">
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#priceSubmenu" role="button" aria-expanded="false" aria-controls="priceSubmenu">
+                            <i class="fas fa-dollar-sign me-2"></i> Giá Cả
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <div class="collapse" id="priceSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(priceMin=0,priceMax=100000)}">Dưới 100,000 VNĐ</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(priceMin=100000,priceMax=500000)}">100,000 - 500,000 VNĐ</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(priceMin=500000,priceMax=1000000)}">500,000 - 1,000,000 VNĐ</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@{/shop/products/list(priceMin=1000000)}">Trên 1,000,000 VNĐ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Màu Sắc -->
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#colorSubmenu" role="button" aria-expanded="false" aria-controls="colorSubmenu">
+                            <i class="fas fa-palette me-2"></i> Màu Sắc
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <div class="collapse" id="colorSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(color=red)}">Đỏ</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(color=blue)}">Xanh Dương</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(color=green)}">Xanh Lá</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(color=black)}">Đen</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@{/shop/products/list(color=white)}">Trắng</a>
+                                </li>
+                                <!-- Thêm các màu sắc khác tại đây -->
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Loại Sản Phẩm -->
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#typeSubmenu" role="button" aria-expanded="false" aria-controls="typeSubmenu">
+                            <i class="fas fa-tag me-2"></i> Loại Sản Phẩm
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <div class="collapse" id="typeSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(type=liquid)}">Dạng lỏng</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(type=powder)}">Dạng bột</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(type=cream)}">Kem</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(type=oil)}">Dầu</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@{/shop/products/list(type=mask)}">Mặt nạ</a>
+                                </li>
+                                <!-- Thêm các loại sản phẩm khác tại đây -->
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Đánh Giá -->
+                    <li class="nav-item mb-1">
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#ratingSubmenu" role="button" aria-expanded="false" aria-controls="ratingSubmenu">
+                            <i class="fas fa-star-half-alt me-2"></i> Đánh Giá
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <div class="collapse" id="ratingSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(rating=5)}">5 Sao</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(rating=4)}">4 Sao</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(rating=3)}">3 Sao</a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a class="nav-link" href="@{/shop/products/list(rating=2)}">2 Sao</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@{/shop/products/list(rating=1)}">1 Sao</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <!-- Ưu Đãi Đặc Biệt -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="@{/shop/products/special-offers}">
+                <i class="fas fa-tags me-2"></i> Ưu Đãi Đặc Biệt
+            </a>
+        </li>
+
+        <!-- Sản Phẩm Mới -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="@{/shop/products/new-arrivals}">
+                <i class="fas fa-box-open me-2"></i> Sản Phẩm Mới
+            </a>
+        </li>
+
+        <!-- Bán Chạy Nhất -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="@{/shop/products/best-sellers}">
+                <i class="fas fa-fire me-2"></i> Bán Chạy Nhất
+            </a>
+        </li>
+
+        <!-- Wishlist -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="@{/wishlist}">
+                <i class="fas fa-heart me-2"></i> Wishlist
+            </a>
+        </li>
+
+        <!-- Recently Viewed -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="@{/recently-viewed}">
+                <i class="fas fa-eye me-2"></i> Đã Xem Gần Đây
+            </a>
+        </li>
+
+        <!-- Thông Tin Khách Hàng -->
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#customerInfoSubmenu" role="button" aria-expanded="false" aria-controls="customerInfoSubmenu">
+                <i class="fas fa-info-circle me-2"></i> Thông Tin
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="customerInfoSubmenu">
+                <ul class="nav flex-column ms-3">
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/contact}">
+                            <i class="fas fa-envelope me-2"></i> Liên Hệ
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/faq}">
+                            <i class="fas fa-question-circle me-2"></i> FAQ
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="@{/return-policy}">
+                            <i class="fas fa-undo me-2"></i> Chính Sách Đổi Trả
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@{/privacy-policy}">
+                            <i class="fas fa-user-shield me-2"></i> Chính Sách Bảo Mật
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</nav>
