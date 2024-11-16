@@ -5,10 +5,13 @@ import com.comestic.shop.dto.OrderItemDTO;
 import com.comestic.shop.exception.InsufficientInventoryException;
 import com.comestic.shop.model.Order;
 import com.comestic.shop.model.OrderDetails;
+import com.comestic.shop.model.OrderStatus;
 import com.comestic.shop.model.Product;
 import com.comestic.shop.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public Order placeOrder(Order order) throws InsufficientInventoryException {
-        // Chỉ tiến hành nếu đơn hàng đang ở trạng thái "PENDING"
-        if (!"PENDING".equals(order.getStatus())) {
+//         Chỉ tiến hành nếu đơn hàng đang ở trạng thái "PENDING"
+        if ((order.getStatus() != OrderStatus.PENDING)) {
             throw new RuntimeException("Đơn hàng không ở trạng thái chờ xử lý.");
         }
 
@@ -42,9 +45,9 @@ public class OrderServiceImpl implements OrderService {
 
         // Cập nhật trạng thái đơn hàng dựa trên phương thức thanh toán
         if ("COD".equals(order.getPaymentMethod())) {
-            order.setStatus("NEW");
+            order.setStatus(OrderStatus.UNPAID_PENDING);
         } else if ("VNPAY".equals(order.getPaymentMethod())) {
-            order.setStatus("PAID");
+            order.setStatus(OrderStatus.PAID_PENDING);
         }
 
         // Lưu đơn hàng
@@ -62,6 +65,50 @@ public class OrderServiceImpl implements OrderService {
     public Order findByOrderCode(String orderCode) {
         return orderRepository.findByOrderCode(orderCode);
     }
+
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public List<Order> getOrdersByBranchId(Long branchId) {
+        return orderRepository.findByBranch_BranchId(branchId);
+    }
+
+    @Override
+    public Order getOrderById(int orderId) {
+        return orderRepository.findById(orderId).orElse(null);
+    }
+
+    @Override
+    public Order getOrderByOrderCode(String orderCode) {
+        return orderRepository.findByOrderCode(orderCode);
+    }
+
+    @Override
+    public Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Pageable pageable) {
+        if (branchId != null && status != null && orderCode != null && !orderCode.isEmpty()) {
+            return orderRepository.findByBranch_BranchIdAndStatusAndOrderCodeContaining(
+                    branchId, status, orderCode, pageable);
+        } else if (branchId != null && status != null) {
+            return orderRepository.findByBranch_BranchIdAndStatus(branchId, status, pageable);
+        } else if (branchId != null && orderCode != null && !orderCode.isEmpty()) {
+            return orderRepository.findByBranch_BranchIdAndOrderCodeContaining(branchId, orderCode, pageable);
+        } else if (status != null && orderCode != null && !orderCode.isEmpty()) {
+            return orderRepository.findByStatusAndOrderCodeContaining(status, orderCode, pageable);
+        } else if (branchId != null) {
+            return orderRepository.findByBranch_BranchId(branchId, pageable);
+        } else if (status != null) {
+            return orderRepository.findByStatus(status, pageable);
+        } else if (orderCode != null && !orderCode.isEmpty()) {
+            return orderRepository.findByOrderCodeContaining(orderCode, pageable);
+        } else {
+            return orderRepository.findAll(pageable);
+        }
+    }
+
 
 }
 

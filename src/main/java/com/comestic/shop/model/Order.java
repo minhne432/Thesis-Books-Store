@@ -22,7 +22,9 @@ public class Order {
     @Temporal(TemporalType.DATE)
     private Date orderDate;
     private BigDecimal totalAmount;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     private String paymentMethod;
 
     // Khóa ngoại: Customer
@@ -77,11 +79,11 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

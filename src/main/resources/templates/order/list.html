@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Đơn hàng</title>
+</head>
+<body>
+<h1>Danh sách Đơn hàng</h1>
+
+<form method="get" th:action="@{/orders}">
+    <label for="branchId">Lọc theo Chi nhánh:</label>
+    <select name="branchId" id="branchId">
+        <option value="" th:selected="${selectedBranchId == null}">Tất cả Chi nhánh</option>
+        <option th:each="branch : ${branches}"
+                th:value="${branch.branchId}"
+                th:text="${branch.branchName}"
+                th:selected="${selectedBranchId == branch.branchId}">
+        </option>
+    </select>
+
+    <label for="status">Trạng thái:</label>
+    <select name="status" id="status">
+        <option value="" th:selected="${selectedStatus == null}">Tất cả Trạng thái</option>
+        <option th:each="statusItem : ${statuses}"
+                th:value="${statusItem}"
+                th:text="${statusItem}"
+                th:selected="${selectedStatus == statusItem}">
+        </option>
+    </select>
+
+    <label for="orderCode">Mã Đơn hàng:</label>
+    <input type="text" id="orderCode" name="orderCode" th:value="${orderCode}"/>
+
+    <button type="submit">Lọc</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Mã Đơn hàng</th>
+        <th>Ngày đặt</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Phương thức thanh toán</th>
+        <th>Chi nhánh</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderCode}">Mã Đơn hàng</td>
+        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">Ngày đặt</td>
+        <td th:text="${order.totalAmount}">Tổng tiền</td>
+        <td th:text="${order.status}">Trạng thái</td>
+        <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
+        <td th:text="${order.branch.branchName}">Chi nhánh</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Phân trang -->
+<div>
+    <span>Trang [[${orderPage.number + 1}]] trên [[${orderPage.totalPages}]]</span>
+</div>
+<div>
+    <ul>
+        <li th:if="${orderPage.hasPrevious()}">
+            <a th:href="@{/orders(page=${orderPage.number - 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Trang trước</a>
+        </li>
+        <li th:if="${orderPage.hasNext()}">
+            <a th:href="@{/orders(page=${orderPage.number + 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Trang sau</a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

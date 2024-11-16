@@ -7,6 +7,7 @@ import com.comestic.shop.exception.InsufficientInventoryException;
 import com.comestic.shop.model.CartItem;
 import com.comestic.shop.model.Customer;
 import com.comestic.shop.model.Order;
+import com.comestic.shop.model.OrderStatus;
 import com.comestic.shop.service.CartService;
 import com.comestic.shop.service.CustomerService;
 import com.comestic.shop.service.OrderService;
@@ -227,40 +228,7 @@ public class CartController {
         return new RedirectView(paymentUrl);
     }
 
-    // Uncomment and implement the vnpayReturn method as needed
 
-//    @GetMapping("/vnpay_return")
-//    public String vnpayReturn(@RequestParam Map<String, String> allParams, Model model) {
-//        try {
-////            boolean isValid = vnpayConfig.verifySignature(allParams);
-//            boolean isValid = true;
-//            if (isValid) {
-//                String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
-//
-//                if ("00".equals(vnp_ResponseCode)) {
-//                    // Payment successful
-//                    // Update order status and clear cart
-////                    Customer customer = getCurrentCustomer();
-////                    cartService.clearCart(customer);
-//
-//                    model.addAttribute("message", "Thanh toán thành công!");
-//                } else {
-//                    // Payment failed
-//                    model.addAttribute("message", "Thanh toán không thành công. Mã lỗi: " + vnp_ResponseCode);
-//                }
-//            } else {
-//                model.addAttribute("message", "Chữ ký không hợp lệ!");
-//            }
-//        } catch (RuntimeException e) {
-//            // Log the exception
-//            System.err.println("Error verifying VNPay signature: " + e.getMessage());
-//            e.printStackTrace();
-//            model.addAttribute("message", "Đã xảy ra lỗi khi xác thực thanh toán. Vui lòng liên hệ hỗ trợ.");
-//        }
-//
-//        return "cart/payment_result";
-
-//    }
 @GetMapping("/vnpay_return")
 public String vnpayReturn(@RequestParam Map<String, String> allParams, Model model) {
     try {
@@ -307,7 +275,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
                 return "order/success";
             } else {
                 // Payment failed
-                order.setStatus("FAILED");
+                order.setStatus(OrderStatus.UNPAID_CANCELED);
                 orderService.saveOrder(order); // Cập nhật trạng thái đơn hàng
 
                 model.addAttribute("message", "Thanh toán không thành công. Mã lỗi: " + vnp_ResponseCode);
@@ -332,33 +300,6 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
 }
 
 
-
-
-    //    @PostMapping("/placeOrder")
-//    public String placeOrder(Model model) {
-//        Customer customer = getCurrentCustomer();
-//
-//        try {
-//            // Chuẩn bị đơn hàng từ giỏ hàng
-//            Order order = cartService.prepareOrder(customer);
-//
-//            // Đặt hàng
-//            Order savedOrder = orderService.placeOrder(order);
-//
-//            // Xóa giỏ hàng sau khi đặt hàng thành công
-//            cartService.clearCart(customer);
-//
-//            // Thêm thông báo thành công
-//            model.addAttribute("order", savedOrder);
-//            return "order/success";
-//        } catch (InsufficientInventoryException e) {
-//            model.addAttribute("errorMessage", e.getMessage());
-//            return "cart/cart";
-//        } catch (RuntimeException e) {
-//            model.addAttribute("errorMessage", e.getMessage());
-//            return "cart/cart";
-//        }
-//    }
     private String initiateVNPayPayment(Order order, Model model) {
         try {
             // Tính toán số tiền cần thanh toán
@@ -379,7 +320,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             order.setOrderCode(vnp_TxnRef);
 
             // Thiết lập trạng thái đơn hàng là "PENDING"
-            order.setStatus("PENDING");
+            order.setStatus(OrderStatus.PENDING);
 
             // Lưu đơn hàng tạm thời vào cơ sở dữ liệu
             Order savedOrder = orderService.saveOrder(order);

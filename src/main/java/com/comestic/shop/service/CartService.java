@@ -106,7 +106,7 @@ public class CartService {
         Order order = new Order();
         order.setCustomer(customer);
         order.setOrderDate(new Date());
-        order.setStatus("NEW");
+        order.setStatus(OrderStatus.NEW);
         order.setTotalAmount(BigDecimal.valueOf(calculateTotalAmount(customer)));
 
         // Tìm Address từ Customer
