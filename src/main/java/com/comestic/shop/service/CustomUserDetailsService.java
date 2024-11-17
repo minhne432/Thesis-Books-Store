@@ -4,13 +4,11 @@ import com.comestic.shop.model.CustomUserDetails;
 import com.comestic.shop.model.Customer;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,10 +16,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder; // Inject BCryptPasswordEncoder
-
     @Override
+    @Transactional  // Đảm bảo phương thức này nằm trong giao dịch của Hibernate
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Customer> customerOptional = customerRepository.findByUsername(username);
 
@@ -30,12 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Customer customer = customerOptional.get();
-        System.out.println("customer ne: "+customer.getPasswordHash());
-        // The password comparison happens during authentication, Spring handles it.
         return new CustomUserDetails(customer);
     }
-
-
 }
-
-

@@ -27,15 +27,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll() // thứ tự đặt url trong  nb
-                        .requestMatchers("/admin/wards/**").permitAll() // Cho phép truy cập công khai vào /admin/wards/**
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/shop/**").permitAll()
+                        .requestMatchers("/orders/**").authenticated()  // Bảo vệ các URL /orders/**
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
-                        .successHandler(customLoginSuccessHandler) // Use custom success handler
+                        .successHandler(customLoginSuccessHandler)
                         .failureUrl("/login?error=true")
                 )
                 .logout((logout) -> logout
@@ -43,11 +43,9 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                 )
-
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage("/access-denied")
                 );
         return http.build();
     }
-
 }

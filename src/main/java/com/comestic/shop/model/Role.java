@@ -19,7 +19,7 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private Set<UserRole> userRoles;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)  // Đổi từ LAZY sang EAGER
     private Set<RolePermission> rolePermissions;
 
     // Getter và Setter
