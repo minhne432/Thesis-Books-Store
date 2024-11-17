@@ -4,9 +4,10 @@ import com.comestic.shop.model.CustomUserDetails;
 import com.comestic.shop.model.Customer;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,7 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     private CustomerRepository customerRepository;
 
     @Override
-    @Transactional  // Đảm bảo phương thức này nằm trong giao dịch của Hibernate
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Customer> customerOptional = customerRepository.findByUsername(username);
 
