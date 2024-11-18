@@ -1,0 +1,40 @@
+<!-- order/details.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details</title>
+    <!-- Include CSS and other head elements -->
+</head>
+<body>
+<h1>Order Details</h1>
+<div>
+    <p><strong>Order Code:</strong> <span th:text="${order.orderCode}"></span></p>
+    <p><strong>Order Date:</strong> <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></span></p>
+    <p><strong>Total Amount:</strong> <span th:text="${order.totalAmount}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+    <!-- Add more order information as needed -->
+</div>
+
+<h2>Order Items</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Product Name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="detail : ${orderDetails}">
+        <td th:text="${detail.product.productName}">Product Name</td>
+        <td th:text="${detail.unitPrice}">Unit Price</td>
+        <td th:text="${detail.quantity}">Quantity</td>
+        <td th:text="${detail.unitPrice * detail.quantity}">Subtotal</td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/orders/history}">Back to Order History</a>
+</body>
+</html>

@@ -109,6 +109,10 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public Page<Order> getOrdersByCustomerID(int customerID, Pageable pageable) {
+        return orderRepository.findByCustomer_CustomerID(customerID, pageable);
+    }
 
 }
 

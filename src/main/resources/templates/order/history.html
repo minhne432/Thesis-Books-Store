@@ -1,0 +1,44 @@
+<!-- order/history.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Order History</title>
+    <!-- Include CSS and other head elements -->
+</head>
+<body>
+<h1>Your Order History</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Order Code</th>
+        <th>Date</th>
+        <th>Total Amount</th>
+        <th>Status</th>
+        <!-- Add a new column for the action -->
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderCode}">Order Code</td>
+        <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}">Date</td>
+        <td th:text="${order.totalAmount}">Total Amount</td>
+        <td th:text="${order.status}">Status</td>
+        <!-- Action column -->
+        <td>
+            <a th:href="@{/orders/{orderId}/details(orderId=${order.orderID})}" class="btn btn-primary">View Details</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<div>
+    <a th:if="${orderPage.hasPrevious()}"
+       th:href="@{/orders/history(page=${orderPage.number - 1})}">Previous</a>
+    <span>Page <span th:text="${orderPage.number + 1}">1</span> of <span th:text="${orderPage.totalPages}">1</span></span>
+    <a th:if="${orderPage.hasNext()}"
+       th:href="@{/orders/history(page=${orderPage.number + 1})}">Next</a>
+</div>
+</body>
+</html>

@@ -22,7 +22,7 @@ public interface OrderService {
     Order getOrderByOrderCode(String orderCode);
 
     Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Pageable pageable);
-
+    Page<Order> getOrdersByCustomerID(int customerID, Pageable pageable);
 
 }
 

@@ -43,4 +43,8 @@ public class OrderDetailsService {
     public void deleteOrderDetails(Long id) {
         orderDetailsRepository.deleteById(id);
     }
+
+    public List<OrderDetails> getOrderDetailsByOrderID(int orderID) {
+        return orderDetailsRepository.findByOrder_OrderID(orderID);
+    }
 }
