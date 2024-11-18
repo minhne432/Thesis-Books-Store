@@ -59,4 +59,11 @@
         </li>
 
     </ul>
+    <a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        Đăng Xuất
+    </a>
+
+    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
 </nav>

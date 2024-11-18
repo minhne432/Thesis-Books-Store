@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/shop/**").permitAll()
-                        .requestMatchers("/orders/**").authenticated()  // Bảo vệ các URL /orders/**
+                        .requestMatchers("/admin/wards/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
