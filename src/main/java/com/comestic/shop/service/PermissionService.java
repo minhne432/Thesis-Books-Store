@@ -1,6 +1,10 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.model.Customer;
 import com.comestic.shop.model.Permission;
+import com.comestic.shop.model.Role;
+import com.comestic.shop.model.UserRole;
+import com.comestic.shop.repository.CustomerRepository;
 import com.comestic.shop.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -8,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,16 +24,40 @@ public class PermissionService {
     @Autowired
     private PermissionRepository permissionRepository;
 
+    @Autowired
+    CustomerRepository customerRepository;
+
 
     // Phương thức lấy danh sách permissions của người dùng
     public Set<String> getUserPermissions() {
         // Lấy đối tượng Authentication của người dùng hiện tại
+        // Lấy đối tượng Authentication của người dùng hiện tại
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-        // Trả về một Set chứa tất cả các quyền (permissions)
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
+        // Tìm user trong cơ sở dữ liệu theo username
+        Customer customer = customerRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Lấy tất cả UserRole của người dùng
+        Set<UserRole> userRoles = customer.getUserRoles();
+
+        // Duyệt qua các UserRole để lấy tất cả permissions liên quan đến roles của người dùng
+        Set<String> permissions = new HashSet<>();
+
+        for (UserRole userRole : userRoles) {
+            Role role = userRole.getRole();  // Lấy role từ UserRole
+
+            // Lấy tất cả các RolePermission của role này và thêm permission vào Set
+            role.getRolePermissions().forEach(rolePermission -> {
+                String permissionName = rolePermission.getPermission().getPermissionName();
+                permissions.add(permissionName);
+            });
+        }
+
+        // Trả về Set chứa tất cả các quyền của người dùng
+        return permissions;
+
     }
 
     // Phương thức kiểm tra quyền của người dùng cho một branchId cụ thể

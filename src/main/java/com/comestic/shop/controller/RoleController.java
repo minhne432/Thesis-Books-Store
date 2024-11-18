@@ -6,6 +6,7 @@ import com.comestic.shop.model.RolePermission;
 import com.comestic.shop.service.PermissionService;
 import com.comestic.shop.service.RolePermissionService;
 import com.comestic.shop.service.RoleService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -123,9 +124,6 @@ public class RoleController {
                 rolePermissionService.addRolePermission(rolePermission);
             }
         }
-        // Sau khi cập nhật permissions, xóa context để yêu cầu người dùng đăng nhập lại
-        SecurityContextHolder.clearContext();
-
         return "redirect:/roles";
     }
 }
