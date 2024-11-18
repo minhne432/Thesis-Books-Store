@@ -11,71 +11,128 @@
 <body>
 <div layout:fragment="content" class="mt-5 pt-4">
     <div class="container">
-        <!-- Form Tìm Kiếm -->
-        <div class="row mb-4">
-            <div class="col-md-8 offset-md-2">
-                <form class="input-group" th:action="@{/shop/products/search}" method="get">
-                    <input class="form-control" type="search" name="keyword" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" th:value="${keyword}">
-                    <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Danh sách sản phẩm -->
         <div class="row">
-            <div class="col-md-4 mb-4" th:each="product : ${products}">
-                <div class="card h-100 shadow-sm hover-zoom">
-                    <a th:href="@{'/products/' + ${product.productID}}" class="text-decoration-none">
-<!--                        <img th:src="@{${product.imageUrl} ?: 'https://via.placeholder.com/400x300'}" class="card-img-top product-image" alt="Hình ảnh sản phẩm">-->
-                        <img src="https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-chong-nang-martiderm-pho-rong-toan-dien-spf50-40ml-1717484548_img_385x385_622873_fit_center.jpg" class="card-img-top product-image" alt="Hình ảnh sản phẩm">
-
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" th:text="${product.productName}"></h5>
-                        <p class="card-text mb-1">Thương hiệu: <span th:text="${product.brand}"></span></p>
-                        <p class="card-text mb-3 text-danger fw-bold" th:text="${product.price} + ' VNĐ'"></p>
-                        <div class="mt-auto">
-                            <a th:href="@{'/shop/products/' + ${product.productID}}" class="btn btn-primary w-100 mb-2">
-                                <i class="fas fa-info-circle me-2"></i> Xem chi tiết
+            <!-- Sidebar -->
+            <aside class="col-md-3">
+                <nav class="sidebar">
+                    <ul class="nav flex-column">
+                        <!-- Danh Mục Sản Phẩm -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#productCategorySubmenu" role="button" aria-expanded="false" aria-controls="productCategorySubmenu">
+                                <i class="fas fa-list"></i> Danh Mục
+                                <i class="fas fa-chevron-down ms-auto"></i>
                             </a>
-                            <button class="btn btn-outline-success w-100 add-to-cart-btn" th:attr="data-product-id=${product.productID}">
-                                <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ
-                            </button>
+                            <div class="collapse" id="productCategorySubmenu">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/skincare}"><i class="fas fa-spa"></i> Chăm sóc da</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/makeup}"><i class="fas fa-paint-brush"></i> Trang điểm</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/fragrance}"><i class="fas fa-smile-wink"></i> Nước hoa</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/haircare}"><i class="fas fa-cut"></i> Chăm sóc tóc</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/sets}"><i class="fas fa-box-open"></i> Bộ sản phẩm</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/categories/all}"><i class="fas fa-th"></i> Tất cả sản phẩm</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- Thương Hiệu -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#brandSubmenu" role="button" aria-expanded="false" aria-controls="brandSubmenu">
+                                <i class="fas fa-copyright"></i> Thương Hiệu
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="brandSubmenu">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item"><a class="nav-link" href="@{/brands/nivea}">Nivea</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/brands/loreal}">L'Oréal</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/brands/lancome}">Lancôme</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/brands/esteelauder}">Estée Lauder</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/brands/clinique}">Clinique</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- Lọc Sản Phẩm -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#filterSubmenu" role="button" aria-expanded="false" aria-controls="filterSubmenu">
+                                <i class="fas fa-filter"></i> Lọc Sản Phẩm
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <div class="collapse" id="filterSubmenu">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=0,priceMax=100000)}">Dưới 100,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=100000,priceMax=500000)}">100,000 - 500,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=500000,priceMax=1000000)}">500,000 - 1,000,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=1000000)}">Trên 1,000,000 VNĐ</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="col-md-9">
+                <!-- Form Tìm Kiếm -->
+                <div class="row mb-4">
+                    <div class="col-md-8 offset-md-2">
+                        <form class="input-group" th:action="@{/shop/products/search}" method="get">
+                            <input class="form-control" type="search" name="keyword" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" th:value="${keyword}">
+                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Danh sách sản phẩm -->
+                <div class="row">
+                    <div class="col-md-4 mb-4" th:each="product : ${products}">
+                        <div class="card h-100 shadow-sm hover-zoom">
+                            <a th:href="@{'/shop/products/' + ${product.productID}}" class="text-decoration-none">
+                                <img src="https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-chong-nang-martiderm-pho-rong-toan-dien-spf50-40ml-1717484548_img_385x385_622873_fit_center.jpg" class="card-img-top product-image" alt="Hình ảnh sản phẩm">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${product.productName}"></h5>
+                                <p class="card-text mb-1">Thương hiệu: <span th:text="${product.brand}"></span></p>
+                                <p class="card-text mb-3 text-danger fw-bold" th:text="${product.price} + ' VNĐ'"></p>
+                                <div class="mt-auto">
+                                    <a th:href="@{'/shop/products/' + ${product.productID}}" class="btn btn-primary w-100 mb-2">
+                                        <i class="fas fa-info-circle me-2"></i> Xem chi tiết
+                                    </a>
+                                    <button class="btn btn-outline-success w-100 add-to-cart-btn" th:attr="data-product-id=${product.productID}">
+                                        <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nếu không có sản phẩm -->
+                    <div class="col-12" th:if="${products.size() == 0}">
+                        <div class="alert alert-warning text-center" role="alert">
+                            Không tìm thấy sản phẩm nào.
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Nếu không có sản phẩm -->
-            <div class="col-12" th:if="${products.size() == 0}">
-                <div class="alert alert-warning text-center" role="alert">
-                    Không tìm thấy sản phẩm nào.
-                </div>
+
+                <!-- Phân trang -->
+                <nav aria-label="Page navigation" th:if="${productPage.totalPages > 1}">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${productPage.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link" th:href="@{/shop/products/list(page=${productPage.number - 1})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Trước</span>
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Trang <span th:text="${productPage.number + 1}"></span> của <span th:text="${productPage.totalPages}"></span></a>
+                        </li>
+                        <li class="page-item" th:classappend="${productPage.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link" th:href="@{/shop/products/list(page=${productPage.number + 1})}" aria-label="Next">
+                                <span aria-hidden="true">Sau &raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
-
-        <!-- Phân trang -->
-        <nav aria-label="Page navigation" th:if="${productPage.totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Button -->
-                <li class="page-item" th:classappend="${productPage.hasPrevious()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/shop/products/list(page=${productPage.number - 1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo; Trước</span>
-                    </a>
-                </li>
-
-                <!-- Current Page Indicator -->
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Trang <span th:text="${productPage.number + 1}"></span> của <span th:text="${productPage.totalPages}"></span></a>
-                </li>
-
-                <!-- Next Button -->
-                <li class="page-item" th:classappend="${productPage.hasNext()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/shop/products/list(page=${productPage.number + 1})}" aria-label="Next">
-                        <span aria-hidden="true">Sau &raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </div>
 </body>

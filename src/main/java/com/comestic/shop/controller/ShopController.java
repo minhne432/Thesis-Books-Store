@@ -38,7 +38,7 @@ public class ShopController {
     public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") int page,
                                  Model model) {
-        int pageSize = 10;
+        int pageSize = 9;
         Page<Product> productPage;
         if (keyword == null || keyword.trim().isEmpty()) {
             productPage = productService.getProductsByPage(page, pageSize); // Sử dụng phân trang cho tất cả sản phẩm

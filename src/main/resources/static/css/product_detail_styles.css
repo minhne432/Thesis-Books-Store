@@ -1,60 +1,136 @@
-/* static/css/product_detail_styles.css */
+/* product_detail_styles.css */
 
-/* Hiệu ứng phóng to hình ảnh khi hover */
-.hover-zoom img {
-    transition: transform 0.3s ease;
+/* General Styles */
+body {
+    background-color: #f9f9f9;
 }
 
-.hover-zoom:hover img {
-    transform: scale(1.05);
+/* Product Image */
+.product-detail-image-container {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* Tỷ lệ khung hình 4:3 */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f8f9fa; /* Màu nền nếu hình ảnh chưa tải */
 }
 
-/* Định dạng hình ảnh sản phẩm */
 .product-detail-image {
-    height: 400px;
-    object-fit: cover;
-    border-radius: 0.25rem;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Giữ tỷ lệ ảnh, cắt phần dư nếu cần */
+    display: block;
 }
 
-@media (max-width: 768px) {
-    .product-detail-image {
-        height: 300px;
-    }
+/* Product Details Section */
+.product-details h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
 }
 
-/* Định dạng nút Thêm vào Giỏ Hàng khi hover */
-.btn-outline-success {
-    transition: background-color 0.3s, color 0.3s;
+.product-details h4 {
+    font-size: 1.5rem;
+    color: #28a745;
+    font-weight: bold;
 }
 
-.btn-outline-success:hover {
+.product-details p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.product-details .form-control {
+    border-radius: 6px;
+}
+
+.product-details .btn {
+    font-size: 1rem;
+    border-radius: 6px;
+    padding: 10px 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.product-details .btn-outline-success:hover {
     background-color: #28a745;
     color: #fff;
     border-color: #28a745;
 }
 
-/* Định dạng nút Quay lại danh sách khi hover */
-.btn-secondary {
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.btn-secondary:hover {
+.product-details .btn-secondary:hover {
     background-color: #6c757d;
     color: #fff;
+    border-color: #6c757d;
 }
 
-/* Định dạng bảng kho hàng */
-.table thead th {
+/* Inventory Details */
+.inventory-details {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 500px; /* Độ rộng của bảng tồn kho */
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 300px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Cho phép cuộn khi danh sách dài */
+    display: none; /* Ẩn mặc định */
+    z-index: 1000;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+/* Hiển thị khi hover vào .check-stock */
+.check-stock {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.check-stock:hover .inventory-details {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Optional: Smoother Appearance */
+.check-stock:hover .inventory-details {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Inventory Details Heading */
+.inventory-details h5 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Table Styles */
+.inventory-details table th, .inventory-details table td {
     vertical-align: middle;
     text-align: center;
 }
 
-.table tbody td {
-    vertical-align: middle;
-    text-align: center;
+.inventory-details table th {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 1rem;
 }
 
-/* Định dạng tiêu đề trang */
-h2, h3 {
-    font-weight: bold;
+.inventory-details table tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+
+.inventory-details table tbody tr:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+/* Tooltip Styles (Optional) */
+.check-stock .tooltip-inner {
+    background-color: #28a745;
+    color: #fff;
+    font-size: 0.9rem;
 }
