@@ -40,15 +40,29 @@
                             <i class="fas fa-user"></i> Tài khoản
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <!-- Đăng Nhập -->
                             <li><a class="dropdown-item" href="#" th:href="@{/login}"><i class="fas fa-sign-in-alt me-2"></i> Đăng Nhập</a></li>
+                            <!-- Đăng Ký -->
                             <li><a class="dropdown-item" href="#" th:href="@{/register}"><i class="fas fa-user-plus me-2"></i> Đăng Ký</a></li>
                             <li><hr class="dropdown-divider"></li>
+                            <!-- Hồ Sơ -->
                             <li><a class="dropdown-item" href="#" th:href="@{/profile}"><i class="fas fa-user-circle me-2"></i> Hồ Sơ</a></li>
-                            <li><a class="dropdown-item" href="#" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất</a></li>
+                            <!-- Đăng Xuất -->
+                            <li>
+                                <a class="dropdown-item" href="#"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <!-- Form đăng xuất ẩn -->
+    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
 </header>
