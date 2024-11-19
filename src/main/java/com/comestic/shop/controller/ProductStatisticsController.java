@@ -1,7 +1,12 @@
 package com.comestic.shop.controller;
 
+import com.comestic.shop.dto.BranchRevenueDTO;
+import com.comestic.shop.dto.CategorySalesDTO;
 import com.comestic.shop.dto.ProductSalesDTO;
 import com.comestic.shop.dto.ProductSalesDateDTO;
+import com.comestic.shop.model.OrderStatus;
+import com.comestic.shop.service.OrderDetailsService;
+import com.comestic.shop.service.OrderService;
 import com.comestic.shop.service.ProductStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +27,12 @@ public class ProductStatisticsController {
 
     @Autowired
     private ProductStatisticsService productStatisticsService;
+
+    @Autowired
+    private OrderDetailsService orderDetailsService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/best-selling-products")
     public String getBestSellingProducts(
@@ -146,6 +158,97 @@ public class ProductStatisticsController {
         return "rgba(" + r + ", " + g + ", " + b + ", 0.6)";
     }
 
+
+
+    @GetMapping("/category-sales")
+    public String categorySales(
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            Model model) {
+
+        List<CategorySalesDTO> categorySales;
+
+        if (startDate != null && endDate != null) {
+            // Kiểm tra nếu startDate sau endDate
+            if (startDate.after(endDate)) {
+                model.addAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+                return "statistics/category-sales";
+            }
+            categorySales = orderDetailsService.getCategorySalesBetweenDates(startDate, endDate);
+        } else {
+            categorySales = orderDetailsService.getCategorySales();
+        }
+
+        // Chuẩn bị danh sách tên danh mục và số lượng
+        List<String> categoryNames = categorySales.stream()
+                .map(CategorySalesDTO::getCategoryName)
+                .collect(Collectors.toList());
+
+        List<Long> quantities = categorySales.stream()
+                .map(CategorySalesDTO::getTotalQuantity)
+                .collect(Collectors.toList());
+
+        // Tạo mảng màu
+        List<String> colors = generateRandomColors(categoryNames.size());
+
+        model.addAttribute("categoryNames", categoryNames);
+        model.addAttribute("quantities", quantities);
+        model.addAttribute("colors", colors);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
+        return "statistics/category-sales";
+    }
+
+    private List<String> generateRandomColors(int count) {
+        List<String> colors = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < count; i++) {
+            int r = random.nextInt(256);
+            int g = random.nextInt(256);
+            int b = random.nextInt(256);
+            colors.add("rgba(" + r + ", " + g + ", " + b + ", 0.6)");
+        }
+        return colors;
+    }
+
+    @GetMapping("/branch-revenue")
+    public String branchRevenue(
+            @RequestParam(value = "status", required = false, defaultValue = "DELIVERED") OrderStatus status,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            Model model) {
+
+        List<BranchRevenueDTO> branchRevenues;
+
+        if (startDate != null && endDate != null) {
+            // Kiểm tra nếu startDate sau endDate
+            if (startDate.after(endDate)) {
+                model.addAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+                return "statistics/branch-revenue";
+            }
+            branchRevenues = orderService.getBranchRevenueByStatusAndDates(status, startDate, endDate);
+        } else {
+            branchRevenues = orderService.getBranchRevenueByStatus(status);
+        }
+
+        // Chuẩn bị danh sách tên chi nhánh và doanh thu
+        List<String> branchNames = branchRevenues.stream()
+                .map(BranchRevenueDTO::getBranchName)
+                .collect(Collectors.toList());
+
+        List<BigDecimal> revenues = branchRevenues.stream()
+                .map(BranchRevenueDTO::getTotalRevenue)
+                .collect(Collectors.toList());
+
+        model.addAttribute("branchNames", branchNames);
+        model.addAttribute("revenues", revenues);
+        model.addAttribute("status", status);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
+        return "statistics/branch-revenue";
+    }
 
 
 }

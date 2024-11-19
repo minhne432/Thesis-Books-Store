@@ -1,5 +1,6 @@
 package com.comestic.shop.repository;
 
+import com.comestic.shop.dto.BranchRevenueDTO;
 import com.comestic.shop.model.Order;
 import com.comestic.shop.model.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -44,4 +46,22 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByCustomer_CustomerID(int customerID, Pageable pageable);
 
 
+    //
+    @Query("SELECT new com.comestic.shop.dto.BranchRevenueDTO(o.branch.branchName, SUM(o.totalAmount)) "
+            + "FROM Order o "
+            + "WHERE o.status = :status "
+            + "GROUP BY o.branch.branchName "
+            + "ORDER BY SUM(o.totalAmount) DESC")
+    List<BranchRevenueDTO> findBranchRevenueByStatus(@Param("status") OrderStatus status);
+
+
+    // Thêm phương thức mới
+    @Query("SELECT new com.comestic.shop.dto.BranchRevenueDTO(o.branch.branchName, SUM(o.totalAmount)) "
+            + "FROM Order o "
+            + "WHERE o.status = :status AND o.orderDate BETWEEN :startDate AND :endDate "
+            + "GROUP BY o.branch.branchName "
+            + "ORDER BY SUM(o.totalAmount) DESC")
+    List<BranchRevenueDTO> findBranchRevenueByStatusAndDates(@Param("status") OrderStatus status,
+                                                             @Param("startDate") Date startDate,
+                                                             @Param("endDate") Date endDate);
 }

@@ -1,5 +1,5 @@
 package com.comestic.shop.service;
-
+import com.comestic.shop.dto.BranchRevenueDTO;
 import com.comestic.shop.dto.OrderDTO;
 import com.comestic.shop.dto.OrderItemDTO;
 import com.comestic.shop.exception.InsufficientInventoryException;
@@ -139,6 +139,15 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return order;
+    }
+
+    public List<BranchRevenueDTO> getBranchRevenueByStatus(OrderStatus status) {
+        return orderRepository.findBranchRevenueByStatus(status);
+    }
+
+    @Override
+    public List<BranchRevenueDTO> getBranchRevenueByStatusAndDates(OrderStatus status, Date startDate, Date endDate) {
+        return orderRepository.findBranchRevenueByStatusAndDates(status, startDate, endDate);
     }
 }
 

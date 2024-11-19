@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Thống kê doanh thu theo chi nhánh</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px; /* Giới hạn chiều rộng tối đa của biểu đồ */
+            height: 500px; /* Đặt chiều cao cho biểu đồ */
+            margin: 0 auto; /* Căn giữa biểu đồ */
+        }
+
+        #branchRevenueChart {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="text-center">Thống kê doanh thu theo chi nhánh</h1>
+
+    <!-- Form chọn trạng thái và khoảng thời gian -->
+    <form method="get" action="/statistics/branch-revenue" class="text-center mb-4">
+        <div class="form-group">
+            <label for="status">Trạng thái đơn hàng:</label>
+            <select id="status" name="status" class="form-control d-inline-block w-auto mx-2">
+                <option th:each="statusOption : ${T(com.comestic.shop.model.OrderStatus).values()}"
+                        th:value="${statusOption}"
+                        th:text="${statusOption}"
+                        th:selected="${statusOption == status}">
+                </option>
+            </select>
+
+            <label for="startDate">Ngày bắt đầu:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control d-inline-block w-auto mx-2"
+                   th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+
+            <label for="endDate">Ngày kết thúc:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control d-inline-block w-auto mx-2"
+                   th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Xem thống kê</button>
+    </form>
+
+    <!-- Kiểm tra lỗi -->
+    <div th:if="${error}" class="text-center">
+        <p th:text="${error}" class="text-danger"></p>
+    </div>
+
+    <!-- Hiển thị biểu đồ -->
+    <div class="chart-container mt-4">
+        <canvas id="branchRevenueChart"></canvas>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var branchNames = /*[[${branchNames}]]*/ [];
+        var revenues = /*[[${revenues}]]*/ [];
+
+        // Kiểm tra dữ liệu trong console
+        console.log("branchNames:", branchNames);
+        console.log("revenues:", revenues);
+
+        var ctx = document.getElementById('branchRevenueChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: branchNames,
+                datasets: [{
+                    label: 'Doanh thu (VND)',
+                    data: revenues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, /* Để biểu đồ tự co giãn */
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value.toLocaleString('vi-VN');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Thống kê doanh thu theo chi nhánh'
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

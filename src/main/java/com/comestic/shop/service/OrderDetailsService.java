@@ -1,10 +1,12 @@
 package com.comestic.shop.service;
 
+import com.comestic.shop.dto.CategorySalesDTO;
 import com.comestic.shop.model.OrderDetails;
 import com.comestic.shop.repository.OrderDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,4 +49,17 @@ public class OrderDetailsService {
     public List<OrderDetails> getOrderDetailsByOrderID(int orderID) {
         return orderDetailsRepository.findByOrder_OrderID(orderID);
     }
+
+
+
+    public List<CategorySalesDTO> getCategorySales() {
+        return orderDetailsRepository.findCategorySales();
+    }
+
+
+    public List<CategorySalesDTO> getCategorySalesBetweenDates(Date startDate, Date endDate) {
+        return orderDetailsRepository.findCategorySalesBetweenDates(startDate, endDate);
+    }
+
+
 }

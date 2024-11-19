@@ -1,5 +1,6 @@
 package com.comestic.shop.repository;
 
+import com.comestic.shop.dto.CategorySalesDTO;
 import com.comestic.shop.dto.ProductSalesDTO;
 import com.comestic.shop.dto.ProductSalesDateDTO;
 import com.comestic.shop.model.OrderDetails;
@@ -53,6 +54,22 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long
             + "GROUP BY DATE(o.orderDate), od.product.productName "
             + "ORDER BY DATE(o.orderDate), SUM(od.quantity) DESC")
     List<ProductSalesDateDTO> findProductSalesByDates(@Param("dates") List<Date> dates);
+
+
+    //thong ke danh muc ban duoc
+    @Query("SELECT new com.comestic.shop.dto.CategorySalesDTO(od.product.category.categoryName, SUM(od.quantity)) "
+            + "FROM OrderDetails od "
+            + "GROUP BY od.product.category.categoryName "
+            + "ORDER BY SUM(od.quantity) DESC")
+    List<CategorySalesDTO> findCategorySales();
+
+    @Query("SELECT new com.comestic.shop.dto.CategorySalesDTO(od.product.category.categoryName, SUM(od.quantity)) "
+            + "FROM OrderDetails od "
+            + "WHERE od.order.orderDate BETWEEN :startDate AND :endDate "
+            + "GROUP BY od.product.category.categoryName "
+            + "ORDER BY SUM(od.quantity) DESC")
+    List<CategorySalesDTO> findCategorySalesBetweenDates(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 
 
 }

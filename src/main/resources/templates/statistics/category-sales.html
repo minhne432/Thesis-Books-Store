@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thống kê số lượng bán theo danh mục</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>Thống kê số lượng bán theo danh mục</h1>
+
+<!-- Form chọn khoảng thời gian -->
+<form method="get" action="/statistics/category-sales">
+    <label for="startDate">Ngày bắt đầu:</label>
+    <input type="date" id="startDate" name="startDate" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+
+    <label for="endDate">Ngày kết thúc:</label>
+    <input type="date" id="endDate" name="endDate" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+
+    <button type="submit">Xem thống kê</button>
+</form>
+
+<!-- Kiểm tra lỗi -->
+<div th:if="${error}">
+    <p th:text="${error}" style="color:red;"></p>
+</div>
+
+<!-- Hiển thị biểu đồ -->
+<canvas id="categorySalesChart"></canvas>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var categoryNames = /*[[${categoryNames}]]*/;
+    var quantities = /*[[${quantities}]]*/;
+    var colors = /*[[${colors}]]*/;
+
+    // Kiểm tra dữ liệu trong console
+    console.log("categoryNames:", categoryNames);
+    console.log("quantities:", quantities);
+    console.log("colors:", colors);
+
+    var ctx = document.getElementById('categorySalesChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categoryNames,
+            datasets: [{
+                label: 'Số lượng bán',
+                data: quantities,
+                backgroundColor: colors,
+                borderColor: colors.map(color => color.replace('0.6', '1')), // Thay đổi độ trong suốt cho viền
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Thống kê số lượng bán theo danh mục'
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+
+</body>
+</html>
