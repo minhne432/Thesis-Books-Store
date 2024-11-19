@@ -1,72 +1,102 @@
-<nav id="sidebar" class="bg-light" layout:fragment="sidebar">
-    <div class="sidebar-header">
-        <h4>Admin Dashboard</h4>
-        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-            ADMIn section
-        </div>
+<nav id="sidebar" class="bg-light border-right vh-100" layout:fragment="sidebar">
+    <div class="sidebar-header p-3 bg-primary text-white">
+        <h4 class="mb-0">Admin Dashboard</h4>
+<!--        <small th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')}'}">Admin Section</small>-->
     </div>
-    <ul class="list-unstyled components">
-        <li>
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
-                <li><a th:href="@{/dashboard ?: '#'}">Dashboard</a></li>
-                <li><a th:href="@{/overview ?: '#'}">Overview</a></li>
-                <li><a th:href="@{/statistics ?: '#'}">Statistics</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Products</a>
-            <ul class="collapse list-unstyled" id="productSubmenu">
-                <li><a th:href="@{/products/list}">Product List</a></li>
-                <li><a th:href="@{/products/add}">Add Product</a></li>
-            </ul>
-        </li>
-        <li><a th:href="@{/orders}">Orders</a></li>
-        <li>
-            <a href="#branchSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Branches</a>
-            <ul class="collapse list-unstyled" id="branchSubmenu">
-                <li><a th:href="@{/branches}">Branch List</a></li>
-                <li><a th:href="@{/branches/create}">Add Branch</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#supplierOrderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Supplier Orders</a>
-            <ul class="collapse list-unstyled" id="supplierOrderSubmenu">
-                <li><a th:href="@{/purchase-orders}">Order List</a></li>
-                <li><a th:href="@{/purchase-orders/add}">Create Order</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#adminRegionsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Administrative Regions</a>
-            <ul class="collapse list-unstyled" id="adminRegionsSubmenu">
-                <li><a th:href="@{/admin/provinces}">Provinces Administration</a></li>
-                <li><a th:href="@{/admin/districts}">Districts Administration</a></li>
-                <li><a th:href="@{/admin/wards}">Wards Administration</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
-            <ul class="collapse list-unstyled" id="userSubmenu">
-                <li><a th:href="@{/users/list ?: '#'}">User List</a></li>
-                <li><a th:href="@{/users/add ?: '#'}">Add User</a></li>
-            </ul>
-        </li>
-        <li><a th:href="@{/settings ?: '#'}">Settings</a></li>
-        <li>
-            <a href="#accessControlSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Access Control</a>
-            <ul class="collapse list-unstyled" id="accessControlSubmenu">
-                <li><a th:href="@{/roles}">Manage Roles</a></li>
-                <li><a th:href="@{/permissions}">Manage Permissions</a></li>
-                <li><a th:href="@{/admin/customers}">Assign Roles to Users</a></li>
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <a href="#homeSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-home me-2"></i> Home
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="homeSubmenu">
+                <li><a th:href="@{/dashboard}" class="d-block py-1">Dashboard</a></li>
+                <li><a th:href="@{/overview}" class="d-block py-1">Overview</a></li>
+                <li><a th:href="@{/statistics}" class="d-block py-1">Statistics</a></li>
             </ul>
         </li>
 
+        <li class="list-group-item">
+            <a href="#productSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-box-open me-2"></i> Products
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="productSubmenu">
+                <li><a th:href="@{/products/list}" class="d-block py-1">Product List</a></li>
+                <li><a th:href="@{/products/add}" class="d-block py-1">Add Product</a></li>
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <a th:href="@{/orders}" class="d-flex align-items-center">
+                <i class="fas fa-shopping-cart me-2"></i> Orders
+            </a>
+        </li>
+
+        <li class="list-group-item">
+            <a href="#branchSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-map-marker-alt me-2"></i> Branches
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="branchSubmenu">
+                <li><a th:href="@{/branches}" class="d-block py-1">Branch List</a></li>
+                <li><a th:href="@{/branches/create}" class="d-block py-1">Add Branch</a></li>
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <a href="#supplierOrderSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-truck me-2"></i> Supplier Orders
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="supplierOrderSubmenu">
+                <li><a th:href="@{/purchase-orders}" class="d-block py-1">Order List</a></li>
+                <li><a th:href="@{/purchase-orders/add}" class="d-block py-1">Create Order</a></li>
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <a href="#adminRegionsSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-map me-2"></i> Administrative Regions
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="adminRegionsSubmenu">
+                <li><a th:href="@{/admin/provinces}" class="d-block py-1">Provinces</a></li>
+                <li><a th:href="@{/admin/districts}" class="d-block py-1">Districts</a></li>
+                <li><a th:href="@{/admin/wards}" class="d-block py-1">Wards</a></li>
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <a href="#userSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-users me-2"></i> Users
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="userSubmenu">
+                <li><a th:href="@{/users/list}" class="d-block py-1">User List</a></li>
+                <li><a th:href="@{/users/add}" class="d-block py-1">Add User</a></li>
+            </ul>
+        </li>
+
+        <li class="list-group-item">
+            <a th:href="@{/settings}" class="d-flex align-items-center">
+                <i class="fas fa-cogs me-2"></i> Settings
+            </a>
+        </li>
+
+        <li class="list-group-item">
+            <a href="#accessControlSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fas fa-shield-alt me-2"></i> Access Control
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="accessControlSubmenu">
+                <li><a th:href="@{/roles}" class="d-block py-1">Manage Roles</a></li>
+                <li><a th:href="@{/permissions}" class="d-block py-1">Manage Permissions</a></li>
+                <li><a th:href="@{/admin/customers}" class="d-block py-1">Assign Roles</a></li>
+            </ul>
+        </li>
     </ul>
-    <a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        Đăng Xuất
-    </a>
 
-    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-    </form>
+    <div class="text-center mt-3">
+        <a th:href="@{/logout}" class="btn btn-danger w-75" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất
+        </a>
+        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
+    </div>
 </nav>

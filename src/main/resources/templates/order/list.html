@@ -1,82 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Danh sách Đơn hàng</title>
+    <title layout:fragment="title">Danh sách Đơn hàng</title>
 </head>
 <body>
-<h1>Danh sách Đơn hàng</h1>
+<div layout:fragment="content" class="mt-5">
+    <div class="container">
+        <h1 class="text-center mb-4">Danh sách Đơn hàng</h1>
 
-<form method="get" th:action="@{/orders}">
-    <label for="branchId">Lọc theo Chi nhánh:</label>
-    <select name="branchId" id="branchId">
-        <option value="" th:selected="${selectedBranchId == null}">Tất cả Chi nhánh</option>
-        <option th:each="branch : ${branches}"
-                th:value="${branch.branchId}"
-                th:text="${branch.branchName}"
-                th:selected="${selectedBranchId == branch.branchId}">
-        </option>
-    </select>
+        <!-- Form lọc -->
+        <form method="get" th:action="@{/orders}" class="mb-4 row g-3 align-items-center">
+            <div class="col-md-4">
+                <label for="branchId" class="form-label">Lọc theo Chi nhánh:</label>
+                <select name="branchId" id="branchId" class="form-select">
+                    <option value="" th:selected="${selectedBranchId == null}">Tất cả Chi nhánh</option>
+                    <option th:each="branch : ${branches}"
+                            th:value="${branch.branchId}"
+                            th:text="${branch.branchName}"
+                            th:selected="${selectedBranchId == branch.branchId}">
+                    </option>
+                </select>
+            </div>
 
-    <label for="status">Trạng thái:</label>
-    <select name="status" id="status">
-        <option value="" th:selected="${selectedStatus == null}">Tất cả Trạng thái</option>
-        <option th:each="statusItem : ${statuses}"
-                th:value="${statusItem}"
-                th:text="${statusItem}"
-                th:selected="${selectedStatus == statusItem}">
-        </option>
-    </select>
+            <div class="col-md-4">
+                <label for="status" class="form-label">Trạng thái:</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="" th:selected="${selectedStatus == null}">Tất cả Trạng thái</option>
+                    <option th:each="statusItem : ${statuses}"
+                            th:value="${statusItem}"
+                            th:text="${statusItem}"
+                            th:selected="${selectedStatus == statusItem}">
+                    </option>
+                </select>
+            </div>
 
-    <label for="orderCode">Mã Đơn hàng:</label>
-    <input type="text" id="orderCode" name="orderCode" th:value="${orderCode}"/>
+            <div class="col-md-4">
+                <label for="orderCode" class="form-label">Mã Đơn hàng:</label>
+                <input type="text" id="orderCode" name="orderCode" class="form-control" th:value="${orderCode}" />
+            </div>
 
-    <button type="submit">Lọc</button>
-</form>
+            <div class="col-md-12 text-end">
+                <button type="submit" class="btn btn-primary">Lọc</button>
+            </div>
+        </form>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Mã Đơn hàng</th>
-        <th>Ngày đặt</th>
-        <th>Tổng tiền</th>
-        <th>Trạng thái</th>
-        <th>Phương thức thanh toán</th>
-        <th>Chi nhánh</th>
-        <!-- New column for actions -->
-        <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.orderCode}">Mã Đơn hàng</td>
-        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">Ngày đặt</td>
-        <td th:text="${order.totalAmount}">Tổng tiền</td>
-        <td th:text="${order.status}">Trạng thái</td>
-        <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
-        <td th:text="${order.branch.branchName}">Chi nhánh</td>
-        <!-- Action buttons -->
-        <td>
-            <a th:href="@{/orders/{orderId}/details(orderId=${order.orderID})}" class="btn btn-primary">Xem chi tiết</a>
-            <a th:href="@{/orders/{orderId}/edit(orderId=${order.orderID})}" class="btn btn-secondary">Cập nhật trạng thái</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        <!-- Bảng danh sách đơn hàng -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Mã Đơn hàng</th>
+                    <th scope="col">Ngày đặt</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Phương thức thanh toán</th>
+                    <th scope="col">Chi nhánh</th>
+                    <th scope="col">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderCode}">Mã Đơn hàng</td>
+                    <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">Ngày đặt</td>
+                    <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 3, 'COMMA')} + ' VNĐ'">Tổng tiền</td>
+                    <td th:text="${order.status}">Trạng thái</td>
+                    <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
+                    <td th:text="${order.branch.branchName}">Chi nhánh</td>
+                    <td>
+                        <a th:href="@{/orders/{orderId}/details(orderId=${order.orderID})}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-info-circle me-1"></i> Chi tiết
+                        </a>
+                        <a th:href="@{/orders/{orderId}/edit(orderId=${order.orderID})}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i> Cập nhật
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-<!-- Phân trang -->
-<div>
-    <span>Trang [[${orderPage.number + 1}]] trên [[${orderPage.totalPages}]]</span>
+        <!-- Phân trang -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <span>Trang <span th:text="${orderPage.number + 1}"></span> trên <span th:text="${orderPage.totalPages}"></span></span>
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item" th:if="${orderPage.hasPrevious()}">
+                        <a class="page-link" th:href="@{/orders(page=${orderPage.number - 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Trước</a>
+                    </li>
+                    <li class="page-item" th:if="${orderPage.hasNext()}">
+                        <a class="page-link" th:href="@{/orders(page=${orderPage.number + 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-<div>
-    <ul>
-        <li th:if="${orderPage.hasPrevious()}">
-            <a th:href="@{/orders(page=${orderPage.number - 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Trang trước</a>
-        </li>
-        <li th:if="${orderPage.hasNext()}">
-            <a th:href="@{/orders(page=${orderPage.number + 1}, branchId=${selectedBranchId}, status=${selectedStatus}, orderCode=${orderCode})}">Trang sau</a>
-        </li>
-    </ul>
-</div>
-
 </body>
 </html>
