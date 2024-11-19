@@ -1,6 +1,9 @@
 <nav id="sidebar" class="bg-light" layout:fragment="sidebar">
     <div class="sidebar-header">
         <h4>Admin Dashboard</h4>
+        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            ADMIn section
+        </div>
     </div>
     <ul class="list-unstyled components">
         <li>

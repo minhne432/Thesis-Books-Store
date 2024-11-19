@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:fragment="layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:fragment="title">My Application</title>
 
     <!-- Bootstrap CSS CDN -->
@@ -12,42 +11,61 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
 </head>
 <body>
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
 
-<!-- Sidebar -->
-<div layout:insert="~{layout/fragments/sidebar :: sidebar}"></div>
 
-<!-- Main Content -->
-<div class="main-content">
+        <div layout:insert="~{layout/fragments/sidebar :: sidebar}" class="list-group list-group-flush">
+            <!-- Sidebar content sẽ được chèn ở đây -->
+        </div>
 
-    <!-- Header -->
-<!--    <div layout:insert="~{layout/fragments/header :: header}"></div>-->
+    <!-- /#sidebar-wrapper -->
 
-    <!-- Content -->
-    <div layout:fragment="content">
-        <!-- Nội dung mặc định -->
-        <p>This is default content.</p>
+    <!-- Page Content -->
+    <div id="page-content-wrapper" style="width: 100%;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <!-- Bạn có thể thêm thêm các thành phần navbar ở đây nếu cần -->
+        </nav>
+
+        <div class="container-fluid mt-4">
+            <div layout:fragment="content">
+                <!-- Nội dung mặc định -->
+                <p>This is default content.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container">
+                <div layout:insert="~{layout/fragments/footer :: footer}"></div>
+            </div>
+        </footer>
     </div>
-
-    <!-- Footer -->
-    <div layout:insert="~{layout/fragments/footer :: footer}"></div>
-
+    <!-- /#page-content-wrapper -->
 </div>
+<!-- /#wrapper -->
 
 <!-- Scripts -->
-<!-- Bootstrap JS and dependencies (Optional) -->
-<!-- jQuery (full version) -->
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Popper.js (required for Bootstrap tooltips and popovers) -->
+<!-- Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<!-- Custom JS -->
 <script th:src="@{/js/customer_sidebar.js}" defer></script>
 <!-- Page-specific scripts -->
 <div layout:fragment="pageScripts"></div>
 
+<!-- Toggle Sidebar Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
 </body>
 </html>
