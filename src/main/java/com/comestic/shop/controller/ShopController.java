@@ -51,7 +51,7 @@ public class ShopController {
         return "shop/product_list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("details/{id}")
     public String viewProductDetails(@PathVariable("id") int id, Model model) {
         Optional<Product> optionalProduct = productService.getProductById(id);
         if(optionalProduct.isPresent()) {
