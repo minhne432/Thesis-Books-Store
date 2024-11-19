@@ -1,154 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/customer_layout}">
 <head>
-    <title>Giỏ hàng của bạn</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <title layout:fragment="title">Giỏ hàng của bạn</title>
+    <link rel="stylesheet" th:href="@{/css/cart_styles.css}">
 </head>
 <body>
-<!-- Thanh điều hướng (Navbar) -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" th:href="@{/}">Cosmetic Shop</a>
-    <!-- Các mục khác trong navbar -->
-</nav>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Giỏ hàng của bạn</h2>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Giỏ hàng của bạn</h2>
-    <div th:if="${#lists.isEmpty(cartItems)}">
-        <p>Giỏ hàng của bạn đang trống. <a th:href="@{/products}">Tiếp tục mua sắm</a>.</p>
-    </div>
-    <div th:if="${!#lists.isEmpty(cartItems)}">
-        <!-- Bind the form to cartUpdateForm -->
-        <form th:action="@{/cart/update}" method="post" th:object="${cartUpdateForm}">
-            <!-- CSRF Token -->
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <!-- Giỏ hàng trống -->
+        <div th:if="${#lists.isEmpty(cartItems)}" class="text-center">
+            <p>Giỏ hàng của bạn đang trống. <a th:href="@{/products/shop/list}" class="btn btn-primary">Tiếp tục mua sắm</a></p>
+        </div>
 
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Tổng cộng</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="item, iterStat : ${cartItems}">
-                    <td>
-                        <div class="media">
-                            <div class="media-body">
-                                <h5 class="mt-0" th:text="${item.product.productName}">Tên sản phẩm</h5>
-                                <p th:text="${item.product.description}">Mô tả sản phẩm</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="price" th:text="${item.product.price}">Giá</td>
-                    <td>
-                        <!-- Use th:field with proper indexing -->
-                        <input type="hidden" th:field="*{cartItems[__${iterStat.index}__].cartItemId}" />
-                        <input type="number" th:field="*{cartItems[__${iterStat.index}__].quantity}"
-                               class="form-control quantity-input" min="1" style="width: 80px;" />
-                    </td>
-                    <td class="item-total" th:text="${item.product.price * item.quantity}">Tổng cộng</td>
-                    <td>
-                        <a th:href="@{'/cart/remove/' + ${item.cartItemID}}" class="btn btn-sm btn-danger">Xóa</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary">Cập nhật giỏ hàng</button>
-            </div>
-        </form>
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <a th:href="@{/products}" class="btn btn-secondary">Tiếp tục mua sắm</a>
-            </div>
-            <div class="col-md-6 text-right">
-                <h4>Tổng tiền:
-                    <span th:text="${totalAmount}"></span>
-                </h4>
-                <!-- Proceed to Checkout Form -->
-                <form th:action="@{/cart/placeOrder}" method="post">
-                    <!-- CSRF Token -->
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <!-- Giỏ hàng có sản phẩm -->
+        <div th:if="${!#lists.isEmpty(cartItems)}">
+            <!-- Form cập nhật giỏ hàng -->
+            <form th:action="@{/cart/update}" method="post" th:object="${cartUpdateForm}">
+                <!-- CSRF Token -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                    <!-- Thêm phần lựa chọn phương thức thanh toán -->
-                    <div class="payment-method">
-                        <h4>Chọn phương thức thanh toán:</h4>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
-                            <label class="form-check-label" for="cod">
-                                Thanh toán khi nhận hàng (COD)
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPAY">
-                            <label class="form-check-label" for="vnpay">
-                                Thanh toán qua VNPAY
-                            </label>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Tổng cộng</th>
+                            <th scope="col">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, iterStat : ${cartItems}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <!-- Nếu có hình ảnh sản phẩm, bạn có thể thêm thẻ img ở đây -->
+                                    <!-- <img th:src="@{'/images/' + ${item.product.imageFilename}}" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px;"> -->
+                                    <div>
+                                        <h5 th:text="${item.product.productName}">Tên sản phẩm</h5>
+                                        <p th:text="${item.product.description}" class="mb-0 text-muted">Mô tả sản phẩm</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="price text-end" th:text="|VNĐ ${#numbers.formatDecimal(item.product.price, 0, 0)}|">Giá</td>
+                            <td class="text-center">
+                                <!-- Hidden field để gửi cartItemId -->
+                                <input type="hidden" th:field="*{cartItems[__${iterStat.index}__].cartItemId}" />
+                                <input type="number" th:field="*{cartItems[__${iterStat.index}__].quantity}"
+                                       class="form-control quantity-input" min="1" style="width: 80px; margin: 0 auto;" />
+                            </td>
+
+                            <!-- Sửa biểu thức 'Tổng cộng' -->
+                            <td class="item-total text-end" th:text="|VNĐ ${#numbers.formatDecimal(item.product.price * item.quantity, 0, 0)}|">Tổng cộng</td>
+
+                            <td class="text-center">
+                                <a th:href="@{'/cart/remove/' + ${item.cartItemID}}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt me-1"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Commented out "Cập nhật giỏ hàng" button -->
+                <!--
+                <div class="text-end mb-4">
+                    <button type="submit" class="btn btn-primary">Cập nhật giỏ hàng</button>
+                </div>
+                -->
+            </form>
+
+            <!-- Phần tổng tiền và phương thức thanh toán -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <a th:href="@{/products/shop/list}" class="btn btn-secondary">
+                        <i class="fas fa-shopping-bag me-2"></i> Tiếp tục mua sắm
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Tổng tiền:</h4>
+                            <!-- Sửa biểu thức 'Tổng tiền' và thêm span để JavaScript có thể chọn -->
+                            <h3 class="card-text text-end">
+                                <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmount, 0, 0)}|">VNĐ 0</span>
+                            </h3>
+
+                            <!-- Form đặt hàng -->
+                            <form th:action="@{/cart/placeOrder}" method="post">
+                                <!-- CSRF Token -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                <!-- Phần lựa chọn phương thức thanh toán -->
+                                <div class="payment-method mb-3">
+                                    <h5>Chọn phương thức thanh toán:</h5>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+                                        <label class="form-check-label" for="cod">
+                                            Thanh toán khi nhận hàng (COD)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPAY">
+                                        <label class="form-check-label" for="vnpay">
+                                            Thanh toán qua VNPAY
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Nút đặt hàng -->
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-check-circle me-2"></i> Đặt hàng
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-
-                    <!-- Nút đặt hàng -->
-                    <div class="text-right mt-3">
-                        <button type="submit" class="btn btn-success btn-lg">Đặt hàng</button>
-                    </div>
-                </form>
-
-
+                </div>
             </div>
         </div>
     </div>
 
-</div>
+    <!-- JavaScript để tính tổng tiền -->
+    <div layout:fragment="pageScripts">
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Function to format numbers as VND
+                function formatVND(number) {
+                    return number.toLocaleString('vi-VN') + ' VNĐ';
+                }
 
-<!-- Bootstrap JS và các thư viện phụ thuộc -->
-<script th:src="@{/js/jquery.min.js}"></script>
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+                // Function to calculate the total amount
+                function calculateTotalAmount() {
+                    let totalAmount = 0;
+                    const rows = document.querySelectorAll("tbody tr");
 
-<!-- Optional: JavaScript for Dynamic Total Calculation -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Function to format numbers as VND
-        function formatVND(number) {
-            return number.toLocaleString('vi-VN') + ' VND';
-        }
+                    rows.forEach(row => {
+                        const priceText = row.querySelector(".price").textContent;
+                        const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
+                        const quantityInput = row.querySelector(".quantity-input");
+                        const quantity = parseInt(quantityInput.value) || 0;
+                        const itemTotalCell = row.querySelector(".item-total");
 
-        // Function to calculate the total amount
-        function calculateTotalAmount() {
-            let totalAmount = 0;
-            const rows = document.querySelectorAll("tbody tr");
+                        const itemTotal = price * quantity;
+                        totalAmount += itemTotal;
 
-            rows.forEach(row => {
-                const priceText = row.querySelector(".price").textContent;
-                const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
-                const quantityInput = row.querySelector(".quantity-input");
-                const quantity = parseInt(quantityInput.value) || 0;
-                const itemTotalCell = row.querySelector(".item-total");
+                        // Update the 'Tổng cộng' cell
+                        itemTotalCell.textContent = formatVND(itemTotal);
+                    });
 
-                const itemTotal = price * quantity;
-                totalAmount += itemTotal;
+                    // Update the total amount in the summary
+                    const totalAmountElement = document.querySelector("h3.card-text span");
+                    if(totalAmountElement) {
+                        totalAmountElement.textContent = formatVND(totalAmount);
+                    }
+                }
 
-                // Update the 'Tổng cộng' cell
-                itemTotalCell.textContent = formatVND(itemTotal);
+                // Attach event listeners to all quantity inputs
+                const quantityInputs = document.querySelectorAll(".quantity-input");
+                quantityInputs.forEach(input => {
+                    input.addEventListener("input", calculateTotalAmount);
+                });
+
+                // Initial calculation on page load
+                calculateTotalAmount();
             });
-
-            // Update the total amount in the summary
-            const totalAmountElement = document.querySelector("h4 span");
-            totalAmountElement.textContent = formatVND(totalAmount);
-        }
-
-        // Attach event listeners to all quantity inputs
-        const quantityInputs = document.querySelectorAll(".quantity-input");
-        quantityInputs.forEach(input => {
-            input.addEventListener("input", calculateTotalAmount);
-        });
-
-        // Initial calculation on page load
-        calculateTotalAmount();
-    });
-</script>
+        </script>
+    </div>
 </body>
 </html>

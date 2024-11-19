@@ -1,14 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/customer_layout}">
 <head>
-    <title>Đặt hàng thành công</title>
-    <!-- Thêm các liên kết CSS nếu cần -->
+    <title layout:fragment="title">Đặt hàng thành công</title>
 </head>
 <body>
-<h2>Đặt hàng thành công!</h2>
-<p>Xin cảm ơn bạn đã đặt hàng tại Cosmetic Shop.</p>
-<p>Mã đơn hàng của bạn là: <strong th:text="${order.orderID}">123456</strong></p>
-<p>Phương thức thanh toán: <strong th:text="${order.paymentMethod == 'COD' ? 'Thanh toán khi nhận hàng' : 'Thanh toán qua VNPAY'}"></strong></p>
-<a th:href="@{/}">Quay về trang chủ</a>
+<div layout:fragment="content" class="text-center mt-5">
+    <h2 class="mb-4 text-success">Đặt hàng thành công!</h2>
+    <p>Xin cảm ơn bạn đã đặt hàng tại <strong>Cosmetic Shop</strong>.</p>
+    <p>Mã đơn hàng của bạn là: <strong th:text="${order.orderCode}">123456</strong></p>
+    <p>Phương thức thanh toán:
+        <strong th:text="${order.paymentMethod == 'COD' ? 'Thanh toán khi nhận hàng' : 'Thanh toán qua VNPAY'}">
+            Thanh toán
+        </strong>
+    </p>
+    <p>Tổng tiền:
+        <strong th:text="|VNĐ ${#numbers.formatDecimal(order.totalAmount, 0, 0)}|">0 VNĐ</strong>
+    </p>
+    <a th:href="@{'/orders/' + ${order.orderID} + '/OrderDetails'}" class="btn btn-info mt-3">
+        <i class="fas fa-info-circle me-2"></i> Xem chi tiết đơn hàng
+    </a>
+    <a th:href="@{/}" class="btn btn-primary mt-3">
+        <i class="fas fa-home me-2"></i> Quay về trang chủ
+    </a>
+</div>
 </body>
 </html>

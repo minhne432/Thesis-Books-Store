@@ -86,7 +86,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-4" th:each="product : ${products}">
                         <div class="card h-100 shadow-sm hover-zoom">
-                            <a th:href="@{'/shop/products/' + ${product.productID}}" class="text-decoration-none">
+                            <a th:href="@{'/shop/products/details/' + ${product.productID}}" class="text-decoration-none">
                                 <img th:src="@{'/images/' + ${product.imageFilename}}" class="card-img-top product-image" alt="Hình ảnh sản phẩm">
                             </a>
                             <div class="card-body d-flex flex-column">

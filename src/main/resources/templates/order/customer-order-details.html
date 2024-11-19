@@ -1,40 +1,66 @@
-<!-- order/details.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/customer_layout}">
 <head>
-    <title>Order Details</title>
-    <!-- Include CSS and other head elements -->
+    <title layout:fragment="title">Chi tiết đơn hàng</title>
 </head>
 <body>
-<h1>Order Details</h1>
-<div>
-    <p><strong>Order Code:</strong> <span th:text="${order.orderCode}"></span></p>
-    <p><strong>Order Date:</strong> <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></span></p>
-    <p><strong>Total Amount:</strong> <span th:text="${order.totalAmount}"></span></p>
-    <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
-    <!-- Add more order information as needed -->
+<div layout:fragment="content" class="mt-5">
+    <div class="container">
+        <h1 class="text-center mb-4">Chi tiết đơn hàng</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p><strong>Mã đơn hàng:</strong> <span th:text="${order.orderCode}"></span></p>
+                <p><strong>Ngày đặt hàng:</strong> <span th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></span></p>
+                <p><strong>Tổng tiền:</strong>
+                    <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 3, 'COMMA')} + ' VNĐ'"></span>
+                </p>
+                <p><strong>Trạng thái:</strong> <span th:text="${order.status}"></span></p>
+            </div>
+        </div>
+
+        <h2 class="mb-3">Danh sách sản phẩm</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Đơn giá</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Thành tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="detail : ${orderDetails}">
+                    <td th:text="${detail.product.productName}">Tên sản phẩm</td>
+                    <td class="currency" th:text="${detail.unitPrice}">Đơn giá</td>
+                    <td th:text="${detail.quantity}">Số lượng</td>
+                    <td class="currency" th:text="${detail.unitPrice * detail.quantity}">Thành tiền</td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/orders/history}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Quay lại lịch sử đơn hàng
+            </a>
+        </div>
+    </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.currency').forEach(el => {
+            let value = parseFloat(el.textContent.replace(/[^0-9.-]+/g, '')); // Chỉ giữ lại số
+            if (!isNaN(value)) {
+                el.textContent = value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace('₫', ' VNĐ');
+            }
+        });
+    });
+</script>
 
-<h2>Order Items</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Product Name</th>
-        <th>Unit Price</th>
-        <th>Quantity</th>
-        <th>Subtotal</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="detail : ${orderDetails}">
-        <td th:text="${detail.product.productName}">Product Name</td>
-        <td th:text="${detail.unitPrice}">Unit Price</td>
-        <td th:text="${detail.quantity}">Quantity</td>
-        <td th:text="${detail.unitPrice * detail.quantity}">Subtotal</td>
-    </tr>
-    </tbody>
-</table>
 
-<a th:href="@{/orders/history}">Back to Order History</a>
 </body>
 </html>
