@@ -1,14 +1,21 @@
 package com.comestic.shop.controller;
 
+import com.comestic.shop.model.Category;
 import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
+import com.comestic.shop.service.CategoryService;
 import com.comestic.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +26,14 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    // Directory to save uploaded images
+//    private static String UPLOAD_DIR = System.getProperty("user.dir") + "/product-images";
+    private static String UPLOAD_DIR = "src/main/resources/static/images";
+
+
     // Hiển thị danh sách sản phẩm
     @GetMapping
     public String listProducts(Model model) {
@@ -27,19 +42,61 @@ public class ProductController {
     }
 
     // Hiển thị form thêm sản phẩm mới
+// Thêm phương thức trong ProductController để cung cấp danh sách categories
     @GetMapping("/add")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
+        List<Category> categories = categoryService.getAllCategories(); // Giả sử bạn có CategoryService
+        model.addAttribute("categories", categories);
         return "product/add";
     }
-
     // Xử lý thêm sản phẩm mới
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute("product") Product product) {
-        productService.addProduct(product);
-        return "redirect:/products/list";
+    public String addProduct(@ModelAttribute("product") Product product,
+                             @RequestParam("imageFile") MultipartFile imageFile,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            // Save the image to the file system
+            String imageFilename = saveImage(imageFile);
+
+            // Set the image filename in the product
+            product.setImageFilename(imageFilename);
+
+            // Nếu category là đối tượng, bạn cần lấy đối tượng Category từ database
+            Category category = categoryService.getCategoryById(product.getCategory().getCategoryID());
+            product.setCategory(category);
+
+            // Save the product
+            productService.addProduct(product);
+
+            redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được thêm thành công!");
+            return "redirect:/products/list";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Có lỗi xảy ra khi thêm sản phẩm.");
+            return "redirect:/products/add";
+        }
     }
 
+
+    private String saveImage(MultipartFile imageFile) throws Exception {
+        // Create the directory if it doesn't exist
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Generate a unique filename to prevent conflicts
+        String originalFilename = imageFile.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String uniqueFilename = System.currentTimeMillis() + fileExtension;
+
+        // Save the file
+        Path filePath = uploadPath.resolve(uniqueFilename);
+        Files.copy(imageFile.getInputStream(), filePath);
+
+        return uniqueFilename;
+    }
     // Hiển thị form chỉnh sửa sản phẩm
     @GetMapping("/edit/{id}")
     public String showEditProductForm(@PathVariable("id") int id, Model model) {

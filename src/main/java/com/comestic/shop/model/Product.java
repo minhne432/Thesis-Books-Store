@@ -27,6 +27,9 @@ public class Product {
     private BigDecimal price;
     private int stockQuantity;
 
+    // New field to store image filename
+    private String imageFilename;
+
     // Quan hệ với các entity khác
     @OneToMany(mappedBy = "product")
     private Set<OrderDetails> orderDetails;
@@ -142,5 +145,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getImageFilename() {
+        return imageFilename;
+    }
+
+    public void setImageFilename(String imageFilename) {
+        this.imageFilename = imageFilename;
     }
 }
