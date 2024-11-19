@@ -3,6 +3,8 @@ package com.comestic.shop.repository;
 import com.comestic.shop.model.Order;
 import com.comestic.shop.model.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,5 +42,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findAll(Pageable pageable);
 
     Page<Order> findByCustomer_CustomerID(int customerID, Pageable pageable);
+
 
 }

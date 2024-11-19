@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">So sánh sản phẩm bán chạy</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Thêm CSS tùy chỉnh nếu cần -->
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px; /* Điều chỉnh chiều cao biểu đồ */
+            width: 100%;
+            max-width: 800px; /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto; /* Căn giữa theo chiều ngang */
+        }
+
+        /* Điều chỉnh canvas để đảm bảo nó co giãn theo container */
+        #compareBestSellingProductsChart {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="text-center">So sánh sản phẩm bán chạy</h1>
+
+    <!-- Form chọn loại thống kê -->
+    <form method="get" action="/statistics/compare-best-selling-products" class="text-center mb-4">
+        <div class="form-group">
+            <label for="startDate">Ngày bắt đầu:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control d-inline-block w-auto mx-2" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+
+            <label for="endDate">Ngày kết thúc:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control d-inline-block w-auto mx-2" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Xem thống kê</button>
+    </form>
+
+    <div th:if="${message}" class="text-center mt-3">
+        <p class="text-danger" th:text="${message}"></p>
+    </div>
+
+    <!-- Div chứa biểu đồ -->
+    <div class="row mt-4">
+        <div class="col-md-8 mx-auto">
+            <div class="chart-container">
+                <canvas id="compareBestSellingProductsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var dateLabels = /*[[${dateLabels}]]*/ [];
+        var datasets = /*[[${datasets}]]*/ [];
+
+        console.log("dateLabels:", dateLabels);
+        console.log("datasets:", datasets);
+
+        var ctx = document.getElementById('compareBestSellingProductsChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line', // Hoặc 'bar' tùy ý
+            data: {
+                labels: dateLabels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Đảm bảo biểu đồ không giữ tỉ lệ cố định
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'So sánh sản phẩm bán chạy'
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

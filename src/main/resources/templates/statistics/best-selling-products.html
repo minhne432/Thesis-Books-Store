@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Thống kê sản phẩm bán chạy</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 80%; /* Điều chỉnh kích thước biểu đồ */
+            max-width: 600px; /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto; /* Căn giữa biểu đồ */
+        }
+
+        #bestSellingProductsChart {
+            display: block;
+            max-width: 100%; /* Biểu đồ co giãn phù hợp với container */
+        }
+    </style>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Thống kê sản phẩm bán chạy</h1>
+
+    <!-- Form chọn loại thống kê -->
+    <form method="get" action="/statistics/best-selling-products">
+        <label for="type">Chọn loại thống kê:</label>
+        <select id="type" name="type">
+            <option value="day" th:selected="${type == 'day'}">Ngày</option>
+            <option value="month" th:selected="${type == 'month'}">Tháng</option>
+            <option value="year" th:selected="${type == 'year'}">Năm</option>
+        </select>
+
+        <div th:if="${type == 'day'}">
+            <label for="date">Chọn ngày:</label>
+            <input type="date" id="date" name="date" th:value="${#dates.format(date, 'yyyy-MM-dd')}" />
+        </div>
+
+        <div th:if="${type == 'month'}">
+            <label for="month">Chọn tháng:</label>
+            <input type="number" id="month" name="month" min="1" max="12" th:value="${month}" />
+            <label for="year">Chọn năm:</label>
+            <input type="number" id="year" name="year" th:value="${year}" />
+        </div>
+
+        <div th:if="${type == 'year'}">
+            <label for="year">Chọn năm:</label>
+            <input type="number" id="year" name="year" th:value="${year}" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Xem thống kê</button>
+    </form>
+
+    <!-- Vẽ biểu đồ -->
+    <div class="chart-container mt-4">
+        <canvas id="bestSellingProductsChart"></canvas>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var productNames = /*[[${productNames}]]*/ [];
+        var quantities = /*[[${quantities}]]*/ [];
+            console.log("productNames:", productNames);
+            console.log("quantities:", quantities);
+
+        var ctx = document.getElementById('bestSellingProductsChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: productNames,
+                datasets: [{
+                    label: 'Số lượng bán được',
+                    data: quantities,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor:  'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sản phẩm bán chạy theo ' + /*[[${type}]]*/
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
