@@ -16,7 +16,7 @@
             <div class="col-md-6 text-center">
                 <div class="card shadow-sm border-0">
                     <div class="product-detail-image-container">
-                        <img src="https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-chong-nang-martiderm-pho-rong-toan-dien-spf50-40ml-1717484548_img_385x385_622873_fit_center.jpg"
+                        <img th:src="@{'/images/' + ${product.imageFilename}}"
                              class="product-detail-image" alt="Hình ảnh sản phẩm">
                     </div>
                 </div>
