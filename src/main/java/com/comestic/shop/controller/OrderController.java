@@ -118,20 +118,21 @@ public class OrderController {
         return "order/history"; // The view template for displaying order history
     }
 
-    @GetMapping("/{orderId}/details")
-    public String viewOrderDetails(@PathVariable int orderId, Model model) {
+    //Customer xem order details
+    @GetMapping("/{orderId}/OrderDetails")
+    public String viewOrderDetailsCustomer(@PathVariable int orderId, Model model) {
         // Get the authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         // Retrieve the customer using the username
-        Optional<Customer> customerTmp = customerService.getCustomerByUsername(username);
-        if (customerTmp.isEmpty()) {
+        Optional<Customer> customerTpm = customerService.getCustomerByUsername(username);
+        if (customerTpm.isEmpty()) {
             // Handle the case where the customer is not found
             return "redirect:/login?error";
         }
 
-        int customerID = customerTmp.get().getCustomerID();
+        int customerID = customerTpm.get().getCustomerID();
 
         // Retrieve the order
         Order order = orderService.getOrderById(orderId);
@@ -147,7 +148,86 @@ public class OrderController {
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
 
-        return "order/details"; // View to display order details
+        return "order/customer-order-details"; // View to display order details
     }
+
+
+    //Branch manager xem order details
+    @GetMapping("/{orderId}/details")
+    public String viewOrderDetails(@PathVariable int orderId, Model model) {
+        // Retrieve the order
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            return "error/404"; // Or appropriate error handling
+        }
+
+        // Permission check
+        Set<String> permissions = permissionService.getUserPermissions();
+        String permissionRequired = "view_orders_branch_" + order.getBranch().getBranchId();
+
+        if (!permissions.contains(permissionRequired)) {
+            return "access-denied";
+        }
+
+        // Retrieve order details
+        List<OrderDetails> orderDetails = orderDetailsService.getOrderDetailsByOrderID(orderId);
+
+        // Add to the model
+        model.addAttribute("order", order);
+        model.addAttribute("orderDetails", orderDetails);
+
+        return "order/details";
+    }
+
+    // branch manager cap nhat trang thai don hang
+    @GetMapping("/{orderId}/edit")
+    public String editOrderStatusForm(@PathVariable int orderId, Model model) {
+        // Retrieve the order
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            return "error/404";
+        }
+
+        // Permission check
+        Set<String> permissions = permissionService.getUserPermissions();
+        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
+
+        if (!permissions.contains(permissionRequired)) {
+            return "access-denied";
+        }
+
+        // Add to the model
+        model.addAttribute("order", order);
+        model.addAttribute("statuses", OrderStatus.values());
+
+        return "order/edit";
+    }
+
+    // branch manager cap nhat trang thai don hang
+    @PostMapping("/{orderId}/edit")
+    public String updateOrderStatus(@PathVariable int orderId,
+                                    @RequestParam("status") OrderStatus status,
+                                    Model model) {
+        // Retrieve the order
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            return "error/404";
+        }
+
+        // Permission check
+        Set<String> permissions = permissionService.getUserPermissions();
+        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
+
+        if (!permissions.contains(permissionRequired)) {
+            return "access-denied";
+        }
+
+        // Update the order status using the new method
+        orderService.updateOrderStatus(order, status);
+
+        // Redirect to the order list or order details page
+        return "redirect:/orders";
+    }
+
 
 }

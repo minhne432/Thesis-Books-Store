@@ -42,6 +42,8 @@
         <th>Trạng thái</th>
         <th>Phương thức thanh toán</th>
         <th>Chi nhánh</th>
+        <!-- New column for actions -->
+        <th>Hành động</th>
     </tr>
     </thead>
     <tbody>
@@ -52,6 +54,11 @@
         <td th:text="${order.status}">Trạng thái</td>
         <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
         <td th:text="${order.branch.branchName}">Chi nhánh</td>
+        <!-- Action buttons -->
+        <td>
+            <a th:href="@{/orders/{orderId}/details(orderId=${order.orderID})}" class="btn btn-primary">Xem chi tiết</a>
+            <a th:href="@{/orders/{orderId}/edit(orderId=${order.orderID})}" class="btn btn-secondary">Cập nhật trạng thái</a>
+        </td>
     </tr>
     </tbody>
 </table>

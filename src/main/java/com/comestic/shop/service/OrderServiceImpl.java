@@ -114,6 +114,32 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByCustomer_CustomerID(customerID, pageable);
     }
 
+    @Override
+    @Transactional
+    public Order updateOrderStatus(Order order, OrderStatus newStatus) {
+        // Get the current status
+        OrderStatus oldStatus = order.getStatus();
+
+        // Update the status
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+
+        // If the new status is PAID_CANCELED or UNPAID_CANCELED, and the old status was not canceled
+        if ((newStatus == OrderStatus.PAID_CANCELED || newStatus == OrderStatus.UNPAID_CANCELED)
+                && (oldStatus != OrderStatus.PAID_CANCELED && oldStatus != OrderStatus.UNPAID_CANCELED)) {
+
+            // Increase inventory quantities
+            for (OrderDetails orderDetails : order.getOrderDetails()) {
+                Product product = orderDetails.getProduct();
+                int quantity = orderDetails.getQuantity();
+
+                // Increase the inventory for each item
+                inventoryService.increaseInventoryQuantity(order.getBranch(), product, quantity);
+            }
+        }
+
+        return order;
+    }
 }
 
 

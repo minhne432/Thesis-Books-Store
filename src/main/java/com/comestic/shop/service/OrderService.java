@@ -24,5 +24,8 @@ public interface OrderService {
     Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Pageable pageable);
     Page<Order> getOrdersByCustomerID(int customerID, Pageable pageable);
 
+    Order updateOrderStatus(Order order, OrderStatus newStatus);
+
+
 }
 
