@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +33,8 @@ public class ProductController {
     private CategoryService categoryService;
 
     // Directory to save uploaded images
-//    private static String UPLOAD_DIR = System.getProperty("user.dir") + "/product-images";
-    private static String UPLOAD_DIR = "src/main/resources/static/images";
+    private static String UPLOAD_DIR = System.getProperty("user.dir") + "/product-images";
+//    private static String UPLOAD_DIR = "src/main/resources/static/images";
 
 
     // Hiển thị danh sách sản phẩm
@@ -80,20 +83,20 @@ public class ProductController {
 
 
     private String saveImage(MultipartFile imageFile) throws Exception {
-        // Create the directory if it doesn't exist
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        // Kiểm tra định dạng file
+        String contentType = imageFile.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new Exception("File tải lên không phải là hình ảnh!");
         }
 
-        // Generate a unique filename to prevent conflicts
-        String originalFilename = imageFile.getOriginalFilename();
+        // Làm sạch tên file
+        String originalFilename = StringUtils.cleanPath(imageFile.getOriginalFilename());
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String uniqueFilename = System.currentTimeMillis() + fileExtension;
 
-        // Save the file
-        Path filePath = uploadPath.resolve(uniqueFilename);
-        Files.copy(imageFile.getInputStream(), filePath);
+        // Tạo đường dẫn lưu file
+        Path filePath = Paths.get(UPLOAD_DIR).resolve(uniqueFilename);
+        Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return uniqueFilename;
     }
@@ -103,6 +106,8 @@ public class ProductController {
         Optional<Product> optionalProduct = productService.getProductById(id);
         if(optionalProduct.isPresent()) {
             model.addAttribute("product", optionalProduct.get());
+            List<Category> categories = categoryService.getAllCategories(); // Giả sử bạn có CategoryService
+            model.addAttribute("categories", categories);
             return "product/edit";
         } else {
             return "redirect:/products";
@@ -111,10 +116,64 @@ public class ProductController {
 
     // Xử lý cập nhật sản phẩm
     @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable("id") int id, @ModelAttribute("product") Product productDetails) {
-        productService.updateProduct(id, productDetails);
-        return "redirect:/products";
+    public String editProduct(@PathVariable("id") int id,
+                              @ModelAttribute("product") Product productDetails,
+                              @RequestParam("imageFile") MultipartFile imageFile,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            // Lấy sản phẩm hiện tại từ database
+            Optional<Product> optionalProduct = productService.getProductById(id);
+            if (!optionalProduct.isPresent()) {
+                redirectAttributes.addFlashAttribute("message", "Không tìm thấy sản phẩm để chỉnh sửa.");
+                return "redirect:/products";
+            }
+
+            Product existingProduct = optionalProduct.get();
+
+            // Cập nhật các trường thông tin khác
+            existingProduct.setProductName(productDetails.getProductName());
+            existingProduct.setBrand(productDetails.getBrand());
+            existingProduct.setDescription(productDetails.getDescription());
+            existingProduct.setPrice(productDetails.getPrice());
+            existingProduct.setStockQuantity(productDetails.getStockQuantity());
+
+            // Cập nhật danh mục
+            Category category = categoryService.getCategoryById(productDetails.getCategory().getCategoryID());
+            existingProduct.setCategory(category);
+
+            // Xử lý cập nhật hình ảnh nếu có
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Lưu hình ảnh mới
+                String newImageFilename = saveImage(imageFile);
+
+                // Xóa hình ảnh cũ (tuỳ chọn)
+                if (existingProduct.getImageFilename() != null) {
+                    deleteImage(existingProduct.getImageFilename());
+                }
+
+                // Cập nhật tên file ảnh mới vào sản phẩm
+                existingProduct.setImageFilename(newImageFilename);
+            }
+
+            // Lưu sản phẩm đã cập nhật
+            productService.updateProduct(id, existingProduct);
+
+            redirectAttributes.addFlashAttribute("message", "Sản phẩm đã được cập nhật thành công!");
+            return "redirect:/products/list";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Có lỗi xảy ra khi cập nhật sản phẩm.");
+            return "redirect:/products/edit/" + id;
+        }
     }
+
+    private void deleteImage(String imageFilename) throws IOException {
+        Path imagePath = Paths.get(UPLOAD_DIR).resolve(imageFilename);
+        if (Files.exists(imagePath)) {
+            Files.delete(imagePath);
+        }
+    }
+
 
     // Xóa sản phẩm
     @GetMapping("/delete/{id}")
