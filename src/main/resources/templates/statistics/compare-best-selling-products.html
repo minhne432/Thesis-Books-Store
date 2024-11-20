@@ -6,50 +6,92 @@
     <title layout:fragment="title">So sánh sản phẩm bán chạy</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Thêm CSS tùy chỉnh nếu cần -->
+    <!-- Custom CSS -->
     <style>
         .chart-container {
             position: relative;
-            height: 400px; /* Điều chỉnh chiều cao biểu đồ */
+            height: 400px;
             width: 100%;
-            max-width: 800px; /* Giới hạn chiều rộng tối đa */
-            margin: 0 auto; /* Căn giữa theo chiều ngang */
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        /* Điều chỉnh canvas để đảm bảo nó co giãn theo container */
         #compareBestSellingProductsChart {
             display: block;
             width: 100% !important;
             height: 100% !important;
         }
+
+        .form-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .form-container label {
+            font-weight: bold;
+        }
+
+        .form-container input {
+            display: inline-block;
+            width: auto;
+            margin: 0 10px;
+        }
+
+        .form-container button {
+            margin-top: 10px;
+        }
+
+        .chart-title {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .text-danger {
+            font-size: 1.1em;
+        }
     </style>
 </head>
 <body>
 <div layout:fragment="content">
-    <h1 class="text-center">So sánh sản phẩm bán chạy</h1>
+    <div class="container">
+        <h1 class="text-center chart-title">So sánh Sản phẩm Bán chạy</h1>
 
-    <!-- Form chọn loại thống kê -->
-    <form method="get" action="/statistics/compare-best-selling-products" class="text-center mb-4">
-        <div class="form-group">
-            <label for="startDate">Ngày bắt đầu:</label>
-            <input type="date" id="startDate" name="startDate" class="form-control d-inline-block w-auto mx-2" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+        <!-- Form chọn loại thống kê -->
+        <div class="form-container">
+            <form method="get" action="/statistics/compare-best-selling-products" class="needs-validation" novalidate>
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <div class="form-group me-3">
+                        <label for="startDate">Ngày bắt đầu:</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control d-inline-block w-auto"
+                               th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" required />
+                        <div class="invalid-feedback">Vui lòng chọn ngày bắt đầu.</div>
+                    </div>
 
-            <label for="endDate">Ngày kết thúc:</label>
-            <input type="date" id="endDate" name="endDate" class="form-control d-inline-block w-auto mx-2" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+                    <div class="form-group me-3">
+                        <label for="endDate">Ngày kết thúc:</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control d-inline-block w-auto"
+                               th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" required />
+                        <div class="invalid-feedback">Vui lòng chọn ngày kết thúc.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-chart-line me-2"></i>Xem thống kê
+                    </button>
+                </div>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Xem thống kê</button>
-    </form>
 
-    <div th:if="${message}" class="text-center mt-3">
-        <p class="text-danger" th:text="${message}"></p>
-    </div>
+        <div th:if="${message}" class="text-center mt-3">
+            <p class="text-danger" th:text="${message}"></p>
+        </div>
 
-    <!-- Div chứa biểu đồ -->
-    <div class="row mt-4">
-        <div class="col-md-8 mx-auto">
-            <div class="chart-container">
-                <canvas id="compareBestSellingProductsChart"></canvas>
-            </div>
+        <!-- Div chứa biểu đồ -->
+        <div class="chart-container mt-5">
+            <canvas id="compareBestSellingProductsChart"></canvas>
         </div>
     </div>
 </div>
@@ -60,22 +102,29 @@
         var dateLabels = /*[[${dateLabels}]]*/ [];
         var datasets = /*[[${datasets}]]*/ [];
 
-        console.log("dateLabels:", dateLabels);
-        console.log("datasets:", datasets);
-
         var ctx = document.getElementById('compareBestSellingProductsChart').getContext('2d');
         var chart = new Chart(ctx, {
-            type: 'line', // Hoặc 'bar' tùy ý
+            type: 'line',
             data: {
                 labels: dateLabels,
                 datasets: datasets
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Đảm bảo biểu đồ không giữ tỉ lệ cố định
+                maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Số lượng'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Thời gian'
+                        }
                     }
                 },
                 plugins: {
@@ -89,6 +138,21 @@
                 }
             }
         });
+
+        // Form validation
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
         /*]]>*/
     </script>
 </div>

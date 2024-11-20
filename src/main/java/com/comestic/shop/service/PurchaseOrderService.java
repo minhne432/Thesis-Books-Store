@@ -1,14 +1,15 @@
 package com.comestic.shop.service;
 
 import com.comestic.shop.exception.ResourceNotFoundException;
-import com.comestic.shop.model.Branch;
-import com.comestic.shop.model.Product;
-import com.comestic.shop.model.PurchaseOrder;
-import com.comestic.shop.model.PurchaseOrderDetails;
+import com.comestic.shop.model.*;
 import com.comestic.shop.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,4 +109,48 @@ public class PurchaseOrderService {
         }
     }
 
+    //
+    public Page<PurchaseOrder> searchPurchaseOrders(
+            Long purchaseOrderId,
+            Long supplierId,
+            Long branchId,
+            LocalDate startDate,
+            LocalDate endDate,
+            PurchaseOrderStatus status,
+            Pageable pageable) {
+
+        Specification<PurchaseOrder> spec = Specification.where(null);
+
+        if (purchaseOrderId != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("purchaseOrderId"), purchaseOrderId));
+        }
+
+        if (supplierId != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("supplier").get("supplierId"), supplierId));
+        }
+
+        if (branchId != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("branch").get("branchId"), branchId));
+        }
+
+        if (startDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("orderDate"), startDate));
+        }
+
+        if (endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("orderDate"), endDate));
+        }
+
+        if (status != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("status"), status.getStatus()));
+        }
+
+        return purchaseOrderRepository.findAll(spec, pageable);
+    }
 }

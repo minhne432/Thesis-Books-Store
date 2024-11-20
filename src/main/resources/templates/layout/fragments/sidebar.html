@@ -7,12 +7,12 @@
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
             <a href="#homeSubmenu" class="d-flex align-items-center dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
-                <i class="fas fa-home me-2"></i> Home
+                <i class="fas fa-home me-2"></i> Statistics
             </a>
             <ul class="collapse list-unstyled ps-4" id="homeSubmenu">
-                <li><a th:href="@{/dashboard}" class="d-block py-1">Dashboard</a></li>
-                <li><a th:href="@{/overview}" class="d-block py-1">Overview</a></li>
-                <li><a th:href="@{/statistics}" class="d-block py-1">Statistics</a></li>
+                <li><a th:href="@{/statistics/best-selling-products}" class="d-block py-1">Top-Selling Products</a></li>
+                <li><a th:href="@{/statistics/compare-best-selling-products}" class="d-block py-1">Compare Selling Products</a></li>
+                <li><a th:href="@{/statistics/category-sales}" class="d-block py-1">Category Sales</a></li>
             </ul>
         </li>
 
@@ -47,6 +47,7 @@
                 <i class="fas fa-truck me-2"></i> Supplier Orders
             </a>
             <ul class="collapse list-unstyled ps-4" id="supplierOrderSubmenu">
+                <li><a th:href="@{/admin/suppliers}" class="d-block py-1">Supplier List</a></li>
                 <li><a th:href="@{/purchase-orders}" class="d-block py-1">Order List</a></li>
                 <li><a th:href="@{/purchase-orders/add}" class="d-block py-1">Create Order</a></li>
             </ul>

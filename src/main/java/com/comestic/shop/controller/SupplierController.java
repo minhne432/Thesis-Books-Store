@@ -3,6 +3,9 @@ package com.comestic.shop.controller;
 import com.comestic.shop.model.Supplier;
 import com.comestic.shop.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +15,35 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/suppliers")
+@RequestMapping("/admin/suppliers")
 public class SupplierController {
 
     @Autowired
     private SupplierService supplierService;
 
-    // Hiển thị danh sách nhà cung cấp
     @GetMapping
-    public String listSuppliers(Model model) {
-        List<Supplier> suppliers = supplierService.getAllSuppliers();
-        model.addAttribute("suppliers", suppliers);
+    public String listSuppliers(
+            @RequestParam(value = "page", defaultValue = "0") int page,  // Current page number
+            @RequestParam(value = "size", defaultValue = "10") int size, // Page size
+            @RequestParam(value = "keyword", required = false) String keyword, // Search keyword
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Supplier> supplierPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            // Search suppliers by name
+            supplierPage = supplierService.searchSuppliersByName(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        } else {
+            // Get all suppliers
+            supplierPage = supplierService.getAllSuppliers(pageable);
+        }
+
+        // Add attributes to the model
+        model.addAttribute("suppliers", supplierPage.getContent());
+        model.addAttribute("supplierPage", supplierPage);
+
         return "supplier/list";
     }
 

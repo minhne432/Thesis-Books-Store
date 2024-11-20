@@ -1,36 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Thêm nhà cung cấp</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title layout:fragment="title">Thêm Nhà Cung Cấp</title>
 </head>
 <body>
-<div class="container">
-    <h1>Thêm nhà cung cấp</h1>
-    <form th:action="@{/suppliers/add}" th:object="${supplier}" method="post">
-        <div class="form-group">
-            <label for="supplierName">Tên nhà cung cấp:</label>
-            <input type="text" id="supplierName" name="supplierName" th:value="*{supplierName}" class="form-control" required>
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="text-center mb-4">Thêm Nhà Cung Cấp</h1>
+
+    <form th:action="@{/suppliers/add}" th:object="${supplier}" method="post" class="needs-validation" novalidate>
+        <div class="card shadow-sm p-4">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="supplierName" class="form-label">Tên Nhà Cung Cấp</label>
+                    <input type="text" id="supplierName" name="supplierName" th:value="*{supplierName}" class="form-control" placeholder="Nhập tên nhà cung cấp" required>
+                    <div class="invalid-feedback">Tên nhà cung cấp không được để trống.</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="contactPerson" class="form-label">Người Liên Hệ</label>
+                    <input type="text" id="contactPerson" name="contactPerson" th:value="*{contactPerson}" class="form-control" placeholder="Nhập tên người liên hệ">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Số Điện Thoại</label>
+                    <input type="text" id="phone" name="phone" th:value="*{phone}" class="form-control" placeholder="Nhập số điện thoại">
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" th:value="*{email}" class="form-control" placeholder="Nhập email">
+                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa Chỉ</label>
+                <input type="text" id="address" name="address" th:value="*{address}" class="form-control" placeholder="Nhập địa chỉ">
+            </div>
+            <div class="d-flex justify-content-between">
+                <a th:href="@{/admin/suppliers}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Quay lại
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i> Thêm Nhà Cung Cấp
+                </button>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="contactPerson">Người liên hệ:</label>
-            <input type="text" id="contactPerson" name="contactPerson" th:value="*{contactPerson}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="phone">Số điện thoại:</label>
-            <input type="text" id="phone" name="phone" th:value="*{phone}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" th:value="*{email}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="address">Địa chỉ:</label>
-            <input type="text" id="address" name="address" th:value="*{address}" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Thêm nhà cung cấp</button>
-        <a th:href="@{/suppliers}" class="btn btn-secondary">Quay lại</a>
     </form>
+</div>
+
+<div layout:fragment="pageScripts">
+    <script>
+        // Script kiểm tra form trước khi gửi
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </div>
 </body>
 </html>

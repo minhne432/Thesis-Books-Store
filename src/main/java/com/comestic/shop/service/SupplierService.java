@@ -4,6 +4,8 @@ import com.comestic.shop.model.PurchaseOrder;
 import com.comestic.shop.model.Supplier;
 import com.comestic.shop.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,5 +67,15 @@ public class SupplierService {
 
     public void deleteSupplier(Long id) {
         supplierRepository.deleteById(id);
+    }
+
+    // Get all suppliers with pagination
+    public Page<Supplier> getAllSuppliers(Pageable pageable) {
+        return supplierRepository.findAll(pageable);
+    }
+
+    // Search suppliers by name with pagination
+    public Page<Supplier> searchSuppliersByName(String keyword, Pageable pageable) {
+        return supplierRepository.findBySupplierNameContainingIgnoreCase(keyword, pageable);
     }
 }

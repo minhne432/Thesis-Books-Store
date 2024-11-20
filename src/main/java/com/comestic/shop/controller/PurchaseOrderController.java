@@ -4,6 +4,10 @@ import com.comestic.shop.dto.*;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -128,12 +132,73 @@ public String addPurchaseOrder(@ModelAttribute("purchaseOrderDTO") PurchaseOrder
 }
 
 
+
     @GetMapping
-    public String listPurchaseOrders(Model model) {
-        model.addAttribute("purchaseOrders", purchaseOrderService.getAllPurchaseOrders());
+    public String listPurchaseOrders(
+            @RequestParam(value = "purchaseOrderId", required = false) Long purchaseOrderId,
+            @RequestParam(value = "supplierId", required = false) Long supplierId,
+            @RequestParam(value = "branchId", required = false) Long branchId,
+            @RequestParam(value = "startDate", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(value = "endDate", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "status", required = false) PurchaseOrderStatus status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<PurchaseOrder> purchaseOrderPage = purchaseOrderService.searchPurchaseOrders(
+                purchaseOrderId, supplierId, branchId, startDate, endDate, status, pageable);
+
+        model.addAttribute("purchaseOrders", purchaseOrderPage.getContent());
+        model.addAttribute("purchaseOrderPage", purchaseOrderPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", purchaseOrderPage.getTotalPages());
+
+        // Add suppliers and branches for the search form
+        List<Supplier> suppliers = supplierService.getAllSuppliers();
+        model.addAttribute("suppliers", suppliers);
+
+        List<Branch> branches = branchService.getAllBranches();
+        model.addAttribute("branches", branches);
+
+        // Add statuses for the search form
+        model.addAttribute("statuses", PurchaseOrderStatus.values());
+
+        // Add search parameters to the model to preserve them in the view
+        model.addAttribute("purchaseOrderId", purchaseOrderId);
+        model.addAttribute("supplierId", supplierId);
+        model.addAttribute("branchId", branchId);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("status", status);
+
+        // Build query string for pagination links
+        StringBuilder queryString = new StringBuilder();
+        if (purchaseOrderId != null) {
+            queryString.append("&purchaseOrderId=").append(purchaseOrderId);
+        }
+        if (supplierId != null) {
+            queryString.append("&supplierId=").append(supplierId);
+        }
+        if (branchId != null) {
+            queryString.append("&branchId=").append(branchId);
+        }
+        if (startDate != null) {
+            queryString.append("&startDate=").append(startDate);
+        }
+        if (endDate != null) {
+            queryString.append("&endDate=").append(endDate);
+        }
+        if (status != null) {
+            queryString.append("&status=").append(status.name());
+        }
+        model.addAttribute("queryString", queryString.toString());
+
         return "purchase-order/list";
     }
-
 
 
     @GetMapping("/details/{id}")

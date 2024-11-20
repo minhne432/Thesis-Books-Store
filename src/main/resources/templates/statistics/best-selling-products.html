@@ -3,58 +3,111 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-    <title layout:fragment="title">Thống kê sản phẩm bán chạy</title>
+    <title layout:fragment="title">Thống kê Sản phẩm Bán chạy</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
     <style>
         .chart-container {
-            width: 80%; /* Điều chỉnh kích thước biểu đồ */
-            max-width: 600px; /* Giới hạn chiều rộng tối đa */
-            margin: 0 auto; /* Căn giữa biểu đồ */
+            position: relative;
+            height: 400px;
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
         }
 
         #bestSellingProductsChart {
             display: block;
-            max-width: 100%; /* Biểu đồ co giãn phù hợp với container */
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .form-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .form-container label {
+            font-weight: bold;
+        }
+
+        .form-container input,
+        .form-container select {
+            margin: 0 10px;
+            display: inline-block;
+            width: auto;
+        }
+
+        .form-container button {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        .chart-title {
+            font-weight: bold;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
-
 </head>
 <body>
 <div layout:fragment="content">
-    <h1>Thống kê sản phẩm bán chạy</h1>
+    <div class="container">
+        <h1 class="chart-title">Thống kê Sản phẩm Bán chạy</h1>
 
-    <!-- Form chọn loại thống kê -->
-    <form method="get" action="/statistics/best-selling-products">
-        <label for="type">Chọn loại thống kê:</label>
-        <select id="type" name="type">
-            <option value="day" th:selected="${type == 'day'}">Ngày</option>
-            <option value="month" th:selected="${type == 'month'}">Tháng</option>
-            <option value="year" th:selected="${type == 'year'}">Năm</option>
-        </select>
+        <!-- Form chọn loại thống kê -->
+        <div class="form-container">
+            <form method="get" action="/statistics/best-selling-products" class="needs-validation" novalidate>
+                <div class="d-flex flex-wrap align-items-center justify-content-center">
+                    <div class="form-group me-3">
+                        <label for="type">Loại:</label>
+                        <select id="type" name="type" class="form-control" required>
+                            <option value="day" th:selected="${type == 'day'}">Ngày</option>
+                            <option value="month" th:selected="${type == 'month'}">Tháng</option>
+                            <option value="year" th:selected="${type == 'year'}">Năm</option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn loại thống kê.</div>
+                    </div>
 
-        <div th:if="${type == 'day'}">
-            <label for="date">Chọn ngày:</label>
-            <input type="date" id="date" name="date" th:value="${#dates.format(date, 'yyyy-MM-dd')}" />
+                    <div class="form-group me-3" th:if="${type == 'day'}">
+                        <label for="date">Ngày:</label>
+                        <input type="date" id="date" name="date" class="form-control"
+                               th:value="${#dates.format(date, 'yyyy-MM-dd')}" required />
+                        <div class="invalid-feedback">Vui lòng chọn ngày.</div>
+                    </div>
+
+                    <div class="form-group me-3" th:if="${type == 'month'}">
+                        <label for="month">Tháng:</label>
+                        <input type="number" id="month" name="month" class="form-control" min="1" max="12"
+                               th:value="${month}" required />
+                        <div class="invalid-feedback">Vui lòng chọn tháng hợp lệ.</div>
+                        <label for="year" class="ms-2">Năm:</label>
+                        <input type="number" id="year" name="year" class="form-control" th:value="${year}" required />
+                        <div class="invalid-feedback">Vui lòng chọn năm hợp lệ.</div>
+                    </div>
+
+                    <div class="form-group me-3" th:if="${type == 'year'}">
+                        <label for="year">Năm:</label>
+                        <input type="number" id="year" name="year" class="form-control" th:value="${year}" required />
+                        <div class="invalid-feedback">Vui lòng chọn năm hợp lệ.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-chart-bar me-2"></i>Xem thống kê
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <div th:if="${type == 'month'}">
-            <label for="month">Chọn tháng:</label>
-            <input type="number" id="month" name="month" min="1" max="12" th:value="${month}" />
-            <label for="year">Chọn năm:</label>
-            <input type="number" id="year" name="year" th:value="${year}" />
+        <!-- Vẽ biểu đồ -->
+        <div class="chart-container">
+            <canvas id="bestSellingProductsChart"></canvas>
         </div>
-
-        <div th:if="${type == 'year'}">
-            <label for="year">Chọn năm:</label>
-            <input type="number" id="year" name="year" th:value="${year}" />
-        </div>
-
-        <button type="submit" class="btn btn-primary mt-2">Xem thống kê</button>
-    </form>
-
-    <!-- Vẽ biểu đồ -->
-    <div class="chart-container mt-4">
-        <canvas id="bestSellingProductsChart"></canvas>
     </div>
 </div>
 
@@ -63,8 +116,6 @@
         /*<![CDATA[*/
         var productNames = /*[[${productNames}]]*/ [];
         var quantities = /*[[${quantities}]]*/ [];
-            console.log("productNames:", productNames);
-            console.log("quantities:", quantities);
 
         var ctx = document.getElementById('bestSellingProductsChart').getContext('2d');
         var chart = new Chart(ctx, {
@@ -75,7 +126,7 @@
                     label: 'Số lượng bán được',
                     data: quantities,
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor:  'rgba(54, 162, 235, 1)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }]
             },
@@ -83,7 +134,17 @@
                 responsive: true,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Số lượng'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Sản phẩm'
+                        }
                     }
                 },
                 plugins: {
@@ -92,11 +153,26 @@
                     },
                     title: {
                         display: true,
-                        text: 'Sản phẩm bán chạy theo ' + /*[[${type}]]*/
+                        text: 'Thống kê Sản phẩm Bán chạy'
                     }
                 }
             }
         });
+
+        // Form validation
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
         /*]]>*/
     </script>
 </div>
