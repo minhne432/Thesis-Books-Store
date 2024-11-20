@@ -1,0 +1,15 @@
+/* Đảm bảo main-content nằm dưới navbar */
+.container-fluid {
+    margin-top: 56px; /* Độ cao của navbar, có thể tùy chỉnh */
+}
+
+/* Đẩy footer xuống cuối trang */
+#page-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Chiều cao tối thiểu là toàn màn hình */
+}
+
+.footer {
+    margin-top: auto; /* Đẩy footer xuống cuối */
+}

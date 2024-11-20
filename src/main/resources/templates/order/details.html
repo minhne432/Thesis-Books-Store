@@ -1,41 +1,55 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Chi tiết Đơn hàng</title>
-    <!-- Include CSS and other head elements -->
+    <title layout:fragment="title">Chi tiết Đơn hàng</title>
 </head>
 <body>
-<h1>Chi tiết Đơn hàng</h1>
-<div>
-    <p><strong>Mã Đơn hàng:</strong> <span th:text="${order.orderCode}"></span></p>
-    <p><strong>Ngày đặt:</strong> <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></span></p>
-    <p><strong>Tổng tiền:</strong> <span th:text="${order.totalAmount}"></span></p>
-    <p><strong>Trạng thái:</strong> <span th:text="${order.status}"></span></p>
-    <!-- Add more order information as needed -->
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="text-center mb-4">Chi tiết Đơn hàng</h1>
+
+    <!-- Order Details -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <p><strong>Mã Đơn hàng:</strong> <span th:text="${order.orderCode}"></span></p>
+            <p><strong>Ngày đặt:</strong> <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Tổng tiền:</strong>
+                <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0)} + ' VNĐ'"></span>
+            </p>
+            <p><strong>Trạng thái:</strong> <span th:text="${order.status}"></span></p>
+        </div>
+    </div>
+
+    <!-- Order Products -->
+    <h2 class="mb-3">Sản phẩm trong Đơn hàng</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th scope="col">Tên Sản phẩm</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Đơn giá</th>
+                <th scope="col">Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="detail : ${orderDetails}">
+                <td th:text="${detail.product.productName}">Tên Sản phẩm</td>
+                <td th:text="${detail.quantity}">Số lượng</td>
+                <td th:text="${#numbers.formatDecimal(detail.unitPrice, 0, 0)} + ' VNĐ'">Đơn giá</td>
+                <td th:text="${#numbers.formatDecimal(detail.unitPrice * detail.quantity, 0, 0)} + ' VNĐ'">Thành tiền</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Back to Order List -->
+    <div class="text-center mt-4">
+        <a th:href="@{/orders}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách Đơn hàng
+        </a>
+    </div>
 </div>
-
-<h2>Sản phẩm trong Đơn hàng</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Tên Sản phẩm</th>
-        <th>Số lượng</th>
-        <th>Đơn giá</th>
-        <th>Thành tiền</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="detail : ${orderDetails}">
-        <td th:text="${detail.product.productName}">Tên Sản phẩm</td>
-        <td th:text="${detail.quantity}">Số lượng</td>
-        <td th:text="${detail.unitPrice}">Đơn giá</td>
-        <td th:text="${detail.unitPrice * detail.quantity}">Thành tiền</td>
-    </tr>
-    </tbody>
-</table>
-
-<!-- Optionally, add a link to go back to the orders list -->
-<a th:href="@{/orders}">Quay lại danh sách Đơn hàng</a>
-
 </body>
 </html>

@@ -1,149 +1,148 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Chỉnh sửa chi nhánh</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title layout:fragment="title">Chỉnh sửa Chi Nhánh</title>
 </head>
 <body>
-<div class="container">
-    <h1>Chỉnh sửa chi nhánh</h1>
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="text-center mb-4">Chỉnh sửa Chi Nhánh</h1>
 
-    <!-- Form chỉnh sửa chi nhánh -->
-    <form th:action="@{/branches/edit}" th:object="${branch}" method="post">
+    <form th:action="@{/branches/edit}" th:object="${branch}" method="post" class="row g-3 shadow p-4 bg-light rounded">
         <!-- Lưu branchId dưới dạng hidden -->
         <input type="hidden" th:value="*{branchId}" name="branchId"/>
 
         <!-- Tên chi nhánh -->
-        <div>
-            <label for="branchName">Tên chi nhánh:</label>
-            <input type="text" id="branchName" name="branchName" th:value="*{branchName}" required>
+        <div class="col-md-6">
+            <label for="branchName" class="form-label">Tên Chi Nhánh</label>
+            <input type="text" id="branchName" name="branchName" th:value="*{branchName}" class="form-control" required>
         </div>
 
         <!-- Số điện thoại -->
-        <div>
-            <label for="contactNumber">Số điện thoại:</label>
-            <input type="text" id="contactNumber" name="contactNumber" th:value="*{contactNumber}">
+        <div class="col-md-6">
+            <label for="contactNumber" class="form-label">Số Điện Thoại</label>
+            <input type="text" id="contactNumber" name="contactNumber" th:value="*{contactNumber}" class="form-control">
         </div>
 
         <!-- Người quản lý -->
-        <div>
-            <label for="manager">Người quản lý:</label>
-            <input type="text" id="manager" name="manager" th:value="*{manager}">
+        <div class="col-md-6">
+            <label for="manager" class="form-label">Người Quản Lý</label>
+            <input type="text" id="manager" name="manager" th:value="*{manager}" class="form-control">
         </div>
 
-        <h2>Thông tin địa chỉ</h2>
+        <h2 class="mt-4">Thông Tin Địa Chỉ</h2>
 
         <!-- Dropdown Tỉnh/Thành phố -->
-        <div>
-            <label for="province">Tỉnh/Thành phố:</label>
-            <select id="province" name="provinceId" required>
-                <option value="">-- Chọn Tỉnh/Thành phố --</option>
+        <div class="col-md-4">
+            <label for="province" class="form-label">Tỉnh/Thành Phố</label>
+            <select id="province" name="provinceId" class="form-select" required>
+                <option value="">-- Chọn Tỉnh/Thành Phố --</option>
                 <th:block th:each="province : ${provinces}">
                     <option th:value="${province.provinceID}" th:text="${province.provinceName}"
-                            th:selected="${branch.address.ward.district.province.provinceID == province.provinceID}"></option>
+                            th:selected="${branch.address.ward.district.province.provinceID == province.provinceID}">
+                    </option>
                 </th:block>
             </select>
         </div>
 
         <!-- Dropdown Quận/Huyện -->
-        <div>
-            <label for="district">Quận/Huyện:</label>
-            <select id="district" name="districtId" required>
+        <div class="col-md-4">
+            <label for="district" class="form-label">Quận/Huyện</label>
+            <select id="district" name="districtId" class="form-select" required>
                 <option value="">-- Chọn Quận/Huyện --</option>
                 <th:block th:each="district : ${districts}">
                     <option th:value="${district.districtID}" th:text="${district.districtName}"
-                            th:selected="${branch.address.ward.district.districtID == district.districtID}"></option>
+                            th:selected="${branch.address.ward.district.districtID == district.districtID}">
+                    </option>
                 </th:block>
             </select>
         </div>
 
         <!-- Dropdown Phường/Xã -->
-        <div>
-            <label for="ward">Phường/Xã:</label>
-            <select id="ward" name="wardId" required>
+        <div class="col-md-4">
+            <label for="ward" class="form-label">Phường/Xã</label>
+            <select id="ward" name="wardId" class="form-select" required>
                 <option value="">-- Chọn Phường/Xã --</option>
                 <th:block th:each="ward : ${wards}">
                     <option th:value="${ward.wardID}" th:text="${ward.wardName}"
-                            th:selected="${branch.address.ward.wardID == ward.wardID}"></option>
+                            th:selected="${branch.address.ward.wardID == ward.wardID}">
+                    </option>
                 </th:block>
             </select>
         </div>
 
         <!-- Địa chỉ đường phố -->
-        <div>
-            <label for="streetAddress">Địa chỉ đường phố:</label>
-            <input type="text" id="streetAddress" name="streetAddress" th:value="*{address.streetAddress}" required>
+        <div class="col-md-6">
+            <label for="streetAddress" class="form-label">Địa Chỉ Đường Phố</label>
+            <input type="text" id="streetAddress" name="streetAddress" th:value="*{address.streetAddress}" class="form-control" required>
         </div>
 
         <!-- Mã bưu điện -->
-        <div>
-            <label for="postalCode">Mã bưu điện:</label>
-            <input type="text" id="postalCode" name="postalCode" th:value="*{address.postalCode}">
+        <div class="col-md-6">
+            <label for="postalCode" class="form-label">Mã Bưu Điện</label>
+            <input type="text" id="postalCode" name="postalCode" th:value="*{address.postalCode}" class="form-control">
         </div>
 
-        <!-- Nút Lưu thay đổi -->
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        <!-- Nút hành động -->
+        <div class="col-12 d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> Lưu Thay Đổi
+            </button>
+            <a th:href="@{/branches}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Quay Lại
+            </a>
+        </div>
     </form>
 
-    <!-- Hiển thị thông báo thành công hoặc lỗi -->
-    <div th:if="${success}">
-        <p th:text="${success}" style="color: green;"></p>
-    </div>
-    <div th:if="${error}">
-        <p th:text="${error}" style="color: red;"></p>
-    </div>
+    <!-- Hiển thị thông báo -->
+    <div th:if="${success}" class="alert alert-success mt-4" role="alert" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mt-4" role="alert" th:text="${error}"></div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // Khi chọn Tỉnh/Thành phố
-        $('#province').change(function() {
-            var provinceId = $(this).val();
-            if (provinceId) {
-                $.ajax({
-                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#district').empty();
-                        $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
-                        $.each(data, function(key, value) {
-                            $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
-                        });
-                        $('#ward').empty();
-                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
-                    }
-                });
-            } else {
-                $('#district').empty();
-                $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
-                $('#ward').empty();
-                $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
-            }
-        });
+<!-- Scripts -->
+<div layout:fragment="pageScripts">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Xử lý AJAX cho dropdown Tỉnh/Thành phố và Quận/Huyện
+            $('#province').change(function () {
+                var provinceId = $(this).val();
+                if (provinceId) {
+                    $.ajax({
+                        url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
+                        type: 'GET',
+                        success: function (data) {
+                            $('#district').empty().append('<option value="">-- Chọn Quận/Huyện --</option>');
+                            $.each(data, function (key, value) {
+                                $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
+                            });
+                            $('#ward').empty().append('<option value="">-- Chọn Phường/Xã --</option>');
+                        }
+                    });
+                } else {
+                    $('#district, #ward').empty().append('<option value="">-- Chọn --</option>');
+                }
+            });
 
-        // Khi chọn Quận/Huyện
-        $('#district').change(function() {
-            var districtId = $(this).val();
-            if (districtId) {
-                $.ajax({
-                    url: "[[@{/admin/wards/by-district/}]]" + districtId,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#ward').empty();
-                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
-                        $.each(data, function(key, value) {
-                            $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#ward').empty();
-                $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
-            }
+            $('#district').change(function () {
+                var districtId = $(this).val();
+                if (districtId) {
+                    $.ajax({
+                        url: "[[@{/admin/wards/by-district/}]]" + districtId,
+                        type: 'GET',
+                        success: function (data) {
+                            $('#ward').empty().append('<option value="">-- Chọn Phường/Xã --</option>');
+                            $.each(data, function (key, value) {
+                                $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#ward').empty().append('<option value="">-- Chọn Phường/Xã --</option>');
+                }
+            });
         });
-    });
-</script>
-
+    </script>
+</div>
 </body>
 </html>

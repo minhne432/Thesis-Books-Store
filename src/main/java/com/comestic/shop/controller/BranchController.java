@@ -3,6 +3,9 @@ package com.comestic.shop.controller;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +35,28 @@ public class BranchController {
 
 
     // Hiển thị danh sách chi nhánh
+    // Hiển thị danh sách chi nhánh với phân trang và tìm kiếm
     @GetMapping
-    public String listBranches(Model model) {
-        List<Branch> branches = branchService.getAllBranches();
-        model.addAttribute("branches", branches);
-        return "branch/branch-list";  // Trả về view branch-list.html
+    public String listBranches(
+            @RequestParam(value = "page", defaultValue = "0") int page,  // Trang hiện tại
+            @RequestParam(value = "size", defaultValue = "10") int size, // Kích thước trang
+            @RequestParam(value = "keyword", required = false) String keyword, // Từ khóa tìm kiếm
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Branch> branchPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            branchPage = branchService.searchBranchesByName(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        } else {
+            branchPage = branchService.getAllBranches(pageable);
+        }
+
+        model.addAttribute("branches", branchPage.getContent());
+        model.addAttribute("branchPage", branchPage);
+
+        return "branch/branch-list";
     }
 
     // Hiển thị form tạo chi nhánh mới

@@ -1,0 +1,23 @@
+/* admin_order_details.css */
+
+/* Card Styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Button Styling */
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}

@@ -38,10 +38,13 @@ public class ProductController {
 
 
     // Hiển thị danh sách sản phẩm
-    @GetMapping
-    public String listProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
-        return "product/list";
+    @GetMapping("/list")
+    public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
+        int pageSize = 10; // Số sản phẩm mỗi trang
+        Page<Product> productPage = productService.getProductsByPage(page, pageSize);
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
+        return "product/admin_product_list";
     }
 
     // Hiển thị form thêm sản phẩm mới
@@ -200,18 +203,11 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/list")
-    public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 10; // Số sản phẩm mỗi trang
-        Page<Product> productPage = productService.getProductsByPage(page, pageSize);
-        model.addAttribute("productPage", productPage);
-        model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
-        return "product/product_list";
-    }
 
 
 
-    @GetMapping("/shop/search")
+
+    @GetMapping("/search")
     public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") int page,
                                  Model model) {
@@ -225,7 +221,7 @@ public class ProductController {
         model.addAttribute("productPage", productPage);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("keyword", keyword);
-        return "product/product_list";
+        return "product/admin_product_list";
     }
 
 

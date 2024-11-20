@@ -1,0 +1,54 @@
+/* admin_edit_product.css */
+
+/* Card Styling */
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Placeholder Styling */
+::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Buttons */
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Form Control Focus */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Image Preview Styling */
+.img-thumbnail {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}

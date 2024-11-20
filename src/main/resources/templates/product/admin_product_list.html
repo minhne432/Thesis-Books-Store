@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Quản lý hàng hóa</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/branch_manager_product_list.css}">
+</head>
+<body>
+<div layout:fragment="content" class="mt-5 pt-4">
+    <div class="container">
+        <h1 class="text-center mb-4">Quản lý hàng hóa</h1>
+
+        <!-- Form Tìm Kiếm -->
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <form class="input-group" th:action="@{/products/search}" method="get">
+                    <input class="form-control" type="search" name="keyword" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" th:value="${keyword}">
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Thương hiệu</th>
+                    <th scope="col">Giá</th>
+                    <th scope="col">Số lượng tồn kho</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" class="text-center">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.productID}">1</td>
+                    <td th:text="${product.productName}">Tên sản phẩm</td>
+                    <td th:text="${product.brand}">Thương hiệu</td>
+                    <td th:text="${#numbers.formatDecimal(product.price, 0, 0) + ' VNĐ'}">100,000 VNĐ</td>
+                    <td th:text="${product.stockQuantity}">50</td>
+<!--                    <td th:text="${product.status == 'AVAILABLE' ? 'Còn hàng' : 'Hết hàng'}">Còn hàng</td>-->
+                    <td >Còn hàng</td>
+
+                    <td class="text-center">
+                        <a th:href="@{'/products/edit/' + ${product.productID}}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Sửa
+                        </a>
+                        <a th:href="@{'/branch/products/delete/' + ${product.productID}}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                            <i class="fas fa-trash"></i> Xóa
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Nếu không có sản phẩm -->
+        <div class="alert alert-warning text-center" role="alert" th:if="${products.size() == 0}">
+            Không có sản phẩm nào trong kho.
+        </div>
+
+        <!-- Phân trang -->
+        <nav aria-label="Page navigation" th:if="${productPage.totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${productPage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{/branch/products/list(page=${productPage.number - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Trước</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Trang <span th:text="${productPage.number + 1}"></span> trên <span th:text="${productPage.totalPages}"></span></a>
+                </li>
+                <li class="page-item" th:classappend="${productPage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{/branch/products/list(page=${productPage.number + 1})}" aria-label="Next">
+                        <span aria-hidden="true">Sau &raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Nút Thêm sản phẩm -->
+        <div class="text-center mt-4">
+            <a th:href="@{/branch/products/add}" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i> Thêm sản phẩm mới
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -3,46 +3,112 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-    <title layout:fragment="title">Danh sách chi nhánh</title>
+    <title layout:fragment="title">Danh sách Chi nhánh</title>
+    <link type="text/css" th:href="@{/css/admin_branch_list.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container">
-    <h1>Danh sách chi nhánh</h1>
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="text-center mb-4">Danh sách Chi nhánh</h1>
 
-    <!-- Nút tạo mới chi nhánh -->
-    <a th:href="@{/branches/create}" class="btn btn-primary mb-3">Tạo mới chi nhánh</a>
+    <!-- Nút tạo mới chi nhánh và form tìm kiếm -->
+    <div class="d-flex justify-content-between mb-3">
+        <a th:href="@{/branches/create}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i> Tạo mới chi nhánh
+        </a>
+        <form class="d-flex" th:action="@{/branches}" method="get">
+            <input type="text" name="keyword" class="form-control me-2" placeholder="Tìm kiếm chi nhánh..."
+                   th:value="${keyword}" />
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
 
     <!-- Bảng hiển thị danh sách chi nhánh -->
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tên chi nhánh</th>
-            <th>Người quản lý</th>
-            <th>Số điện thoại</th>
-            <th>Địa chỉ</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="branch : ${branches}">
-            <td th:text="${branch.branchId}"></td>
-            <td th:text="${branch.branchName}"></td>
-            <td th:text="${branch.manager}"></td>
-            <td th:text="${branch.contactNumber}"></td>
-            <td th:text="${branch.address.streetAddress} + ', ' + ${branch.address.ward.wardName} + ', ' + ${branch.address.ward.district.districtName} + ', ' + ${branch.address.ward.district.province.provinceName}"></td>
-            <td>
-                <a th:href="@{/branches/edit/{id}(id=${branch.branchId})}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                <a th:href="@{/branches/delete/{id}(id=${branch.branchId})}" class="btn btn-danger btn-sm">Xóa</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light text-center">
+            <tr>
+                <th>ID</th>
+                <th>Tên Chi nhánh</th>
+                <th>Người quản lý</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="branch : ${branches}">
+                <td th:text="${branch.branchId}" class="text-center"></td>
+                <td th:text="${branch.branchName}"></td>
+                <td th:text="${branch.manager}"></td>
+                <td th:text="${branch.contactNumber}"></td>
+                <td>
+                    <span th:text="${branch.address.streetAddress}"></span>,
+                    <span th:text="${branch.address.ward.wardName}"></span>,
+                    <span th:text="${branch.address.ward.district.districtName}"></span>,
+                    <span th:text="${branch.address.ward.district.province.provinceName}"></span>
+                </td>
+                <td class="text-center">
+                    <a th:href="@{/branches/edit/{id}(id=${branch.branchId})}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Chỉnh sửa
+                    </a>
+<!--                    <a th:href="@{/branches/delete/{id}(id=${branch.branchId})}" class="btn btn-danger btn-sm"-->
+<!--                       onclick="return confirm('Bạn có chắc chắn muốn xóa chi nhánh này?');">-->
+<!--                        <i class="fas fa-trash"></i> Xóa-->
+<!--                    </a>-->
+                </td>
+            </tr>
+            <tr th:if="${branches.size() == 0}">
+                <td colspan="6" class="text-center text-muted">Không có chi nhánh nào để hiển thị.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-<!-- Nếu bạn có script cụ thể cho trang này, bạn có thể thêm vào đây -->
-<div layout:fragment="pageScripts">
-    <!-- Ví dụ: <script th:src="@{/js/branches.js}"></script> -->
+    <!-- Phân trang -->
+    <nav th:if="${branchPage.totalPages > 1}" aria-label="Branch pagination">
+        <ul class="pagination justify-content-center">
+
+            <!-- Nút Trang đầu -->
+            <li class="page-item" th:classappend="${branchPage.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/branches(page=0, keyword=${keyword})}">Đầu</a>
+            </li>
+
+            <!-- Nút Trang trước -->
+            <li class="page-item" th:classappend="${branchPage.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link"
+                   th:href="@{/branches(page=${branchPage.number - 1}, keyword=${keyword})}">
+                    &laquo;
+                </a>
+            </li>
+
+            <!-- Các trang số -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, branchPage.totalPages - 1)}"
+                th:classappend="${branchPage.number == i} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/branches(page=${i}, keyword=${keyword})}"
+                   th:text="${i + 1}">1</a>
+            </li>
+
+            <!-- Nút Trang sau -->
+            <li class="page-item" th:classappend="${branchPage.hasNext()} ? '' : 'disabled'">
+                <a class="page-link"
+                   th:href="@{/branches(page=${branchPage.number + 1}, keyword=${keyword})}">
+                    &raquo;
+                </a>
+            </li>
+
+            <!-- Nút Trang cuối -->
+            <li class="page-item" th:classappend="${branchPage.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/branches(page=${branchPage.totalPages - 1}, keyword=${keyword})}">
+                    Cuối
+                </a>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 </body>
 </html>

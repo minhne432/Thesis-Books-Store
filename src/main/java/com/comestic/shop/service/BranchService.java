@@ -4,6 +4,8 @@ import com.comestic.shop.model.Branch;
 import com.comestic.shop.model.Address;
 import com.comestic.shop.repository.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +17,6 @@ public class BranchService {
     @Autowired
     private BranchRepository branchRepository;
 
-    // Lấy tất cả các chi nhánh
-    public List<Branch> getAllBranches() {
-        return branchRepository.findAll();
-    }
-
-    // Lấy chi nhánh theo ID
-    public Optional<Branch> getBranchById(Long id) {
-        return branchRepository.findById(id);
-    }
 
     // Thêm chi nhánh mới
     public Branch addBranch(Branch branch) {
@@ -61,5 +54,26 @@ public class BranchService {
     // Xóa chi nhánh
     public void deleteBranch(Long id) {
         branchRepository.deleteById(id);
+    }
+
+    // Lấy tất cả các chi nhánh không phân trang
+    public List<Branch> getAllBranches() {
+        return branchRepository.findAll();
+    }
+
+
+    // Lấy tất cả các chi nhánh với phân trang
+    public Page<Branch> getAllBranches(Pageable pageable) {
+        return branchRepository.findAll(pageable);
+    }
+
+    // Tìm kiếm chi nhánh theo tên với phân trang
+    public Page<Branch> searchBranchesByName(String keyword, Pageable pageable) {
+        return branchRepository.findByBranchNameContainingIgnoreCase(keyword, pageable);
+    }
+
+    // Tìm chi nhánh theo ID
+    public Optional<Branch> getBranchById(Long id) {
+        return branchRepository.findByBranchId(id);
     }
 }

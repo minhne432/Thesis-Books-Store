@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Cập nhật Trạng thái Đơn hàng</title>
-    <!-- Include CSS and other head elements -->
+    <title layout:fragment="title">Cập nhật Trạng thái Đơn hàng</title>
+    <link rel="stylesheet" th:href="@{/css/admin_order_edit.css}">
 </head>
 <body>
-<h1>Cập nhật Trạng thái Đơn hàng</h1>
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="text-center mb-4">Cập nhật Trạng thái Đơn hàng</h1>
 
-<form th:action="@{/orders/{orderId}/edit(orderId=${order.orderID})}" method="post">
-    <div>
-        <label for="status">Trạng thái hiện tại:</label>
-        <span th:text="${order.status}"></span>
+    <!-- Order Status Form -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form th:action="@{/orders/{orderId}/edit(orderId=${order.orderID})}" method="post">
+                <!-- Current Status -->
+                <div class="mb-3">
+                    <label for="currentStatus" class="form-label">Trạng thái hiện tại:</label>
+                    <input type="text" id="currentStatus" class="form-control" th:value="${order.status}" readonly/>
+                </div>
+
+                <!-- New Status -->
+                <div class="mb-3">
+                    <label for="status" class="form-label">Chọn Trạng thái mới:</label>
+                    <select id="status" name="status" class="form-select">
+                        <option th:each="statusItem : ${statuses}"
+                                th:value="${statusItem}"
+                                th:text="${statusItem}"
+                                th:selected="${statusItem == order.status}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-2"></i> Cập nhật
+                    </button>
+                    <a th:href="@{/orders}" class="btn btn-secondary ms-3">
+                        <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách Đơn hàng
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-    <div>
-        <label for="status">Chọn Trạng thái mới:</label>
-        <select id="status" name="status">
-            <option th:each="statusItem : ${statuses}"
-                    th:value="${statusItem}"
-                    th:text="${statusItem}"
-                    th:selected="${statusItem == order.status}">
-            </option>
-        </select>
-    </div>
-    <button type="submit">Cập nhật</button>
-</form>
-
-<!-- Optionally, add a link to go back to the orders list -->
-<a th:href="@{/orders}">Quay lại danh sách Đơn hàng</a>
-
+</div>
 </body>
 </html>

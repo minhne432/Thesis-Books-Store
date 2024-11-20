@@ -4,53 +4,81 @@
       layout:decorate="~{layout/layout}">
 <head>
     <title layout:fragment="title">Thêm sản phẩm</title>
-    <!-- Thêm CSS nếu cần -->
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin_add_product.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container">
-    <h1>Thêm sản phẩm mới</h1>
-    <form th:action="@{/products/add}" th:object="${product}" method="post" enctype="multipart/form-data">
-        <div>
-            <label>Tên sản phẩm:</label>
-            <input type="text" th:field="*{productName}" required/>
-        </div>
-        <div>
-            <label>Thương hiệu:</label>
-            <input type="text" th:field="*{brand}" required/>
-        </div>
-        <div>
-            <label>Danh mục:</label>
-            <select th:field="*{category}" required>
-                <option value="" disabled selected>-- Chọn danh mục --</option>
-                <option th:each="category : ${categories}"
-                        th:value="${category.categoryID}"
-                        th:text="${category.categoryName}">
-                </option>
-            </select>
-        </div>
-        <div>
-            <label>Mô tả:</label>
-            <textarea th:field="*{description}"></textarea>
-        </div>
-        <div>
-            <label>Giá:</label>
-            <input type="number" step="0.01" th:field="*{price}" required/>
-        </div>
-        <div>
-            <label>Số lượng:</label>
-            <input type="number" th:field="*{stockQuantity}" required/>
-        </div>
-        <!-- New input field for image upload -->
-        <div>
-            <label>Ảnh sản phẩm:</label>
-            <input type="file" name="imageFile" accept="image/*" required/>
-        </div>
-        <div>
-            <button type="submit">Thêm</button>
-            <a href="/products">Hủy</a>
-        </div>
-    </form>
+<div layout:fragment="content" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Thêm sản phẩm mới</h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/products/add}" th:object="${product}" method="post" enctype="multipart/form-data">
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Tên sản phẩm:</label>
+                            <input type="text" class="form-control" id="productName" th:field="*{productName}" placeholder="Nhập tên sản phẩm" required/>
+                        </div>
 
+                        <!-- Brand -->
+                        <div class="mb-3">
+                            <label for="brand" class="form-label">Thương hiệu:</label>
+                            <input type="text" class="form-control" id="brand" th:field="*{brand}" placeholder="Nhập tên thương hiệu" required/>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Danh mục:</label>
+                            <select class="form-select" id="category" th:field="*{category}" required>
+                                <option value="" disabled selected>-- Chọn danh mục --</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.categoryID}"
+                                        th:text="${category.categoryName}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô tả:</label>
+                            <textarea class="form-control" id="description" th:field="*{description}" rows="4" placeholder="Nhập mô tả sản phẩm"></textarea>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Giá (VNĐ):</label>
+                            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" placeholder="Nhập giá sản phẩm" required/>
+                        </div>
+
+                        <!-- Stock Quantity -->
+                        <div class="mb-3">
+                            <label for="stockQuantity" class="form-label">Số lượng:</label>
+                            <input type="number" class="form-control" id="stockQuantity" th:field="*{stockQuantity}" placeholder="Nhập số lượng trong kho" required/>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Ảnh sản phẩm:</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required/>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-success me-2">
+                                <i class="fas fa-check-circle me-1"></i> Thêm sản phẩm
+                            </button>
+                            <a href="/products" class="btn btn-secondary">
+                                <i class="fas fa-times-circle me-1"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
