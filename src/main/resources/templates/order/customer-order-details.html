@@ -29,6 +29,7 @@
                     <th scope="col">Đơn giá</th>
                     <th scope="col">Số lượng</th>
                     <th scope="col">Thành tiền</th>
+                    <th scope="col">Đánh giá</th> <!-- Thêm cột Review -->
                 </tr>
                 </thead>
                 <tbody>
@@ -37,9 +38,15 @@
                     <td class="currency" th:text="${detail.unitPrice}">Đơn giá</td>
                     <td th:text="${detail.quantity}">Số lượng</td>
                     <td class="currency" th:text="${detail.unitPrice * detail.quantity}">Thành tiền</td>
+                    <!-- Cột Review -->
+                    <td>
+                        <a th:href="@{/reviews/new/{orderDetailId}(orderDetailId=${detail.orderDetailId})}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-star me-2"></i> Viết đánh giá
+                        </a>
+                    </td>
                 </tr>
                 </tbody>
-
             </table>
         </div>
 
@@ -60,7 +67,5 @@
         });
     });
 </script>
-
-
 </body>
 </html>

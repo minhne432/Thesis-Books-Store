@@ -15,14 +15,15 @@ public class Review {
     @Column(name = "ReviewID")
     private Long reviewId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ProductID", nullable = false)
-    private Product product;
+    // Relationship with OrderDetails
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OrderDetailID", nullable = false)
+    private OrderDetails orderDetails;
 
+    // Add relationship with Customer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CustomerID", nullable = false)
     private Customer customer;
-
     @Column(name = "Rating", nullable = false)
     private Integer rating;
 
@@ -35,9 +36,8 @@ public class Review {
     // Constructors
     public Review() {}
 
-    public Review(Product product, Customer customer, Integer rating, String comment, LocalDate reviewDate) {
-        this.product = product;
-        this.customer = customer;
+    public Review(OrderDetails orderDetails, Integer rating, String comment, LocalDate reviewDate) {
+        this.orderDetails = orderDetails;
         this.rating = rating;
         this.comment = comment;
         this.reviewDate = reviewDate;
@@ -52,21 +52,9 @@ public class Review {
         this.reviewId = reviewId;
     }
 
-    public Product getProduct() {
-        return product;
-    }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
-    public Customer getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
 
     public Integer getRating() {
         return rating;
@@ -90,6 +78,22 @@ public class Review {
 
     public void setReviewDate(LocalDate reviewDate) {
         this.reviewDate = reviewDate;
+    }
+
+    public OrderDetails getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(OrderDetails orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here

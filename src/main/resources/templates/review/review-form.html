@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title" th:text="'Viết Đánh Giá - ' + ${product.productName}">Viết Đánh Giá</title>
+    <link rel="stylesheet" th:href="@{/css/customer_styles.css}">
+    <style>
+        /* Tùy chỉnh thêm nếu cần */
+        .star-rating .fa-star {
+            color: #ffc107;
+        }
+        .star-rating .fa-star-o {
+            color: #e4e5e9;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<header>
+    <div layout:insert="~{layout/fragments/customer_header :: header}"></div>
+</header>
+
+<!-- Main Content -->
+<div class="container-fluid flex-grow-1">
+    <main>
+        <div layout:fragment="content">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Viết Đánh Giá cho <span th:text="${product.productName}"></span></h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Thông báo thành công hoặc lỗi -->
+                            <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+                            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+                            <form th:action="@{/reviews/save}" th:object="${review}" method="post">
+                                <!-- Trường ẩn chứa orderDetailId -->
+                                <input type="hidden" name="orderDetailId" th:value="${orderDetailId}" />
+
+                                <!-- Đánh giá bằng sao -->
+                                <div class="mb-4">
+                                    <label class="form-label" for="rating">Đánh Giá:</label>
+                                    <div class="star-rating">
+                                        <input type="radio" id="star1" name="rating" value="1" required />
+                                        <label for="star1" title="1 sao"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star2" name="rating" value="2" />
+                                        <label for="star2" title="2 sao"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star3" name="rating" value="3" />
+                                        <label for="star3" title="3 sao"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star4" name="rating" value="4" />
+                                        <label for="star4" title="4 sao"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star5" name="rating" value="5" />
+                                        <label for="star5" title="5 sao"><i class="fas fa-star"></i></label>
+                                    </div>
+                                </div>
+
+                                <!-- Bình luận -->
+                                <div class="mb-4">
+                                    <label class="form-label" for="comment">Bình Luận:</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="5" placeholder="Nhập bình luận của bạn..." required></textarea>
+                                </div>
+
+                                <!-- Nút Submit -->
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi Đánh Giá</button>
+                                <a href="#" class="btn btn-secondary ms-2"><i class="fas fa-arrow-left"></i> Quay Lại</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div layout:insert="~{layout/fragments/customer_footer :: footer}"></div>
+</footer>
+
+
+<script>
+    document.querySelectorAll('.star-rating input').forEach((input) => {
+        input.addEventListener('change', () => {
+            // Có thể thêm các xử lý khi người dùng chọn sao
+        });
+    });
+</script>
+</body>
+</html>

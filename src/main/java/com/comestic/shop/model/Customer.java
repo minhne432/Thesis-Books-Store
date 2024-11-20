@@ -2,6 +2,7 @@ package com.comestic.shop.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,9 +47,6 @@ public class Customer {
     private Set<Order> orders;
 
     @OneToMany(mappedBy = "customer")
-    private Set<Review> reviews;
-
-    @OneToMany(mappedBy = "customer")
     private Set<LoginHistory> loginHistories;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
@@ -56,6 +54,9 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomerAddress> customerAddresses; // Thay thế mối quan hệ với Address
+
+    @OneToMany(mappedBy = "customer")
+    private Set<Review> reviews = new HashSet<>();
 
 
     // Getters và Setters
@@ -212,14 +213,6 @@ public class Customer {
         this.orders = orders;
     }
 
-    public Set<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(Set<Review> reviews) {
-        this.reviews = reviews;
-    }
-
     public Set<LoginHistory> getLoginHistories() {
         return loginHistories;
     }
@@ -254,5 +247,13 @@ public class Customer {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 '}';
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
     }
 }

@@ -1,4 +1,3 @@
-<!-- templates/products/product_detail.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -7,16 +6,21 @@
 <head>
     <title layout:fragment="title" th:text="'Chi tiết sản phẩm - ' + ${product.productName}">Chi tiết sản phẩm</title>
     <link rel="stylesheet" th:href="@{/css/product_detail_styles.css}">
+    <!-- Thêm các liên kết đến Bootstrap Icons hoặc Font Awesome nếu chưa có -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-pjw5IY2E6MwLOv+hAq/dj2kQwK9/UCrwSUSC1A3cHkGt3ytgV8uPiQ9Q3OgdXzMWV+nQkZi1p/TY+QJyp6yNqw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 <div layout:fragment="content" class="mt-5 pt-4">
     <div class="container">
+        <!-- Các phần khác của sản phẩm ở đây -->
         <div class="row mb-4">
             <!-- Hình ảnh sản phẩm -->
             <div class="col-md-6 text-center">
                 <div class="card shadow-sm border-0">
                     <div class="product-detail-image-container">
-                        <img src="https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-kem-chong-nang-martiderm-pho-rong-toan-dien-spf50-40ml-1717484548_img_385x385_622873_fit_center.jpg"
+                        <img th:src="@{'/images/' + ${product.imageFilename}}"
                              class="product-detail-image" alt="Hình ảnh sản phẩm">
                     </div>
                 </div>
@@ -27,8 +31,8 @@
                 <h2 th:text="${product.productName}"></h2>
                 <h4 th:text="${product.price} + ' VNĐ'"></h4>
                 <p><strong>Thương hiệu:</strong> <span th:text="${product.brand}"></span></p>
-                <p><strong>Danh mục:</strong> <span th:text="${product.category.categoryName}"></span></p>
-<!--                <p><strong>Số lượng còn:</strong> <span th:text="${product.stockQuantity}"></span></p>-->
+                <p><strong>Danh mục:</strong> <span th:text="${product.category}"></span></p>
+                <p><strong>Số lượng còn:</strong> <span th:text="${product.stockQuantity}"></span></p>
                 <p><strong>Mô tả:</strong></p>
                 <p th:text="${product.description}"></p>
 
@@ -101,8 +105,69 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Kho hàng đã được chuyển vào inventory-details -->
+
+        <!-- Phần hiển thị Review -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3>Đánh giá sản phẩm</h3>
+                <div th:if="${#lists.isEmpty(product.reviews)}">
+                    <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(product.reviews)}">
+                    <div class="mt-4">
+                        <h5 class="mb-3">Tổng quan đánh giá:
+<!--                            <span th:text="${product.averageRating}">4.5</span>/5-->
+                            <span>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </span>
+                        </h5>
+                        <div th:each="review : ${product.reviews}" class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <!-- Avatar người dùng - Giả sử có trường avatar trong review -->
+                                    <img src="https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png" alt="Avatar" class="rounded-circle me-3" width="50" height="50">
+                                    <div>
+                                        <h5 th:text="${review.customer.username}" class="mb-0" >Tên người dùng</h5>
+                                        <small class="text-muted" th:text="${#temporals.format(review.reviewDate, 'dd/MM/yyyy')}">01/01/2024</small>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <i th:classappend="${i <= review.rating} ? 'fas fa-star text-warning' : 'far fa-star text-warning'"></i>
+                                    </span>
+                                    <span class="ms-2 text-muted" th:text="'(' + ${review.rating} + '/5)'"> (4/5)</span>
+                                </div>
+                                <p class="mb-0" th:text="${review.comment}">Nội dung đánh giá...</p>
+                            </div>
+                        </div>
+                        <!-- Nếu có nhiều đánh giá, có thể thêm phân trang ở đây -->
+                        <!-- Ví dụ: -->
+                        <!--
+                        <nav aria-label="Page navigation example">
+                          <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                              <a class="page-link" href="#">Next</a>
+                            </li>
+                          </ul>
+                        </nav>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -110,8 +175,8 @@
 <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
 </script>
 </body>
 </html>

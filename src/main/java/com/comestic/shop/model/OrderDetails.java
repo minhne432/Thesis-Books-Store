@@ -28,15 +28,19 @@ public class OrderDetails {
 
     @Column(name = "UnitPrice", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
+    @OneToOne(mappedBy = "orderDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Review review;
 
     // Constructors
     public OrderDetails() {}
 
-    public OrderDetails(Order order, Product product, Integer quantity, BigDecimal unitPrice) {
+    public OrderDetails(Long orderDetailId, Order order, Product product, Integer quantity, BigDecimal unitPrice, Review review) {
+        this.orderDetailId = orderDetailId;
         this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.review = review;
     }
 
     // Getters and Setters
@@ -78,6 +82,14 @@ public class OrderDetails {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 
     // You might want to add equals(), hashCode(), and toString() methods here

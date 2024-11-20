@@ -7,7 +7,9 @@ import com.comestic.shop.model.OrderDetails;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Product {
@@ -36,9 +38,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private Set<CartItem> cartItems;
-
-    @OneToMany(mappedBy = "product")
-    private Set<Review> reviews;
 
     @OneToMany(mappedBy = "product")
     private Set<PurchaseOrderDetails> purchaseOrderDetails;
@@ -82,9 +81,6 @@ public class Product {
         return cartItems;
     }
 
-    public Set<Review> getReviews() {
-        return reviews;
-    }
 
     public Set<PurchaseOrderDetails> getPurchaseOrderDetails() {
         return purchaseOrderDetails;
@@ -127,10 +123,6 @@ public class Product {
         this.cartItems = cartItems;
     }
 
-    public void setReviews(Set<Review> reviews) {
-        this.reviews = reviews;
-    }
-
     public void setPurchaseOrderDetails(Set<PurchaseOrderDetails> purchaseOrderDetails) {
         this.purchaseOrderDetails = purchaseOrderDetails;
     }
@@ -154,4 +146,14 @@ public class Product {
     public void setImageFilename(String imageFilename) {
         this.imageFilename = imageFilename;
     }
+
+    // Method to get reviews
+    @Transient
+    public List<Review> getReviews() {
+        return orderDetails.stream()
+                .filter(od -> od.getReview() != null)
+                .map(OrderDetails::getReview)
+                .collect(Collectors.toList());
+    }
+
 }

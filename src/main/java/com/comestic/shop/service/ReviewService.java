@@ -14,42 +14,8 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+    public void save(Review review) {
+        reviewRepository.save(review);
     }
 
-    public Optional<Review> getReviewById(Long id) {
-        return reviewRepository.findById(id);
-    }
-
-    public List<Review> getReviewsByProductId(Long productId) {
-        return reviewRepository.findByProduct_ProductID(productId);
-    }
-
-    public List<Review> getReviewsByCustomerId(Long customerId) {
-        return reviewRepository.findByCustomer_CustomerID(customerId);
-    }
-
-    public Review addReview(Review review) {
-        return reviewRepository.save(review);
-    }
-
-    public Review updateReview(Long id, Review reviewDetails) {
-        Optional<Review> optionalReview = reviewRepository.findById(id);
-        if (optionalReview.isPresent()) {
-            Review review = optionalReview.get();
-            review.setProduct(reviewDetails.getProduct());
-            review.setCustomer(reviewDetails.getCustomer());
-            review.setRating(reviewDetails.getRating());
-            review.setComment(reviewDetails.getComment());
-            review.setReviewDate(reviewDetails.getReviewDate());
-            return reviewRepository.save(review);
-        } else {
-            return null; // Hoặc bạn có thể ném ra ngoại lệ tùy theo logic
-        }
-    }
-
-    public void deleteReview(Long id) {
-        reviewRepository.deleteById(id);
-    }
 }

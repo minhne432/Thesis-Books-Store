@@ -61,5 +61,9 @@ public class OrderDetailsService {
         return orderDetailsRepository.findCategorySalesBetweenDates(startDate, endDate);
     }
 
+    public OrderDetails findById(Long orderDetailId) {
+        return orderDetailsRepository.findById(orderDetailId)
+                .orElseThrow(() -> new RuntimeException("OrderDetails not found with id: " + orderDetailId));
+    }
 
 }
