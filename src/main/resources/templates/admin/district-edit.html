@@ -1,27 +1,68 @@
 <!-- templates/admin/district-edit.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
 <head>
-    <title>Chỉnh sửa Quận/Huyện</title>
+    <title layout:fragment="title">Chỉnh sửa Quận/Huyện</title>
 </head>
+
 <body>
-<h1>Chỉnh sửa Quận/Huyện</h1>
-<form th:action="@{/admin/districts/edit}" th:object="${district}" method="post">
-    <input type="hidden" th:field="*{districtID}" />
-    <label for="districtName">Tên Quận/Huyện:</label>
-    <input type="text" id="districtName" th:field="*{districtName}" required />
-    <br/>
-    <label for="province">Thuộc Tỉnh:</label>
-    <select id="province" th:field="*{province}" required>
-        <option th:each="province : ${provinces}"
-                th:value="${province.provinceID}"
-                th:text="${province.provinceName}"
-                th:selected="${province.provinceID == district.province.provinceID}">
-        </option>
-    </select>
-    <br/>
-    <button type="submit">Cập nhật</button>
-    <a th:href="@{/admin/districts}">Hủy</a>
-</form>
+<div layout:fragment="content">
+    <!-- Flash Messages -->
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}">Cập nhật Quận/Huyện thành công!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}">Đã xảy ra lỗi khi cập nhật Quận/Huyện!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Chỉnh sửa Quận/Huyện</h1>
+        <a th:href="@{/admin/districts}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách Quận/Huyện
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/admin/districts/edit}" th:object="${district}" method="post">
+                <input type="hidden" th:field="*{districtID}" />
+                <div class="mb-3">
+                    <label for="districtName" class="form-label">Tên Quận/Huyện:</label>
+                    <input type="text" id="districtName"
+                           th:field="*{districtName}"
+                           class="form-control"
+                           placeholder="Nhập tên Quận/Huyện"
+                           required />
+                </div>
+                <div class="mb-3">
+                    <label for="province" class="form-label">Thuộc Tỉnh:</label>
+                    <select id="province" th:field="*{province}" class="form-select" required>
+                        <option value="" disabled>-- Chọn Tỉnh --</option>
+                        <option th:each="province : ${provinces}"
+                                th:value="${province.provinceID}"
+                                th:text="${province.provinceName}"
+                                th:selected="${province.provinceID == district.province.provinceID}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Cập nhật
+                </button>
+                <a th:href="@{/admin/districts}" class="btn btn-secondary">
+                    <i class="fas fa-times-circle"></i> Hủy
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <!-- Additional page-specific scripts can be added here -->
+</div>
 </body>
 </html>

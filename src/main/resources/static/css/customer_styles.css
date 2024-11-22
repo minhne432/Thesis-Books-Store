@@ -1,0 +1,69 @@
+/* templates/css/customer_styles.css */
+
+/* Màu hồng chủ đạo */
+.text-pink {
+    color: #e91e63 !important;
+}
+
+/* Nền navbar hồng nhạt */
+.navbar-light.bg-light {
+    background-color: #fff0f6 !important;
+}
+
+/* Nền footer hồng */
+.bg-pink {
+    background-color: #e91e63 !important;
+}
+
+/* Hiệu ứng hover cho liên kết navbar và footer */
+.navbar-nav .nav-link:hover,
+footer a:hover {
+    color: #d81b60 !important;
+}
+
+/* Biểu tượng trong navbar */
+.navbar-brand i {
+    color: #e91e63;
+}
+
+/* Badge giỏ hàng */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.25em 0.4em;
+}
+
+/* Liên kết trong footer */
+footer a {
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #d81b60 !important;
+}
+
+/* Tiêu đề footer */
+footer h5 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+}
+
+/* Tiêu đề trong header và footer */
+.navbar-brand,
+footer h5 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Các liên kết không viền trong navbar */
+.navbar-nav .nav-link {
+    font-weight: 500;
+}
+
+/* Các liên kết trong dropdown menu */
+.dropdown-menu .dropdown-item {
+    color: #e91e63;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #ffe6f0;
+    color: #d81b60;
+}

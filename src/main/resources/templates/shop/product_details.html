@@ -117,16 +117,16 @@
                 </div>
                 <div th:unless="${#lists.isEmpty(product.reviews)}">
                     <div class="mt-4">
-                        <h5 class="mb-3">Tổng quan đánh giá:
-<!--                            <span th:text="${product.averageRating}">4.5</span>/5-->
-                            <span>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star-half-alt text-warning"></i>
-                            </span>
-                        </h5>
+<!--                        <h5 class="mb-3">Tổng quan đánh giá:-->
+<!--&lt;!&ndash;                            <span th:text="${product.averageRating}">4.5</span>/5&ndash;&gt;-->
+<!--                            <span>-->
+<!--                                <i class="fas fa-star text-warning"></i>-->
+<!--                                <i class="fas fa-star text-warning"></i>-->
+<!--                                <i class="fas fa-star text-warning"></i>-->
+<!--                                <i class="fas fa-star text-warning"></i>-->
+<!--                                <i class="fas fa-star-half-alt text-warning"></i>-->
+<!--                            </span>-->
+<!--                        </h5>-->
                         <div th:each="review : ${product.reviews}" class="card mb-3 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-2">

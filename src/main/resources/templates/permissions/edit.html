@@ -1,22 +1,63 @@
+<!-- templates/admin/edit_permission.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
 <head>
-    <title>Chỉnh sửa Permission</title>
-    <meta charset="UTF-8">
+    <title layout:fragment="title">Chỉnh sửa Permission</title>
 </head>
+
 <body>
-<h1>Chỉnh sửa Permission</h1>
-<form th:action="@{|/permissions/edit/${permission.permissionID}|}" method="post">
-    <div>
-        <label>Tên Permission:</label>
-        <input type="text" name="permissionName" th:value="${permission.permissionName}" required />
+<div layout:fragment="content">
+    <!-- Flash Messages -->
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div>
-        <label>Mô tả:</label>
-        <textarea name="description" th:text="${permission.description}"></textarea>
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${param.error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <button type="submit">Cập nhật</button>
-</form>
-<a th:href="@{/permissions}">Quay lại danh sách Permission</a>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Chỉnh sửa Permission</h1>
+        <a th:href="@{/permissions}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách Permission
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{|/permissions/edit/${permission.permissionID}|}" method="post">
+                <div class="mb-3">
+                    <label for="permissionName" class="form-label">Tên Permission:</label>
+                    <input type="text" id="permissionName"
+                           name="permissionName"
+                           th:value="${permission.permissionName}"
+                           class="form-control"
+                           placeholder="Nhập tên Permission"
+                           required />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Mô tả:</label>
+                    <textarea id="description"
+                              name="description"
+                              th:text="${permission.description}"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Nhập mô tả về Permission"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Cập nhật
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <!-- Additional page-specific scripts can be added here -->
+</div>
 </body>
 </html>

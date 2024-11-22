@@ -5,15 +5,16 @@
 <head>
     <title layout:fragment="title">Giỏ hàng của bạn</title>
     <link rel="stylesheet" th:href="@{/css/cart_styles.css}">
+    <!-- Không cần bao gồm Font Awesome ở đây vì đã bao gồm trong layout chính -->
 </head>
 <body>
 <div layout:fragment="content">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center">Giỏ hàng của bạn</h2>
+        <h2 class="mb-4 text-center text-pink">Giỏ hàng của bạn</h2>
 
         <!-- Giỏ hàng trống -->
         <div th:if="${#lists.isEmpty(cartItems)}" class="text-center">
-            <p>Giỏ hàng của bạn đang trống. <a th:href="@{/products/shop/list}" class="btn btn-primary">Tiếp tục mua sắm</a></p>
+            <p class="lead">Giỏ hàng của bạn đang trống. <a th:href="@{/shop/products/list}" class="btn btn-pink">Tiếp tục mua sắm</a></p>
         </div>
 
         <!-- Giỏ hàng có sản phẩm -->
@@ -25,7 +26,7 @@
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover align-middle">
-                        <thead class="table-light">
+                        <thead class="table-pink">
                         <tr>
                             <th scope="col">Sản phẩm</th>
                             <th scope="col">Giá</th>
@@ -38,10 +39,9 @@
                         <tr th:each="item, iterStat : ${cartItems}">
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <!-- Nếu có hình ảnh sản phẩm, bạn có thể thêm thẻ img ở đây -->
-                                    <!-- <img th:src="@{'/images/' + ${item.product.imageFilename}}" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px;"> -->
+                                    <img th:src="@{'/images/' + ${item.product.imageFilename}}" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
                                     <div>
-                                        <h5 th:text="${item.product.productName}">Tên sản phẩm</h5>
+                                        <h5 th:text="${item.product.productName}" class="text-pink mb-1">Tên sản phẩm</h5>
                                         <p th:text="${item.product.description}" class="mb-0 text-muted">Mô tả sản phẩm</p>
                                     </div>
                                 </div>
@@ -67,25 +67,25 @@
                     </table>
                 </div>
 
-                <!-- Commented out "Cập nhật giỏ hàng" button -->
-                <!--
+                <!-- Nút Cập nhật giỏ hàng -->
                 <div class="text-end mb-4">
-                    <button type="submit" class="btn btn-primary">Cập nhật giỏ hàng</button>
+                    <button type="submit" class="btn btn-pink">
+                        <i class="fas fa-sync-alt me-2"></i> Cập nhật giỏ hàng
+                    </button>
                 </div>
-                -->
             </form>
 
             <!-- Phần tổng tiền và phương thức thanh toán -->
             <div class="row mt-4">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <a th:href="@{/products/shop/list}" class="btn btn-secondary">
+                    <a th:href="@{/shop/products/list}" class="btn btn-secondary">
                         <i class="fas fa-shopping-bag me-2"></i> Tiếp tục mua sắm
                     </a>
                 </div>
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Tổng tiền:</h4>
+                            <h4 class="card-title text-pink">Tổng tiền:</h4>
                             <!-- Sửa biểu thức 'Tổng tiền' và thêm span để JavaScript có thể chọn -->
                             <h3 class="card-text text-end">
                                 <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmount, 0, 0)}|">VNĐ 0</span>
@@ -98,17 +98,17 @@
 
                                 <!-- Phần lựa chọn phương thức thanh toán -->
                                 <div class="payment-method mb-3">
-                                    <h5>Chọn phương thức thanh toán:</h5>
+                                    <h5 class="text-pink">Chọn phương thức thanh toán:</h5>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
                                         <label class="form-check-label" for="cod">
-                                            Thanh toán khi nhận hàng (COD)
+                                            <i class="fas fa-money-bill-wave me-2"></i> Thanh toán khi nhận hàng (COD)
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPAY">
                                         <label class="form-check-label" for="vnpay">
-                                            Thanh toán qua VNPAY
+                                            <i class="fas fa-wallet me-2"></i> Thanh toán qua VNPAY
                                         </label>
                                     </div>
                                 </div>
@@ -125,53 +125,54 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- JavaScript để tính tổng tiền -->
-    <div layout:fragment="pageScripts">
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Function to format numbers as VND
-                function formatVND(number) {
-                    return number.toLocaleString('vi-VN') + ' VNĐ';
-                }
+        <!-- JavaScript để tính tổng tiền -->
+        <div layout:fragment="pageScripts">
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Function to format numbers as VND
+                    function formatVND(number) {
+                        return number.toLocaleString('vi-VN') + ' VNĐ';
+                    }
 
-                // Function to calculate the total amount
-                function calculateTotalAmount() {
-                    let totalAmount = 0;
-                    const rows = document.querySelectorAll("tbody tr");
+                    // Function to calculate the total amount
+                    function calculateTotalAmount() {
+                        let totalAmount = 0;
+                        const rows = document.querySelectorAll("tbody tr");
 
-                    rows.forEach(row => {
-                        const priceText = row.querySelector(".price").textContent;
-                        const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
-                        const quantityInput = row.querySelector(".quantity-input");
-                        const quantity = parseInt(quantityInput.value) || 0;
-                        const itemTotalCell = row.querySelector(".item-total");
+                        rows.forEach(row => {
+                            const priceText = row.querySelector(".price").textContent;
+                            const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
+                            const quantityInput = row.querySelector(".quantity-input");
+                            const quantity = parseInt(quantityInput.value) || 0;
+                            const itemTotalCell = row.querySelector(".item-total");
 
-                        const itemTotal = price * quantity;
-                        totalAmount += itemTotal;
+                            const itemTotal = price * quantity;
+                            totalAmount += itemTotal;
 
-                        // Update the 'Tổng cộng' cell
-                        itemTotalCell.textContent = formatVND(itemTotal);
+                            // Update the 'Tổng cộng' cell
+                            itemTotalCell.textContent = formatVND(itemTotal);
+                        });
+
+                        // Update the total amount in the summary
+                        const totalAmountElement = document.querySelector("h3.card-text span");
+                        if(totalAmountElement) {
+                            totalAmountElement.textContent = formatVND(totalAmount);
+                        }
+                    }
+
+                    // Attach event listeners to all quantity inputs
+                    const quantityInputs = document.querySelectorAll(".quantity-input");
+                    quantityInputs.forEach(input => {
+                        input.addEventListener("input", calculateTotalAmount);
                     });
 
-                    // Update the total amount in the summary
-                    const totalAmountElement = document.querySelector("h3.card-text span");
-                    if(totalAmountElement) {
-                        totalAmountElement.textContent = formatVND(totalAmount);
-                    }
-                }
-
-                // Attach event listeners to all quantity inputs
-                const quantityInputs = document.querySelectorAll(".quantity-input");
-                quantityInputs.forEach(input => {
-                    input.addEventListener("input", calculateTotalAmount);
+                    // Initial calculation on page load
+                    calculateTotalAmount();
                 });
-
-                // Initial calculation on page load
-                calculateTotalAmount();
-            });
-        </script>
+            </script>
+        </div>
     </div>
+</div>
 </body>
 </html>

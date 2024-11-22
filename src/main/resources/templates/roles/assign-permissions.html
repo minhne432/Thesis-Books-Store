@@ -1,25 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
 <head>
-    <title>Gán Permission cho Role</title>
-    <meta charset="UTF-8">
+    <title layout:fragment="title">Gán Permission cho Role</title>
 </head>
+
 <body>
-<h1>Gán Permission cho Role: <span th:text="${role.roleName}"></span></h1>
-<form th:action="@{|/roles/assign-permissions/${role.roleID}|}" method="post">
-    <div>
-        <label><strong>Danh sách Permissions:</strong></label><br/>
-        <ul>
-            <li th:each="permission : ${allPermissions}">
-                <input type="checkbox" name="permissionIds"
-                       th:value="${permission.permissionID}"
-                       th:checked="${assignedPermissionIds.contains(permission.permissionID)}"/>
-                <span th:text="${permission.permissionName}"></span>
-            </li>
-        </ul>
+<div layout:fragment="content">
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <button type="submit">Lưu</button>
-</form>
-<a th:href="@{/roles}">Quay lại danh sách Role</a>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gán Permission cho Role: <span th:text="${role.roleName}"></span></h1>
+        <a th:href="@{/roles}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách Role
+        </a>
+    </div>
+
+    <form th:action="@{|/roles/assign-permissions/${role.roleID}|}" method="post">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>Danh sách Permissions:</strong>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAllPermissions" />
+                    <label class="form-check-label" for="selectAllPermissions">
+                        <i class="fas fa-check-double me-2"></i> Chọn/Tẩy tất cả
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="list-group">
+                            <div th:each="permission : ${allPermissions}" class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           th:id="'permission_' + ${permission.permissionID}"
+                                           name="permissionIds"
+                                           th:value="${permission.permissionID}"
+                                           th:checked="${assignedPermissionIds.contains(permission.permissionID)}" />
+                                    <label class="form-check-label"
+                                           th:for="'permission_' + ${permission.permissionID}">
+                                        <i class="fas fa-check-square me-2"></i>
+                                        <span th:text="${permission.permissionName}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Lưu
+        </button>
+    </form>
+</div>
+
+<div layout:fragment="pageScripts">
+    <!-- Toggle Select All Permissions -->
+    <script>
+        document.getElementById('selectAllPermissions').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="permissionIds"]');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+        });
+    </script>
+</div>
 </body>
 </html>

@@ -1,38 +1,100 @@
-/* General Styles */
-body {
-    background-color: #f9f9f9;
+/* templates/css/cart_styles.css */
+
+/* Màu hồng chủ đạo */
+.text-pink {
+    color: #e91e63 !important;
 }
 
-/* Giỏ Hàng */
-.table thead th {
-    background-color: #f8f9fa;
-    font-weight: bold;
+.bg-pink {
+    background-color: #e91e63 !important;
 }
 
-.table tbody tr:hover {
-    background-color: #f1f1f1;
+.btn-pink {
+    background-color: #e91e63;
+    border: none;
+    color: #fff;
+    transition: background-color 0.3s;
 }
 
-.payment-method h5 {
-    margin-bottom: 15px;
-    color: #333;
+.btn-pink:hover {
+    background-color: #d81b60;
 }
 
-.btn-link {
+/* Nền bảng trong giỏ hàng */
+.table-pink th {
+    background-color: #ffe6f0;
+    color: #e91e63;
+}
+
+/* Hiệu ứng hover cho các hàng trong bảng */
+.table-hover tbody tr:hover {
+    background-color: #fff0f6;
+}
+
+/* Định dạng modal nếu có */
+.modal-header.bg-pink {
+    background-color: #e91e63;
+}
+
+.modal-header.text-white h5 {
+    color: #fff;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+/* Định dạng các liên kết trong nội dung */
+a.text-pink {
+    color: #e91e63;
     text-decoration: none;
 }
 
-.btn-link:hover {
+a.text-pink:hover {
+    color: #d81b60;
     text-decoration: underline;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 576px) {
-    .payment-method h5 {
-        font-size: 1.1rem;
-    }
+/* Định dạng hình ảnh sản phẩm */
+.img-thumbnail {
+    border: none;
+}
 
-    .btn-lg {
-        width: 100%;
+.img-thumbnail:hover {
+    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.2);
+}
+
+/* Định dạng tổng tiền */
+.card-title.text-pink {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+}
+
+.card-text.text-danger {
+    font-size: 1.25rem;
+}
+
+/* Định dạng các nút trong phần đặt hàng */
+.payment-method h5.text-pink {
+    font-family: 'Playfair Display', serif;
+}
+
+.payment-method .form-check-label {
+    font-weight: 500;
+}
+
+.btn-success {
+    background-color: #4caf50;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #45a049;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quantity-input {
+        width: 60px;
     }
 }

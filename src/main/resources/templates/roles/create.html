@@ -1,22 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
 <head>
-    <title>Tạo Role mới</title>
-    <meta charset="UTF-8">
+    <title layout:fragment="title">Tạo Role mới</title>
 </head>
+
 <body>
-<h1>Tạo Role mới</h1>
-<form th:action="@{/roles/create}" method="post">
-    <div>
-        <label>Tên Role:</label>
-        <input type="text" name="roleName" th:value="${role.roleName}" required />
-    </div>
-    <div>
-        <label>Mô tả:</label>
-        <textarea name="description" th:text="${role.description}"></textarea>
-    </div>
-    <button type="submit">Lưu</button>
-</form>
-<a th:href="@{/roles}">Quay lại danh sách Role</a>
+<div layout:fragment="content">
+    <h1 class="mb-4">Tạo Role mới</h1>
+    <form th:action="@{/roles/create}" method="post">
+        <div class="mb-3">
+            <label for="roleName" class="form-label">Tên Role:</label>
+            <input type="text" id="roleName" name="roleName"
+                   th:value="${role.roleName}"
+                   class="form-control"
+                   placeholder="Nhập tên role"
+                   required />
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Mô tả:</label>
+            <textarea id="description" name="description"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Nhập mô tả về role"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Lưu
+        </button>
+        <a th:href="@{/roles}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách Role
+        </a>
+    </form>
+</div>
+
+<div layout:fragment="pageScripts">
+    <!-- Additional page-specific scripts can be added here -->
+</div>
 </body>
 </html>

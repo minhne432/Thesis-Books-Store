@@ -1,12 +1,97 @@
-<!-- templates/products/product_list.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/customer_layout}">
 <head>
     <title layout:fragment="title">Danh sách sản phẩm</title>
-    <!-- Optional: Include your custom CSS here -->
+    <!-- Không cần bao gồm Bootstrap CSS và Font Awesome vì đã được bao gồm trong layout -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/product_list_styles.css}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .sidebar {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: #e91e63;
+            font-weight: 500;
+        }
+        .sidebar .nav-link:hover {
+            color: #d81b60;
+        }
+        .sidebar .nav-link i {
+            margin-right: 8px;
+            color: #e91e63;
+        }
+        .sidebar .collapse .nav-link {
+            color: #6c757d;
+        }
+        .sidebar .collapse .nav-link:hover {
+            color: #d81b60;
+        }
+        .product-image {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(233, 30, 99, 0.2);
+        }
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            color: #e91e63;
+        }
+        .btn-primary {
+            background-color: #e91e63;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #d81b60;
+        }
+        .btn-outline-success {
+            color: #e91e63;
+            border-color: #e91e63;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-outline-success:hover {
+            background-color: #e91e63;
+            color: #fff;
+        }
+        .pagination .page-link {
+            color: #e91e63;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #e91e63;
+            border-color: #e91e63;
+            color: #fff;
+        }
+        .pagination .page-link:hover {
+            background-color: #d81b60;
+            color: #fff;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="mt-5 pt-4">
@@ -23,7 +108,7 @@
                                 <i class="fas fa-chevron-down ms-auto"></i>
                             </a>
                             <div class="collapse" id="productCategorySubmenu">
-                                <ul class="nav flex-column">
+                                <ul class="nav flex-column ms-3">
                                     <li class="nav-item"><a class="nav-link" href="@{/categories/skincare}"><i class="fas fa-spa"></i> Chăm sóc da</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/categories/makeup}"><i class="fas fa-paint-brush"></i> Trang điểm</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/categories/fragrance}"><i class="fas fa-smile-wink"></i> Nước hoa</a></li>
@@ -41,7 +126,7 @@
                                 <i class="fas fa-chevron-down ms-auto"></i>
                             </a>
                             <div class="collapse" id="brandSubmenu">
-                                <ul class="nav flex-column">
+                                <ul class="nav flex-column ms-3">
                                     <li class="nav-item"><a class="nav-link" href="@{/brands/nivea}">Nivea</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/brands/loreal}">L'Oréal</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/brands/lancome}">Lancôme</a></li>
@@ -58,7 +143,7 @@
                                 <i class="fas fa-chevron-down ms-auto"></i>
                             </a>
                             <div class="collapse" id="filterSubmenu">
-                                <ul class="nav flex-column">
+                                <ul class="nav flex-column ms-3">
                                     <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=0,priceMax=100000)}">Dưới 100,000 VNĐ</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=100000,priceMax=500000)}">100,000 - 500,000 VNĐ</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=500000,priceMax=1000000)}">500,000 - 1,000,000 VNĐ</a></li>
@@ -77,7 +162,7 @@
                     <div class="col-md-8 offset-md-2">
                         <form class="input-group" th:action="@{/shop/products/search}" method="get">
                             <input class="form-control" type="search" name="keyword" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" th:value="${keyword}">
-                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+                            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
                         </form>
                     </div>
                 </div>
@@ -85,7 +170,7 @@
                 <!-- Danh sách sản phẩm -->
                 <div class="row">
                     <div class="col-md-4 mb-4" th:each="product : ${products}">
-                        <div class="card h-100 shadow-sm hover-zoom">
+                        <div class="card h-100 shadow-sm">
                             <a th:href="@{'/shop/products/details/' + ${product.productID}}" class="text-decoration-none">
                                 <img th:src="@{'/images/' + ${product.imageFilename}}" class="card-img-top product-image" alt="Hình ảnh sản phẩm">
                             </a>
@@ -135,5 +220,10 @@
         </div>
     </div>
 </div>
+
+<!-- Không cần bao gồm Bootstrap JS và các thư viện phụ thuộc vì đã được bao gồm trong layout -->
+<!-- Custom JS -->
+<script th:src="@{/js/scripts.js}"></script>
+<div layout:fragment="pageScripts"></div>
 </body>
 </html>

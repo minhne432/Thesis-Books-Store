@@ -1,38 +1,76 @@
 <!-- templates/admin/customer-roles.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
 <head>
-    <title>Chỉnh sửa quyền cho khách hàng</title>
-    <!-- Bao gồm các file CSS hoặc JS cần thiết tại đây -->
+    <title layout:fragment="title">Chỉnh sửa quyền cho người dùng</title>
 </head>
+
 <body>
-<h1>Chỉnh sửa quyền cho khách hàng: [[${customer.username}]]</h1>
-
-<!-- Hiển thị thông báo thành công hoặc lỗi nếu có -->
-<div th:if="${success}">
-    <p style="color: green;" th:text="${success}">Cập nhật quyền thành công!</p>
-</div>
-<div th:if="${error}">
-    <p style="color: red;" th:text="${error}">Đã xảy ra lỗi khi cập nhật quyền!</p>
-</div>
-
-<form th:action="@{'/admin/customers/' + ${customer.customerID} + '/roles'}" method="post">
-    <div>
-        <h2>Quyền khả dụng:</h2>
-        <ul>
-            <li th:each="role : ${allRoles}">
-                <input type="checkbox" name="roleIds"
-                       th:value="${role.roleID}"
-                       th:checked="${assignedRoleIds.contains(role.roleID)}"/>
-                <span th:text="${role.roleName}">Tên quyền</span>
-            </li>
-        </ul>
+<div layout:fragment="content">
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}">Cập nhật quyền thành công!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <button type="submit">Cập nhật quyền</button>
-</form>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}">Đã xảy ra lỗi khi cập nhật quyền!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-<p>
-    <a th:href="@{'/admin/customers'}">Quay lại danh sách khách hàng</a>
-</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Chỉnh sửa quyền cho người dùng: <span th:text="${customer.username}"></span></h1>
+        <a th:href="@{'/admin/customers'}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách người dùng
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{'/admin/customers/' + ${customer.customerID} + '/roles'}" method="post">
+                <div class="mb-3">
+                    <h2>Quyền khả dụng:</h2>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllRoles" />
+                        <label class="form-check-label" for="selectAllRoles">
+                            <i class="fas fa-check-double me-2"></i> Chọn/Tẩy tất cả
+                        </label>
+                    </div>
+                    <div class="list-group mt-2">
+                        <div th:each="role : ${allRoles}" class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       th:id="'role_' + ${role.roleID}"
+                                       name="roleIds"
+                                       th:value="${role.roleID}"
+                                       th:checked="${assignedRoleIds.contains(role.roleID)}" />
+                                <label class="form-check-label"
+                                       th:for="'role_' + ${role.roleID}">
+                                    <i class="fas fa-user-tag me-2"></i>
+                                    <span th:text="${role.roleName}"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Cập nhật quyền
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="pageScripts">
+    <!-- Toggle Select All Roles -->
+    <script>
+        document.getElementById('selectAllRoles').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="roleIds"]');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+        });
+    </script>
+</div>
 </body>
 </html>
