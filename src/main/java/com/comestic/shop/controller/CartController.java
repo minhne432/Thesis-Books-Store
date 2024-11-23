@@ -417,6 +417,11 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             if ("COD".equals(paymentMethod)) {
                 // Thanh toán khi nhận hàng
                 // Đặt hàng trực tiếp
+                order.setStatus(OrderStatus.PENDING);
+                // tạo mã đơn hàng duy nhất
+                String orderCode = "ORD-" + System.currentTimeMillis();
+                order.setOrderCode(orderCode);
+
                 Order savedOrder = orderService.placeOrder(order);
 
                 // Xóa giỏ hàng sau khi đặt hàng thành công
@@ -424,7 +429,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
 
                 // Thêm thông báo thành công
                 model.addAttribute("order", savedOrder);
-                return "order/success";
+                return "cart/payment_result";
             } else if ("VNPAY".equals(paymentMethod)) {
                 // Thanh toán qua VNPAY
                 // Chuyển hướng đến phương thức xử lý thanh toán VNPAY
