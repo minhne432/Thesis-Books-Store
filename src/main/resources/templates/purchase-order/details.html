@@ -104,6 +104,7 @@
     });
 
     function updateStatus(purchaseOrderId, newStatus, csrfToken, csrfHeaderName) {
+        console.log("updated status");
         fetch(`/purchase-orders/${purchaseOrderId}/update-status`, {
             method: 'POST',
             headers: {
