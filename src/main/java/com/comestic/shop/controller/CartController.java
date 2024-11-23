@@ -246,6 +246,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             // Tìm đơn hàng dựa trên orderCode (vnp_TxnRef)
             Order order = orderService.findByOrderCode(vnp_TxnRef);
 
+
             if (order == null) {
                 model.addAttribute("message", "Không tìm thấy đơn hàng.");
                 return "cart/payment_result";
@@ -260,15 +261,13 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             if ("00".equals(vnp_ResponseCode)) {
                 // Payment successful
 
-                // Không thay đổi trạng thái đơn hàng ở đây
-                // order.setStatus("PAID"); // Loại bỏ dòng này
 
                 // Đặt hàng (cập nhật tồn kho và trạng thái)
                 orderService.placeOrder(order);
 
                 // Xóa giỏ hàng
-//                Customer customer = getCurrentCustomer();
-//                cartService.clearCart(customer);
+                Customer customer = getCurrentCustomer();
+                cartService.clearCart(customer);
 
                 // Thêm thông báo thành công
                 model.addAttribute("order", order);
@@ -421,7 +420,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
                 Order savedOrder = orderService.placeOrder(order);
 
                 // Xóa giỏ hàng sau khi đặt hàng thành công
-//                cartService.clearCart(customer);
+                cartService.clearCart(customer);
 
                 // Thêm thông báo thành công
                 model.addAttribute("order", savedOrder);

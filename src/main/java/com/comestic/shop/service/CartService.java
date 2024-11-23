@@ -2,6 +2,7 @@ package com.comestic.shop.service;
 
 import com.comestic.shop.model.*;
 import com.comestic.shop.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -170,6 +171,7 @@ public class CartService {
     }
 
 
+    @Transactional
     public void clearCart(Customer customer) {
         Cart cart = getCartByCustomer(customer);
         cartItemRepository.deleteAllByCart(cart);
