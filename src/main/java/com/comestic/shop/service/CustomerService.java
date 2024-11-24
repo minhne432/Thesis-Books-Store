@@ -51,8 +51,8 @@ public class CustomerService {
         return customerRepository.findByEmail(email);
     }
 
-    public Optional<Customer> getCustomerByUsername(String email) {
-        return customerRepository.findByUsername(email);
+    public Optional<Customer> getCustomerByUsername(String username) {
+        return customerRepository.findByUsername(username);
     }
 
     // Thêm khách hàng mới

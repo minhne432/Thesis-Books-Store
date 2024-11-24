@@ -429,7 +429,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
 
                 // Thêm thông báo thành công
                 model.addAttribute("order", savedOrder);
-                return "cart/payment_result";
+                return "order/success";
             } else if ("VNPAY".equals(paymentMethod)) {
                 // Thanh toán qua VNPAY
                 // Chuyển hướng đến phương thức xử lý thanh toán VNPAY
