@@ -62,6 +62,10 @@ public class ShopController {
             List<Inventory> inventories = productService.getInventoriesByProduct(product);
             model.addAttribute("inventories", inventories);
 
+
+            //debug
+            System.out.println("product name ne: "+inventories.get(0).getProduct().getProductName());
+            System.out.println("product name ne: "+inventories.get(0).getProduct().getImageFilename());
             return "shop/product_details";
         } else {
             return "redirect:/products";

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Tồn kho sản phẩm</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/inventory_list.css}">
+</head>
+<body>
+<div layout:fragment="content" class="mt-5 pt-4">
+    <div class="container">
+        <!-- Tiêu đề -->
+        <h1 class="text-center mb-4">Tồn kho của sản phẩm: <span th:text="${product.productName}">Tên sản phẩm</span></h1>
+
+        <!-- Thông tin chung về sản phẩm -->
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h5>Thông tin sản phẩm</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Tên sản phẩm:</strong> <span th:text="${product.productName}">Tên sản phẩm</span></p>
+                        <p><strong>Thương hiệu:</strong> <span th:text="${product.brand}">Thương hiệu</span></p>
+                        <p><strong>Giá:</strong> <span th:text="${#numbers.formatDecimal(product.price, 0, 0) + ' VNĐ'}">100,000 VNĐ</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng liệt kê tồn kho -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Chi nhánh</th>
+                    <th scope="col">Số lượng tồn kho</th>
+                    <th scope="col">Ngày cập nhật cuối</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="inventory : ${inventories}">
+                    <td th:text="${inventory.branch.branchName}">Tên chi nhánh</td>
+                    <td th:text="${inventory.quantity}">Số lượng tồn kho</td>
+                    <td th:text="${inventory.lastUpdatedDate}">Ngày cập nhật cuối</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Nếu không có tồn kho -->
+        <div class="alert alert-warning text-center" role="alert" th:if="${inventories.size() == 0}">
+            Không có thông tin tồn kho cho sản phẩm này.
+        </div>
+
+        <!-- Nút Quay lại -->
+        <div class="text-center mt-4">
+            <a th:href="@{/products/list}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách sản phẩm
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

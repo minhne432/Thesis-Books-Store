@@ -1,0 +1,28 @@
+h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.alert-warning {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.card {
+    margin-top: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
