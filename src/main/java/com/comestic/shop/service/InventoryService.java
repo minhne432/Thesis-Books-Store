@@ -19,6 +19,8 @@ public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private ProductService productService;
     public List<Inventory> getAllInventories() {
         return inventoryRepository.findAll();
     }
@@ -63,9 +65,14 @@ public class InventoryService {
             inventory.setProduct(product);
             inventory.setQuantity(quantity);
             inventory.setLastUpdatedDate(LocalDate.now());
+
         }
 
         inventoryRepository.save(inventory);
+
+
+        // Cập nhật stockQuantity của sản phẩm
+        productService.updateProductStockQuantity(product.getProductID());
     }
 
     public void decreaseInventoryQuantity(Branch branch, Product product, int quantity) throws InsufficientInventoryException {
@@ -77,6 +84,9 @@ public class InventoryService {
                 inventory.setQuantity(newQuantity);
                 inventory.setLastUpdatedDate(LocalDate.now());
                 inventoryRepository.save(inventory);
+
+                // Cập nhật stockQuantity của sản phẩm
+                productService.updateProductStockQuantity(product.getProductID());
             } else {
                 throw new InsufficientInventoryException("Không đủ hàng trong kho cho sản phẩm: " + product.getProductName());
             }

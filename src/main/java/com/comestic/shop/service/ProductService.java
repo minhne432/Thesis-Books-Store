@@ -73,5 +73,20 @@ public class ProductService {
         return productRepository.findByProductNameContaining(keyword, pageable); // Giả sử bạn tìm kiếm theo tên sản phẩm
     }
 
+    public void updateProductStockQuantity(int productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            Integer totalQuantity = inventoryRepository.sumQuantityByProduct(product);
+            if (totalQuantity == null) {
+                totalQuantity = 0;
+            }
+            product.setStockQuantity(totalQuantity);
+            productRepository.save(product);
+        } else {
+            // Xử lý khi sản phẩm không tồn tại
+            throw new IllegalArgumentException("Sản phẩm không tồn tại với ID: " + productId);
+        }
+    }
 
 }

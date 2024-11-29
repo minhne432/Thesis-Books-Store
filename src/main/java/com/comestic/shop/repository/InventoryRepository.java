@@ -4,6 +4,7 @@ import com.comestic.shop.model.Branch;
 import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,5 +16,8 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     // List<Inventory> findByBranchId(Long branchId);
     Inventory findByBranchAndProduct(Branch branch, Product product);
     List<Inventory> findByProduct(Product product);
+
+    @Query("SELECT SUM(i.quantity) FROM Inventory i WHERE i.product = :product")
+    Integer sumQuantityByProduct(Product product);
 
 }
