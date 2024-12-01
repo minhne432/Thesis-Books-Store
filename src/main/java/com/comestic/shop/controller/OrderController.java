@@ -173,6 +173,7 @@ public class OrderController {
         List<OrderDetails> orderDetails = orderDetailsService.getOrderDetailsByOrderID(orderId);
 
         // Add to the model
+        model.addAttribute("statuses", OrderStatus.values());
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
 
