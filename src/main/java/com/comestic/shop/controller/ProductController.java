@@ -40,7 +40,7 @@ public class ProductController {
     // Hiển thị danh sách sản phẩm
     @GetMapping("/list")
     public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 10; // Số sản phẩm mỗi trang
+        int pageSize = 5; // Số sản phẩm mỗi trang
         Page<Product> productPage = productService.getProductsByPage(page, pageSize);
         model.addAttribute("productPage", productPage);
         model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
@@ -211,7 +211,7 @@ public class ProductController {
     public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") int page,
                                  Model model) {
-        int pageSize = 10;
+        int pageSize = 5;
         Page<Product> productPage;
         if (keyword == null || keyword.trim().isEmpty()) {
             productPage = productService.getProductsByPage(page, pageSize); // Sử dụng phân trang cho tất cả sản phẩm

@@ -72,7 +72,7 @@
         <nav aria-label="Page navigation" th:if="${productPage.totalPages > 1}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${productPage.hasPrevious()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/branch/products/list(page=${productPage.number - 1})}" aria-label="Previous">
+                    <a class="page-link" th:href="@{/products/list(page=${productPage.number - 1})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo; Trước</span>
                     </a>
                 </li>
@@ -80,7 +80,7 @@
                     <a class="page-link" href="#">Trang <span th:text="${productPage.number + 1}"></span> trên <span th:text="${productPage.totalPages}"></span></a>
                 </li>
                 <li class="page-item" th:classappend="${productPage.hasNext()} ? '' : 'disabled'">
-                    <a class="page-link" th:href="@{/branch/products/list(page=${productPage.number + 1})}" aria-label="Next">
+                    <a class="page-link" th:href="@{/products/list(page=${productPage.number + 1})}" aria-label="Next">
                         <span aria-hidden="true">Sau &raquo;</span>
                     </a>
                 </li>
