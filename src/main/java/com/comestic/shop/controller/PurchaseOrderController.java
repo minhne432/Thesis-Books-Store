@@ -144,7 +144,7 @@ public String addPurchaseOrder(@ModelAttribute("purchaseOrderDTO") PurchaseOrder
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
             @RequestParam(value = "status", required = false) PurchaseOrderStatus status,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "size", defaultValue = "5") int size,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size);

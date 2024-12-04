@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title >Greeting Messages</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div  class="container mt-5">
+    <h1 class="text-center mb-4">Greeting Messages</h1>
+
+    <!-- Greeting Table -->
+    <div class="table-responsive">
+        <table id="greetingTable" class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Message</th>
+                <th>Author</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Nội dung sẽ được thêm bằng Ajax -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Gửi Ajax request đến server
+        console.log("call ajax");
+        $.ajax({
+            url: "[[@{/test/sayHello}]]", // URL của API
+            method: 'GET',
+            success: function (data) {
+                console.log("data ne "+ data);
+                // Duyệt qua danh sách greetings và thêm vào bảng
+                let tableBody = $('#greetingTable tbody');
+                tableBody.empty(); // Xóa nội dung cũ nếu có
+                data.forEach(function (greeting) {
+                    let row = `<tr>
+                        <td>${greeting.message}</td>
+                        <td>${greeting.author}</td>
+                    </tr>`;
+                    tableBody.append(row); // Thêm dòng mới vào bảng
+                });
+            },
+            error: function () {
+                alert("Không thể tải dữ liệu. Vui lòng thử lại sau.");
+            }
+        });
+    });
+</script>
+</body>
+</html>

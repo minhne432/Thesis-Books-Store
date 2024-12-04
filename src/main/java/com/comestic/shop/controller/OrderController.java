@@ -69,7 +69,7 @@ public class OrderController {
             }
         }
 
-        int pageSize = 10; // Số lượng đơn hàng trên mỗi trang
+        int pageSize = 5; // Số lượng đơn hàng trên mỗi trang
         PageRequest pageable = PageRequest.of(page, pageSize);
 
         // Lấy danh sách đơn hàng từ service

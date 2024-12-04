@@ -21,11 +21,11 @@ public interface BranchDistanceRepository extends JpaRepository<BranchDistance, 
     List<BranchDistance> findByWardIdOrderByDistanceAsc(@Param("wardId") Integer wardId);
 
 
-    @Query("""
-        SELECT bd
-        FROM BranchDistance bd
-        WHERE bd.ward.wardID = :wardId
-        ORDER BY bd.distance ASC
-        """)
-    BranchDistance findNearestBranchByWardId(@Param("wardId") Integer wardId);
+//    @Query("""
+//        SELECT bd
+//        FROM BranchDistance bd
+//        WHERE bd.ward.wardID = :wardId
+//        ORDER BY bd.distance ASC
+//        """)
+//    BranchDistance findNearestBranchByWardId(@Param("wardId") Integer wardId);
 }

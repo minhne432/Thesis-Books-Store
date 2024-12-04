@@ -70,49 +70,50 @@
 <!-- Thêm các script để load dữ liệu động cho province, district, ward nếu cần -->
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        // Khi chọn Tỉnh/Thành Phố
-        $('#province').change(function() {
-            var provinceId = $(this).val();
-            if (provinceId) {
-                $.ajax({
-                    url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#district').empty();
-                        $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
-                        $.each(data, function(key, value) {
-                            $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#district').empty();
-                $('#ward').empty();
-            }
-        });
 
-        // Khi chọn Quận/Huyện
-        $('#district').change(function() {
-            var districtId = $(this).val();
-            if (districtId) {
-                $.ajax({
-                    url: "[[@{/admin/wards/by-district/}]]" + districtId,
-                    type: 'GET',
-                    success: function(data) {
-                        console.log("data ne: "+data);
-                        $('#ward').empty();
-                        $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
-                        $.each(data, function(key, value) {
-                            $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#ward').empty();
-            }
-        });
+$(document).ready(function() {
+    // Khi chọn Tỉnh/Thành Phố
+    $('#province').change(function() {
+        var provinceId = $(this).val();
+        if (provinceId) {
+            $.ajax({
+                url: "[[@{/admin/wards/districts-by-province/}]]" + provinceId,
+                type: 'GET',
+                success: function(data) {
+                    $('#district').empty();
+                    $('#district').append('<option value="">-- Chọn Quận/Huyện --</option>');
+                    $.each(data, function(key, value) {
+                        $('#district').append('<option value="' + value.districtID + '">' + value.districtName + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#district').empty();
+            $('#ward').empty();
+        }
     });
+
+    // Khi chọn Quận/Huyện
+    $('#district').change(function() {
+        var districtId = $(this).val();
+        if (districtId) {
+            $.ajax({
+                url: "[[@{/admin/wards/by-district/}]]" + districtId,
+                type: 'GET',
+                success: function(data) {
+                    console.log("data ne: "+data);
+                    $('#ward').empty();
+                    $('#ward').append('<option value="">-- Chọn Phường/Xã --</option>');
+                    $.each(data, function(key, value) {
+                        $('#ward').append('<option value="' + value.wardID + '">' + value.wardName + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#ward').empty();
+        }
+    });
+});
 </script>
 </body>
 </html>
