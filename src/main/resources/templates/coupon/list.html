@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Danh sách Coupon</title>
 </head>
 <body>
-$END$
+<h1>Danh sách Coupon</h1>
+<a th:href="@{/coupons/new}">Tạo mới Coupon</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Mã</th>
+        <th>Mô tả</th>
+        <th>Loại giảm giá</th>
+        <th>Giá trị giảm</th>
+        <th>Ngày bắt đầu</th>
+        <th>Ngày kết thúc</th>
+        <th>Giá trị đơn hàng tối thiểu</th>
+        <th>Giới hạn sử dụng</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    <tr th:each="coupon : ${coupons}">
+        <td th:text="${coupon.couponId}"></td>
+        <td th:text="${coupon.code}"></td>
+        <td th:text="${coupon.description}"></td>
+        <td th:text="${coupon.discountType}"></td>
+        <td th:text="${coupon.discountValue}"></td>
+        <td th:text="${coupon.startDate}"></td>
+        <td th:text="${coupon.endDate}"></td>
+        <td th:text="${coupon.minimumOrderValue}"></td>
+        <td th:text="${coupon.maxUsageLimit}"></td>
+        <td th:text="${coupon.isActive ? 'Hoạt động' : 'Không hoạt động'}"></td>
+        <td>
+            <a th:href="@{/coupons/edit/{id}(id=${coupon.couponId})}">Chỉnh sửa</a> |
+            <a th:href="@{/coupons/delete/{id}(id=${coupon.couponId})}" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

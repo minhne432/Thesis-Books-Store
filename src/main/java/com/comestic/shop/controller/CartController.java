@@ -4,14 +4,10 @@ import com.comestic.shop.config.VNPayConfig;
 import com.comestic.shop.dto.CartUpdateForm;
 import com.comestic.shop.dto.CartUpdateForm.CartItemForm;
 import com.comestic.shop.exception.InsufficientInventoryException;
-import com.comestic.shop.model.CartItem;
-import com.comestic.shop.model.Customer;
-import com.comestic.shop.model.Order;
-import com.comestic.shop.model.OrderStatus;
-import com.comestic.shop.service.CartService;
-import com.comestic.shop.service.CustomerService;
-import com.comestic.shop.service.OrderService;
+import com.comestic.shop.model.*;
+import com.comestic.shop.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -33,14 +31,19 @@ public class CartController {
     private final CustomerService customerService;
     private final VNPayConfig vnpayConfig;
 
+    private final CouponService couponService;
+
+    private final CouponUsageService couponUsageService;
     private final OrderService orderService;
 
     @Autowired
-    public CartController(CartService cartService, CustomerService customerService, VNPayConfig vnpayConfig, OrderService orderService) {
+    public CartController(CartService cartService, CustomerService customerService, VNPayConfig vnpayConfig, OrderService orderService, CouponService couponService, CouponUsageService couponUsageService) {
         this.cartService = cartService;
         this.customerService = customerService;
         this.vnpayConfig = vnpayConfig;
         this.orderService = orderService;
+        this.couponService = couponService;
+        this.couponUsageService = couponUsageService;
     }
 
     /**
@@ -298,10 +301,9 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
     }
 }
 
-
     private String initiateVNPayPayment(Order order, Model model) {
         try {
-            // Tính toán số tiền cần thanh toán
+            // Tính toán số tiền cần thanh toán (đã bao gồm giảm giá nếu có)
             double amount = order.getTotalAmount().doubleValue();
 
             // Các tham số cần thiết cho VNPAY
@@ -312,17 +314,8 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             long amountInVND = (long) (amount * 100);
             String bankCode = "";
 
-            // Tạo mã giao dịch duy nhất cho VNPAY
-            String vnp_TxnRef = vnpayConfig.getRandomNumber(8);
-
-            // Thiết lập orderCode cho đơn hàng
-            order.setOrderCode(vnp_TxnRef);
-
-            // Thiết lập trạng thái đơn hàng là "PENDING"
-            order.setStatus(OrderStatus.PENDING);
-
-            // Lưu đơn hàng tạm thời vào cơ sở dữ liệu
-            Order savedOrder = orderService.saveOrder(order);
+            // Sử dụng orderCode hoặc orderID làm vnp_TxnRef
+            String vnp_TxnRef = order.getOrderCode(); // Hoặc String.valueOf(order.getOrderID());
 
             String vnp_IpAddr = "127.0.0.1"; // Thay bằng cách lấy IP của client nếu cần
 
@@ -340,7 +333,7 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             }
 
             vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang: " + vnp_TxnRef);
+            vnp_Params.put("vnp_OrderInfo", "Thanh toán đơn hàng: " + vnp_TxnRef);
             vnp_Params.put("vnp_OrderType", orderType);
 
             // Locale setting
@@ -403,8 +396,9 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
 
 
 
+
     @PostMapping("/placeOrder")
-    public String placeOrder(@RequestParam("paymentMethod") String paymentMethod, Model model) {
+    public String placeOrder(@RequestParam("paymentMethod") String paymentMethod, Model model, HttpSession session) {
         Customer customer = getCurrentCustomer();
 
         try {
@@ -414,15 +408,42 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             // Thiết lập phương thức thanh toán cho đơn hàng
             order.setPaymentMethod(paymentMethod);
 
+            // Kiểm tra xem có áp dụng coupon không
+            BigDecimal discountAmount = BigDecimal.ZERO;
+            Coupon appliedCoupon = (Coupon) session.getAttribute("appliedCoupon");
+            if (appliedCoupon != null) {
+                discountAmount = (BigDecimal) session.getAttribute("discountAmount");
+                // Tính toán lại tổng tiền sau khi áp dụng giảm giá
+                BigDecimal orderTotal = order.getTotalAmount().subtract(discountAmount);
+                order.setTotalAmount(orderTotal);
+            }
+
+            // Tạo mã đơn hàng duy nhất
+            String orderCode = "ORD-" + System.currentTimeMillis();
+            order.setOrderCode(orderCode);
+
             if ("COD".equals(paymentMethod)) {
                 // Thanh toán khi nhận hàng
-                // Đặt hàng trực tiếp
                 order.setStatus(OrderStatus.PENDING);
-                // tạo mã đơn hàng duy nhất
-                String orderCode = "ORD-" + System.currentTimeMillis();
-                order.setOrderCode(orderCode);
 
+                // Lưu đơn hàng
                 Order savedOrder = orderService.placeOrder(order);
+
+                // Nếu có sử dụng coupon, lưu thông tin sử dụng coupon
+                if (appliedCoupon != null) {
+                    CouponUsage couponUsage = new CouponUsage();
+                    couponUsage.setCoupon(appliedCoupon);
+                    couponUsage.setCustomer(customer);
+                    couponUsage.setOrder(savedOrder);
+                    couponUsage.setRedemptionDate(new Date());
+                    couponUsage.setDiscountAmount(discountAmount);
+
+                    couponUsageService.addCouponUsage(couponUsage);
+
+                    // Xóa thông tin coupon khỏi session
+                    session.removeAttribute("appliedCoupon");
+                    session.removeAttribute("discountAmount");
+                }
 
                 // Xóa giỏ hàng sau khi đặt hàng thành công
                 cartService.clearCart(customer);
@@ -432,8 +453,29 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
                 return "order/success";
             } else if ("VNPAY".equals(paymentMethod)) {
                 // Thanh toán qua VNPAY
+                order.setStatus(OrderStatus.PENDING);
+
+                // Lưu đơn hàng trước khi chuyển hướng đến VNPAY
+                Order savedOrder = orderService.placeOrder(order);
+
+                // Nếu có sử dụng coupon, lưu thông tin sử dụng coupon
+                if (appliedCoupon != null) {
+                    CouponUsage couponUsage = new CouponUsage();
+                    couponUsage.setCoupon(appliedCoupon);
+                    couponUsage.setCustomer(customer);
+                    couponUsage.setOrder(savedOrder);
+                    couponUsage.setRedemptionDate(new Date());
+                    couponUsage.setDiscountAmount(discountAmount);
+
+                    couponUsageService.addCouponUsage(couponUsage);
+
+                    // Xóa thông tin coupon khỏi session
+                    session.removeAttribute("appliedCoupon");
+                    session.removeAttribute("discountAmount");
+                }
+
                 // Chuyển hướng đến phương thức xử lý thanh toán VNPAY
-                return initiateVNPayPayment(order, model);
+                return initiateVNPayPayment(savedOrder, model);
             } else {
                 // Phương thức thanh toán không hợp lệ
                 model.addAttribute("errorMessage", "Phương thức thanh toán không hợp lệ.");
@@ -446,6 +488,61 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             model.addAttribute("errorMessage", e.getMessage());
             return "cart/cart";
         }
+    }
+
+
+    @PostMapping("/applyCoupon")
+    public String applyCoupon(@RequestParam("couponCode") String couponCode, Model model, HttpSession session) {
+        Customer customer = getCurrentCustomer();
+        double totalAmount = cartService.calculateTotalAmount(customer);
+
+        List<CartItem> cartItems = cartService.getCartItems(customer);
+
+        // Initialize CartUpdateForm with existing cart items
+        CartUpdateForm cartUpdateForm = new CartUpdateForm();
+        List<CartItemForm> cartItemForms = new ArrayList<>();
+        for (CartItem item : cartItems) {
+            CartItemForm form = new CartItemForm();
+            form.setCartItemId(item.getCartItemID());
+            form.setQuantity(item.getQuantity());
+            cartItemForms.add(form);
+        }
+        cartUpdateForm.setCartItems(cartItemForms);
+
+        BigDecimal orderTotal = cartService.calculateTotalAmount1(customer);
+
+        Optional<Coupon> optionalCoupon = couponService.getCouponByCode(couponCode);
+        if (optionalCoupon.isPresent()) {
+            Coupon coupon = optionalCoupon.get();
+            if (coupon.isValid(LocalDate.now(), orderTotal)) {
+                // Áp dụng giảm giá và lưu vào session
+                BigDecimal discountAmount = orderTotal.subtract(coupon.applyDiscount(orderTotal));
+                session.setAttribute("discountAmount", discountAmount);
+                session.setAttribute("appliedCoupon", coupon);
+                model.addAttribute("couponMessage", "Áp dụng mã coupon thành công!");
+            } else {
+                model.addAttribute("couponError", "Mã coupon không hợp lệ hoặc đã hết hạn.");
+                session.removeAttribute("discountAmount");
+                session.removeAttribute("appliedCoupon");
+            }
+        } else {
+            model.addAttribute("couponError", "Mã coupon không tồn tại.");
+            session.removeAttribute("discountAmount");
+            session.removeAttribute("appliedCoupon");
+        }
+
+
+        BigDecimal discountAmount = (BigDecimal) session.getAttribute("discountAmount");
+        BigDecimal totalAmountBigDecimal = BigDecimal.valueOf(totalAmount); // Chuyển đổi totalAmount từ double sang BigDecimal
+        BigDecimal totalAmountAfterDiscount = totalAmountBigDecimal.subtract(discountAmount != null ? discountAmount : BigDecimal.ZERO);
+
+        // Chuẩn bị dữ liệu cho trang giỏ hàng
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalAmount", orderTotal);
+        model.addAttribute("cartUpdateForm", cartUpdateForm);
+        model.addAttribute("totalAmount", totalAmount);
+        model.addAttribute("totalAmountAfterDiscount", totalAmountAfterDiscount);
+        return "cart/cart"; // Tên của template giỏ hàng (cart.html)
     }
 
 

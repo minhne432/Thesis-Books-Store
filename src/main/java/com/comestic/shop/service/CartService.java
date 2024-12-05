@@ -94,6 +94,16 @@ public class CartService {
                 .sum();
     }
 
+    public BigDecimal calculateTotalAmount1(Customer customer) {
+        Cart cart = getCartByCustomer(customer);
+        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+
+        return cartItems.stream()
+                .map(item -> item.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(item.getQuantity()))) // Nhân BigDecimal với số lượng
+                .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng bằng BigDecimal
+    }
+
 
     public Order prepareOrder(Customer customer) {
         Cart cart = getCartByCustomer(customer);

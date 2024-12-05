@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Tạo mới Coupon</title>
 </head>
 <body>
-$END$
+<h1>Tạo mới Coupon</h1>
+<form th:action="@{/coupons}" th:object="${coupon}" method="post">
+  <label>Mã:</label>
+  <input type="text" th:field="*{code}" required /><br/>
+
+  <label>Mô tả:</label>
+  <textarea th:field="*{description}"></textarea><br/>
+
+  <label>Loại giảm giá:</label>
+  <select th:field="*{discountType}">
+    <option value="PERCENTAGE">Phần trăm</option>
+    <option value="FIXED">Cố định</option>
+  </select><br/>
+
+  <label>Giá trị giảm:</label>
+  <input type="number" step="0.01" th:field="*{discountValue}" required /><br/>
+
+  <label>Ngày bắt đầu:</label>
+  <input type="date" th:field="*{startDate}" required /><br/>
+
+  <label>Ngày kết thúc:</label>
+  <input type="date" th:field="*{endDate}" required /><br/>
+
+  <label>Giá trị đơn hàng tối thiểu:</label>
+  <input type="number" step="0.01" th:field="*{minimumOrderValue}" /><br/>
+
+  <label>Giới hạn sử dụng tối đa:</label>
+  <input type="number" th:field="*{maxUsageLimit}" /><br/>
+
+  <label>Trạng thái:</label>
+  <input type="checkbox" th:field="*{isActive}" /> Hoạt động<br/>
+
+  <button type="submit">Tạo mới</button>
+</form>
+<a th:href="@{/coupons}">Quay lại danh sách</a>
 </body>
 </html>

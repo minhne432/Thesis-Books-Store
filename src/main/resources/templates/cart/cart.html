@@ -90,6 +90,21 @@
                             <h3 class="card-text text-end">
                                 <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmount, 0, 0)}|">VNĐ 0</span>
                             </h3>
+                            <!-- Hiển thị giảm giá nếu có -->
+                            <div th:if="${session.discountAmount != null}">
+                                <h5 class="card-title text-pink">Giảm giá:</h5>
+                                <h4 class="card-text text-end text-success">
+                                    -<span th:text="|VNĐ ${#numbers.formatDecimal(session.discountAmount, 0, 0)}|">VNĐ 0</span>
+                                </h4>
+                            </div>
+
+                            <!-- Hiển thị tổng tiền sau khi giảm giá -->
+                            <div th:if="${session.discountAmount != null}">
+                                <h4 class="card-title text-pink">Tổng cộng:</h4>
+                                <h3 class="card-text text-end">
+                                    <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmountAfterDiscount, 0, 0)}|">VNĐ 0</span>
+                                </h3>
+                            </div>
 
                             <!-- Form đặt hàng -->
                             <form th:action="@{/cart/placeOrder}" method="post">
@@ -120,6 +135,24 @@
                                     </button>
                                 </div>
                             </form>
+                            <!-- Phần nhập mã coupon -->
+                            <div class="coupon-section mb-3">
+                                <h5 class="text-pink">Nhập mã Coupon:</h5>
+                                <form th:action="@{/cart/applyCoupon}" method="post" class="d-flex">
+                                    <!-- CSRF Token -->
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                    <input type="text" name="couponCode" class="form-control me-2" placeholder="Nhập mã coupon" required>
+                                    <button type="submit" class="btn btn-primary">Áp dụng</button>
+                                </form>
+
+                                <!-- Hiển thị thông báo -->
+                                <div class="mt-2">
+                                    <p th:if="${couponMessage != null}" th:text="${couponMessage}" class="text-success"></p>
+                                    <p th:if="${couponError != null}" th:text="${couponError}" class="text-danger"></p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
