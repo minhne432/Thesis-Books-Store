@@ -32,9 +32,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(Order order) throws InsufficientInventoryException {
 //         Chỉ tiến hành nếu đơn hàng đang ở trạng thái "PENDING"
-        if ((order.getStatus() != OrderStatus.PENDING)) {
-            throw new RuntimeException("Đơn hàng không ở trạng thái chờ xử lý.");
-        }
+//        if ((order.getStatus() != OrderStatus.PENDING)) {
+//            throw new RuntimeException("Đơn hàng không ở trạng thái chờ xử lý.");
+//        }
 
         // Kiểm tra và cập nhật tồn kho
         for (OrderDetails orderDetails : order.getOrderDetails()) {

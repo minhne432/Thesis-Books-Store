@@ -3,6 +3,8 @@ package com.comestic.shop.controller;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -106,4 +109,43 @@ public class CustomerController {
     }
 
     // Các phương thức khác
+    // 1. List all customers
+    @GetMapping("/customers")
+    public String listCustomers(Model model,
+                                @RequestParam("page") Optional<Integer> page,
+                                @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+
+        Page<Customer> customerPage = customerService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+
+        model.addAttribute("customerPage", customerPage);
+
+        return "customer/customer_list";
+    }
+
+    // 2. Update isActive status
+    @PostMapping("/customers/updateStatus")
+    public String updateCustomerStatus(@RequestParam("customerId") int customerId,
+                                       @RequestParam("isActive") boolean isActive) {
+        Optional<Customer> optionalCustomer = customerService.getCustomerById(customerId);
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+            customer.setActive(isActive);
+            customerService.saveCustomer(customer);
+        }
+        return "redirect:/customers";
+    }
+
+    // 3. View customer details
+    @GetMapping("/customers/{id}")
+    public String viewCustomerDetails(@PathVariable("id") int id, Model model) {
+        Optional<Customer> optionalCustomer = customerService.getCustomerById(id);
+        if (optionalCustomer.isPresent()) {
+            model.addAttribute("customer", optionalCustomer.get());
+            return "customer/customer_detail";
+        } else {
+            return "redirect:/customers";
+        }
+    }
 }

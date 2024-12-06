@@ -5,6 +5,8 @@ import com.comestic.shop.model.CustomerAddress;
 import com.comestic.shop.model.Address;
 import com.comestic.shop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +27,23 @@ public class CustomerService {
 
     // Lưu khách hàng với mật khẩu được mã hóa
     public void saveCustomer(Customer customer) {
-        String rawPassword = customer.getPasswordHash();
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        customer.setPasswordHash(encodedPassword);
+        if (customer.getCustomerID() == 0) { // New customer
+            String rawPassword = customer.getPasswordHash();
+            String encodedPassword = passwordEncoder.encode(rawPassword);
+            customer.setPasswordHash(encodedPassword);
+        } else {
+            // Existing customer; do not re-encode the password unless it's changed
+            Optional<Customer> existingCustomer = customerRepository.findById(customer.getCustomerID());
+            if (existingCustomer.isPresent()) {
+                if (!existingCustomer.get().getPasswordHash().equals(customer.getPasswordHash())) {
+                    String encodedPassword = passwordEncoder.encode(customer.getPasswordHash());
+                    customer.setPasswordHash(encodedPassword);
+                }
+            }
+        }
         customerRepository.save(customer);
     }
+
 
     // Kiểm tra xem email đã tồn tại chưa
     public boolean emailExists(String email) {
@@ -99,5 +113,8 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    public Page<Customer> findPaginated(Pageable pageable) {
+        return customerRepository.findAll(pageable);
+    }
 
 }

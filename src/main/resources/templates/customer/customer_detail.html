@@ -1,0 +1,23 @@
+<!-- customer_detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Detail</title>
+</head>
+<body>
+<h1>Customer Detail</h1>
+<p><strong>ID:</strong> <span th:text="${customer.customerID}"></span></p>
+<p><strong>First Name:</strong> <span th:text="${customer.firstName}"></span></p>
+<p><strong>Last Name:</strong> <span th:text="${customer.lastName}"></span></p>
+<p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+<p><strong>Phone:</strong> <span th:text="${customer.phone}"></span></p>
+<p><strong>Date of Birth:</strong> <span th:text="${customer.dateOfBirth}"></span></p>
+<p><strong>Date Joined:</strong> <span th:text="${customer.dateJoined}"></span></p>
+<p><strong>Last Login Date:</strong> <span th:text="${customer.lastLoginDate}"></span></p>
+<p><strong>Is Active:</strong> <span th:text="${customer.active}"></span></p>
+<p><strong>Preferred Language:</strong> <span th:text="${customer.preferredLanguage}"></span></p>
+<!-- Add more fields as necessary -->
+
+<a th:href="@{/customers}">Back to Customer List</a>
+</body>
+</html>

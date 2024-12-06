@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title layout:fragment="title">Customer List</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Customer List</h1>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Is Active</th>
+            <th>Update Status</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Lặp qua trang dữ liệu thay vì danh sách toàn bộ -->
+        <tr th:each="customer : ${customerPage.content}">
+            <td th:text="${customer.customerID}"></td>
+            <td th:text="${customer.firstName + ' ' + customer.lastName}"></td>
+            <td th:text="${customer.email}"></td>
+            <td th:text="${customer.active ? 'Active' : 'Inactive'}"></td>
+            <td>
+                <form th:action="@{/customers/updateStatus}" method="post">
+                    <input type="hidden" name="customerId" th:value="${customer.customerID}" />
+                    <input type="hidden" name="isActive" th:value="${!customer.active}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-sm"
+                            th:classappend="${customer.active ? 'btn-danger' : 'btn-success'}"
+                            th:text="${customer.active ? 'Deactivate' : 'Activate'}">
+                    </button>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/customers/{id}(id=${customer.customerID})}" class="btn btn-sm btn-info">View Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Hiển thị thông tin phân trang -->
+    <nav aria-label="Customer pagination">
+        <ul class="pagination">
+            <!-- Nút Previous -->
+            <li class="page-item" th:classappend="${customerPage.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/customers(page=${customerPage.number}, size=${customerPage.size})}">
+                    Previous
+                </a>
+            </li>
+
+            <!-- Liệt kê các trang -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, customerPage.totalPages)}"
+                th:classappend="${i == customerPage.number + 1 ? 'active' : ''}">
+                <a class="page-link" th:href="@{/customers(page=${i}, size=${customerPage.size})}" th:text="${i}"></a>
+            </li>
+
+            <!-- Nút Next -->
+            <li class="page-item" th:classappend="${customerPage.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/customers(page=${customerPage.number + 2}, size=${customerPage.size})}">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
