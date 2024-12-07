@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>My Addresses</title>
+    <!-- Bootstrap CSS CDN (tùy chọn) -->
 </head>
 <body>
-$END$
+<h1>Your Shipping Addresses</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Address</th>
+        <th>Default</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customerAddress : ${customerAddresses}">
+        <td>
+            <span th:text="${customerAddress.address.streetAddress}"></span>,
+            <span th:text="${customerAddress.address.ward.wardName}"></span>,
+            <span th:text="${customerAddress.address.ward.district.districtName}"></span>,
+            <span th:text="${customerAddress.address.ward.district.province.provinceName}"></span>,
+            <span th:text="${customerAddress.address.postalCode}"></span>
+        </td>
+        <td th:text="${customerAddress.default ? 'Yes' : 'No'}"></td>
+        <td>
+            <form th:if="${!customerAddress.default}" th:action="@{/customer/addresses/{id}/default(id=${customerAddress.customerAddressID})}" method="post">
+                <button type="submit">Set as Default</button>
+            </form>
+            <span th:if="${customerAddress.default}">This is the default address</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/customer/addresses/new}">Add New Address</a>
+
 </body>
 </html>

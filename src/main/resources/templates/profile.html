@@ -1,10 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-<body>
-$END$
+<body class="container mt-4">
+
+<h1>User Profile</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div th:if="${customer.profilePicture}">
+            <img th:src="@{/images/{pic}(pic=${customer.profilePicture})}" alt="Profile Picture" class="img-thumbnail">
+        </div>
+        <div th:if="${customer.profilePicture == null}">
+            <img src="https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png" alt="Profile Picture" class="img-thumbnail">
+        </div>
+    </div>
+    <div class="col-md-9">
+        <table class="table table-striped">
+            <tr>
+                <th>First Name:</th>
+                <td th:text="${customer.firstName}"></td>
+            </tr>
+            <tr>
+                <th>Last Name:</th>
+                <td th:text="${customer.lastName}"></td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td th:text="${customer.email}"></td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td th:text="${customer.phone}"></td>
+            </tr>
+            <tr>
+                <th>Date of Birth:</th>
+                <td th:text="${customer.dateOfBirth}"></td>
+            </tr>
+            <tr>
+                <th>Date Joined:</th>
+                <td th:text="${customer.dateJoined}"></td>
+            </tr>
+            <tr>
+                <th>Last Login Date:</th>
+                <td th:text="${customer.lastLoginDate}"></td>
+            </tr>
+            <tr>
+                <th>Is Active:</th>
+                <td th:text="${customer.active ? 'Yes' : 'No'}"></td>
+            </tr>
+            <tr>
+                <th>Preferred Language:</th>
+                <td th:text="${customer.preferredLanguage}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<h2 class="mt-5">Your Addresses</h2>
+<table class="table table-bordered">
+    <thead class="table-dark">
+    <tr>
+        <th>Street Address</th>
+        <th>Ward</th>
+        <th>District</th>
+        <th>Province</th>
+        <th>Postal Code</th>
+        <th>Default</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customerAddress : ${customer.customerAddresses}">
+        <td th:text="${customerAddress.address.streetAddress}"></td>
+        <td th:text="${customerAddress.address.ward.wardName}"></td>
+        <td th:text="${customerAddress.address.ward.district.districtName}"></td>
+        <td th:text="${customerAddress.address.ward.district.province.provinceName}"></td>
+        <td th:text="${customerAddress.address.postalCode}"></td>
+        <td th:text="${customerAddress.default ? 'Yes' : 'No'}"></td>
+        <td>
+            <form th:if="${!customerAddress.default}"
+                  th:action="@{/customer/addresses/{id}/default(id=${customerAddress.customerAddressID})}"
+                  method="post">
+                <button type="submit" class="btn btn-sm btn-success">Set as Default</button>
+            </form>
+            <span th:if="${customerAddress.default}">This is the default address</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a class="btn btn-primary" th:href="@{/customer/addresses/new}">Add New Address</a>
+
 </body>
 </html>

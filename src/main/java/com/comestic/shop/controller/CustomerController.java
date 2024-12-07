@@ -1,10 +1,12 @@
 package com.comestic.shop.controller;
 
+import com.comestic.shop.dto.AddressForm;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -148,4 +150,98 @@ public class CustomerController {
             return "redirect:/customers";
         }
     }
+    // new feature
+    private Customer getCurrentCustomer() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.getCustomerByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Khách hàng không tồn tại"));
+    }
+    // Liệt kê danh sách địa chỉ
+    @GetMapping("/customer/addresses")
+    public String listCustomerAddresses(Model model) {
+        Customer currentCustomer = getCurrentCustomer();
+        List<CustomerAddress> customerAddresses = currentCustomer.getCustomerAddresses();
+        model.addAttribute("customerAddresses", customerAddresses);
+        return "customer_addresses";
+    }
+
+    // Hiển thị form thêm địa chỉ mới
+    @GetMapping("/customer/addresses/new")
+    public String showAddAddressForm(Model model) {
+        // Load danh sách provinces
+        List<Province> provinces = provinceService.getAllProvinces();
+        model.addAttribute("provinces", provinces);
+        // Tạo một object để binding data của form
+        model.addAttribute("addressForm", new AddressForm());
+        return "customer_add_address";
+    }
+
+    // Xử lý thêm địa chỉ mới
+    @PostMapping("/customer/addresses/new")
+    public String addNewAddress(@ModelAttribute("addressForm") AddressForm addressForm, Model model) {
+        Customer customer = getCurrentCustomer();
+
+        // Lấy ward dựa trên wardId
+        Ward ward = wardService.getWardById(addressForm.getWardId()).orElse(null);
+        if (ward == null) {
+            model.addAttribute("addressError", "Please select a valid ward");
+            // Load lại danh sách provinces
+            List<Province> provinces = provinceService.getAllProvinces();
+            model.addAttribute("provinces", provinces);
+            return "customer_add_address";
+        }
+
+        Address address = new Address();
+        address.setWard(ward);
+        address.setStreetAddress(addressForm.getStreetAddress());
+        address.setPostalCode(addressForm.getPostalCode());
+        address.setDefault(false); // Chỗ này tuỳ logic bạn, có thể mặc định là false
+        addressService.saveAddress(address);
+
+        CustomerAddress customerAddress = new CustomerAddress();
+        customerAddress.setCustomer(customer);
+        customerAddress.setAddress(address);
+        customerAddress.setDefault(false);
+        customerAddressService.addCustomerAddress(customerAddress);
+
+        return "redirect:/customer/addresses";
+    }
+
+    @PostMapping("/customer/addresses/{id}/default")
+    public String setDefaultAddress(@PathVariable("id") Long addressId) {
+        Customer currentCustomer = getCurrentCustomer(); // Lấy customer hiện tại
+
+        // Lấy danh sách địa chỉ
+        List<CustomerAddress> customerAddresses = currentCustomer.getCustomerAddresses();
+
+        // Kiểm tra xem addressId có thuộc về customer hiện tại không
+        Optional<CustomerAddress> optionalAddress = customerAddresses.stream()
+                .filter(ca -> ca.getCustomerAddressID().equals(addressId))
+                .findFirst();
+
+        if (optionalAddress.isPresent()) {
+            // Set tất cả địa chỉ khác về default = false
+            for (CustomerAddress ca : customerAddresses) {
+                ca.setDefault(false);
+                customerAddressService.save(ca);
+            }
+
+            // Set địa chỉ được chọn thành default = true
+            CustomerAddress selectedAddress = optionalAddress.get();
+            selectedAddress.setDefault(true);
+            customerAddressService.save(selectedAddress);
+        }
+
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/profile")
+    public String viewProfile(Model model) {
+        // Lấy customer hiện tại, giả sử bạn đã có logic getCurrentCustomer()
+        Customer currentCustomer = getCurrentCustomer();
+        model.addAttribute("customer", currentCustomer);
+        return "profile"; // Trả về template profile.html
+    }
+
+
 }
