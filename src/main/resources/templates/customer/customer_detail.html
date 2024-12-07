@@ -1,23 +1,66 @@
-<!-- customer_detail.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Customer Detail</title>
+    <title layout:fragment="title">Customer Detail</title>
 </head>
 <body>
-<h1>Customer Detail</h1>
-<p><strong>ID:</strong> <span th:text="${customer.customerID}"></span></p>
-<p><strong>First Name:</strong> <span th:text="${customer.firstName}"></span></p>
-<p><strong>Last Name:</strong> <span th:text="${customer.lastName}"></span></p>
-<p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
-<p><strong>Phone:</strong> <span th:text="${customer.phone}"></span></p>
-<p><strong>Date of Birth:</strong> <span th:text="${customer.dateOfBirth}"></span></p>
-<p><strong>Date Joined:</strong> <span th:text="${customer.dateJoined}"></span></p>
-<p><strong>Last Login Date:</strong> <span th:text="${customer.lastLoginDate}"></span></p>
-<p><strong>Is Active:</strong> <span th:text="${customer.active}"></span></p>
-<p><strong>Preferred Language:</strong> <span th:text="${customer.preferredLanguage}"></span></p>
-<!-- Add more fields as necessary -->
-
-<a th:href="@{/customers}">Back to Customer List</a>
+<div layout:fragment="content">
+    <h1 class="mb-4">Customer Detail</h1>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Customer Information
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>ID:</strong></div>
+                <div class="col-md-9" th:text="${customer.customerID}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>First Name:</strong></div>
+                <div class="col-md-9" th:text="${customer.firstName}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Last Name:</strong></div>
+                <div class="col-md-9" th:text="${customer.lastName}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Email:</strong></div>
+                <div class="col-md-9" th:text="${customer.email}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Phone:</strong></div>
+                <div class="col-md-9" th:text="${customer.phone}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Date of Birth:</strong></div>
+                <div class="col-md-9" th:text="${customer.dateOfBirth}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Date Joined:</strong></div>
+                <div class="col-md-9" th:text="${customer.dateJoined}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Last Login Date:</strong></div>
+                <div class="col-md-9" th:text="${customer.lastLoginDate}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Is Active:</strong></div>
+                <div class="col-md-9">
+                    <span th:text="${customer.active ? 'Active' : 'Inactive'}"
+                          th:classappend="${customer.active ? 'text-success' : 'text-danger'}"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3"><strong>Preferred Language:</strong></div>
+                <div class="col-md-9" th:text="${customer.preferredLanguage}"></div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a th:href="@{/customers}" class="btn btn-secondary">Back to Customer List</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
