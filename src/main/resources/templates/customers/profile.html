@@ -1,0 +1,105 @@
+<!-- src/main/resources/templates/profile.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/customer_layout}">
+<head>
+    <title layout:fragment="title">User Profile</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>User Profile</h1>
+
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Ảnh đại diện (nếu có) -->
+            <div th:if="${customer.profilePicture}">
+                <img th:src="@{/images/{pic}(pic=${customer.profilePicture})}" alt="Profile Picture" class="img-thumbnail">
+            </div>
+            <div th:if="${customer.profilePicture == null}">
+                <img src="https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png" alt="Profile Picture" class="img-thumbnail">
+            </div>
+        </div>
+        <div class="col-md-9">
+            <table class="table table-striped">
+                <tr>
+                    <th>First Name:</th>
+                    <td th:text="${customer.firstName}"></td>
+                </tr>
+                <tr>
+                    <th>Last Name:</th>
+                    <td th:text="${customer.lastName}"></td>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <td th:text="${customer.email}"></td>
+                </tr>
+                <tr>
+                    <th>Phone:</th>
+                    <td th:text="${customer.phone}"></td>
+                </tr>
+                <tr>
+                    <th>Date of Birth:</th>
+                    <td th:text="${#dates.format(customer.dateOfBirth, 'dd/MM/yyyy')}"></td>
+                </tr>
+                <tr>
+                    <th>Date Joined:</th>
+                    <td th:text="${#dates.format(customer.dateJoined, 'dd/MM/yyyy')}"></td>
+                </tr>
+                <tr>
+                    <th>Last Login Date:</th>
+                    <td th:text="${#dates.format(customer.lastLoginDate, 'dd/MM/yyyy')}"></td>
+                </tr>
+                <tr>
+                    <th>Is Active:</th>
+                    <td th:text="${customer.active ? 'Yes' : 'No'}"></td>
+                </tr>
+                <tr>
+                    <th>Preferred Language:</th>
+                    <td th:text="${customer.preferredLanguage}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Thông báo thành công hoặc lỗi -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <h2 class="mt-5">Your Addresses</h2>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Street Address</th>
+            <th>Ward</th>
+            <th>District</th>
+            <th>Province</th>
+            <th>Postal Code</th>
+            <th>Default</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customerAddress : ${customer.customerAddresses}">
+            <td th:text="${customerAddress.address.streetAddress}"></td>
+            <td th:text="${customerAddress.address.ward.wardName}"></td>
+            <td th:text="${customerAddress.address.ward.district.districtName}"></td>
+            <td th:text="${customerAddress.address.ward.district.province.provinceName}"></td>
+            <td th:text="${customerAddress.address.postalCode}"></td>
+            <td th:text="${customerAddress.default ? 'Yes' : 'No'}"></td>
+            <td>
+                <form th:if="${!customerAddress.default}"
+                      th:action="@{/customer/addresses/{id}/default(id=${customerAddress.customerAddressID})}"
+                      method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-success">Set as Default</button>
+                </form>
+                <span th:if="${customerAddress.default}" class="text-success">This is the default address</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" th:href="@{/customer/addresses/new}">Add New Address</a>
+</div>
+</body>
+</html>

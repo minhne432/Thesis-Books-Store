@@ -162,7 +162,7 @@ public class CustomerController {
         Customer currentCustomer = getCurrentCustomer();
         List<CustomerAddress> customerAddresses = currentCustomer.getCustomerAddresses();
         model.addAttribute("customerAddresses", customerAddresses);
-        return "customer_addresses";
+        return "customer/customer_addresses";
     }
 
     // Hiển thị form thêm địa chỉ mới
@@ -173,7 +173,7 @@ public class CustomerController {
         model.addAttribute("provinces", provinces);
         // Tạo một object để binding data của form
         model.addAttribute("addressForm", new AddressForm());
-        return "customer_add_address";
+        return "customer/customer_add_address";
     }
 
     // Xử lý thêm địa chỉ mới
@@ -188,7 +188,7 @@ public class CustomerController {
             // Load lại danh sách provinces
             List<Province> provinces = provinceService.getAllProvinces();
             model.addAttribute("provinces", provinces);
-            return "customer_add_address";
+            return "customer/customer_add_address";
         }
 
         Address address = new Address();
@@ -204,7 +204,7 @@ public class CustomerController {
         customerAddress.setDefault(false);
         customerAddressService.addCustomerAddress(customerAddress);
 
-        return "redirect:/customer/addresses";
+        return "redirect:/profile";
     }
 
     @PostMapping("/customer/addresses/{id}/default")
@@ -240,7 +240,7 @@ public class CustomerController {
         // Lấy customer hiện tại, giả sử bạn đã có logic getCurrentCustomer()
         Customer currentCustomer = getCurrentCustomer();
         model.addAttribute("customer", currentCustomer);
-        return "profile"; // Trả về template profile.html
+        return "customers/profile"; // Trả về template profile.html
     }
 
 
