@@ -27,10 +27,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         if (isBranchRole) {
             response.sendRedirect("/branches");
-        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"))) {
-            response.sendRedirect("/shop/products/list");
         } else {
-            response.sendRedirect("/login?error=true"); // fallback if role not matched
+            response.sendRedirect("/shop/products/list");
         }
     }
 

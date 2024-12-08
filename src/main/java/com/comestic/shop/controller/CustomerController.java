@@ -4,19 +4,19 @@ import com.comestic.shop.dto.AddressForm;
 import com.comestic.shop.model.*;
 import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 public class CustomerController {
@@ -41,6 +41,15 @@ public class CustomerController {
 
     @Autowired
     private CustomerAddressService customerAddressService;
+
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // Định dạng ngày tháng cho dateOfBirth
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, "dateOfBirth", new CustomDateEditor(dateFormat, true));
+    }
 
     // GET method to show the registration form
     @GetMapping("/register")
@@ -78,6 +87,10 @@ public class CustomerController {
             return "register";
         }
 
+        // Thiết lập các thuộc tính mặc định cho customer
+        customer.setDateJoined(new Date()); // Ngày đăng ký
+        customer.setActive(true); // Kích hoạt tài khoản
+
         // Lưu thông tin khách hàng
         customerService.saveCustomer(customer);
 
@@ -96,14 +109,13 @@ public class CustomerController {
         address.setWard(ward);
         address.setStreetAddress(streetAddress);
         address.setPostalCode(postalCode);
-        address.setDefault(true); // Đặt địa chỉ này là mặc định
         addressService.saveAddress(address);
 
         // Tạo CustomerAddress để liên kết Customer và Address
         CustomerAddress customerAddress = new CustomerAddress();
         customerAddress.setCustomer(customer);
         customerAddress.setAddress(address);
-        customerAddress.setDefault(true);
+        customerAddress.setDefault(true); // Đặt địa chỉ này là mặc định
         customerAddressService.addCustomerAddress(customerAddress);
 
         // Redirect đến trang đăng nhập hoặc trang khác sau khi đăng ký thành công
