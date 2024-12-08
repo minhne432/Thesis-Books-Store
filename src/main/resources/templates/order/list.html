@@ -9,7 +9,6 @@
 <div layout:fragment="content" class="mt-5">
     <div class="container">
         <h1 class="text-center mb-4">Danh sách Đơn hàng</h1>
-
         <!-- Form lọc -->
         <form method="get" th:action="@{/orders}" class="mb-4 row g-3 align-items-center">
             <div class="col-md-4">
@@ -41,10 +40,22 @@
                 <input type="text" id="orderCode" name="orderCode" class="form-control" th:value="${orderCode}" />
             </div>
 
+            <!-- Thêm trường chọn ngày -->
+            <div class="col-md-4">
+                <label for="startDate" class="form-label">Từ ngày:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" th:value="${startDate}" />
+            </div>
+
+            <div class="col-md-4">
+                <label for="endDate" class="form-label">Đến ngày:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}" />
+            </div>
+
             <div class="col-md-12 text-end">
                 <button type="submit" class="btn btn-primary">Lọc</button>
             </div>
         </form>
+
 
         <!-- Bảng danh sách đơn hàng -->
         <div class="table-responsive">

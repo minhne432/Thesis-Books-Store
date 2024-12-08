@@ -5,12 +5,14 @@ import com.comestic.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,6 +41,8 @@ public class OrderController {
             @RequestParam(value = "branchId", required = false) Long branchId,
             @RequestParam(value = "status", required = false) OrderStatus status,
             @RequestParam(value = "orderCode", required = false) String orderCode,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
@@ -53,29 +57,25 @@ public class OrderController {
             permissionRequired = "view_orders_branch_";
         }
 
-        // Nếu không có quyền truy cập vào branch, chuyển đến trang từ chối quyền truy cập
         if (!permissions.contains(permissionRequired)) {
             return "access-denied";
         }
 
-        // Nếu người dùng nhập mã đơn hàng, kiểm tra mã đó thuộc chi nhánh nào
         if (orderCode != null && !orderCode.isEmpty()) {
-            Order order = orderService.getOrderByOrderCode(orderCode);  // Giả sử có phương thức này trong `orderService`
+            Order order = orderService.getOrderByOrderCode(orderCode);
             if (order != null && order.getBranch() != null) {
-                // Kiểm tra người dùng có quyền truy cập vào chi nhánh của đơn hàng không
                 if (!permissions.contains("view_orders_branch_" + order.getBranch().getBranchId())) {
                     return "access-denied";
                 }
             }
         }
 
-        int pageSize = 5; // Số lượng đơn hàng trên mỗi trang
+        int pageSize = 5;
         PageRequest pageable = PageRequest.of(page, pageSize);
 
-        // Lấy danh sách đơn hàng từ service
-        Page<Order> orderPage = orderService.getOrders(branchId, status, orderCode, pageable);
+        // Lấy danh sách đơn hàng từ service, truyền thêm startDate, endDate
+        Page<Order> orderPage = orderService.getOrders(branchId, status, orderCode, startDate, endDate, pageable);
 
-        // Lấy danh sách các chi nhánh để hiển thị trong model
         List<Branch> branches = branchService.getAllBranches();
         model.addAttribute("branches", branches);
         model.addAttribute("orders", orderPage.getContent());
@@ -84,9 +84,12 @@ public class OrderController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("orderCode", orderCode);
         model.addAttribute("statuses", OrderStatus.values());
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
 
         return "order/list";
     }
+
 
     @GetMapping("/history")
     public String viewOrderHistory(Model model,

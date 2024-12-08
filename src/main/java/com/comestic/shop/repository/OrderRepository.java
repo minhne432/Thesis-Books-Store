@@ -15,6 +15,23 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+    Page<Order> findByBranch_BranchIdAndStatusAndOrderCodeContainingAndOrderDateBetween(Long branchId, OrderStatus status, String orderCode, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByBranch_BranchIdAndStatusAndOrderDateBetween(Long branchId, OrderStatus status, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByBranch_BranchIdAndOrderCodeContainingAndOrderDateBetween(Long branchId, String orderCode, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByStatusAndOrderCodeContainingAndOrderDateBetween(OrderStatus status, String orderCode, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByBranch_BranchIdAndOrderDateBetween(Long branchId, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByStatusAndOrderDateBetween(OrderStatus status, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByOrderCodeContainingAndOrderDateBetween(String orderCode, Date startDate, Date endDate, Pageable pageable);
+    Page<Order> findByOrderDateBetween(Date startDate, Date endDate, Pageable pageable);
+
+    // Các phương thức cũ đã có:
+    Page<Order> findByBranch_BranchIdAndStatusAndOrderCodeContaining(Long branchId, OrderStatus status, String orderCode, Pageable pageable);
+    Page<Order> findByBranch_BranchIdAndStatus(Long branchId, OrderStatus status, Pageable pageable);
+    Page<Order> findByBranch_BranchIdAndOrderCodeContaining(Long branchId, String orderCode, Pageable pageable);
+    Page<Order> findByStatusAndOrderCodeContaining(OrderStatus status, String orderCode, Pageable pageable);
+    Page<Order> findByBranch_BranchId(Long branchId, Pageable pageable);
+    Page<Order> findByStatus(OrderStatus status, Pageable pageable);
+    Page<Order> findByOrderCodeContaining(String orderCode, Pageable pageable);
     // Bạn có thể thêm các phương thức tùy chỉnh nếu cần, ví dụ:
     // List<Order> findByCustomerId(int customerId);
     Order findByOrderCode(String orderCode);
@@ -22,24 +39,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByBranch_BranchId(Long branchId);
 
 
-    Page<Order> findByBranch_BranchId(Long branchId, Pageable pageable);
-
-    Page<Order> findByStatus(OrderStatus status, Pageable pageable);
-
-    Page<Order> findByOrderCodeContaining(String orderCode, Pageable pageable);
 
     // Kết hợp các bộ lọc
-    Page<Order> findByBranch_BranchIdAndStatusAndOrderCodeContaining(
-            Long branchId, OrderStatus status, String orderCode, Pageable pageable);
-
-    Page<Order> findByBranch_BranchIdAndStatus(
-            Long branchId, OrderStatus status, Pageable pageable);
-
-    Page<Order> findByBranch_BranchIdAndOrderCodeContaining(
-            Long branchId, String orderCode, Pageable pageable);
-
-    Page<Order> findByStatusAndOrderCodeContaining(
-            OrderStatus status, String orderCode, Pageable pageable);
 
     Page<Order> findAll(Pageable pageable);
 

@@ -88,10 +88,41 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Pageable pageable) {
+    public Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Date startDate, Date endDate, Pageable pageable) {
+        // Bổ sung logic lọc theo khoảng thời gian:
+        // Chỉ lọc theo thời gian nếu startDate và endDate đều khác null.
+        boolean hasDateRange = (startDate != null && endDate != null);
+
+        // Bây giờ ta mở rộng các trường hợp if-else để xét thêm `hasDateRange`.
+        // Để đơn giản, bạn có thể thêm các phương thức trong repository xử lý trường hợp có date range.
+        // Ví dụ: findByBranch_BranchIdAndStatusAndOrderDateBetween(...) v.v.
+
+        // Các trường hợp phức tạp:
+        // branchId, status, orderCode, startDate, endDate đều có thể kết hợp.
+        // Nên thêm các điều kiện tuần tự:
+
+        if (branchId != null && status != null && orderCode != null && !orderCode.isEmpty() && hasDateRange) {
+            return orderRepository.findByBranch_BranchIdAndStatusAndOrderCodeContainingAndOrderDateBetween(
+                    branchId, status, orderCode, startDate, endDate, pageable);
+        } else if (branchId != null && status != null && hasDateRange) {
+            return orderRepository.findByBranch_BranchIdAndStatusAndOrderDateBetween(branchId, status, startDate, endDate, pageable);
+        } else if (branchId != null && orderCode != null && !orderCode.isEmpty() && hasDateRange) {
+            return orderRepository.findByBranch_BranchIdAndOrderCodeContainingAndOrderDateBetween(branchId, orderCode, startDate, endDate, pageable);
+        } else if (status != null && orderCode != null && !orderCode.isEmpty() && hasDateRange) {
+            return orderRepository.findByStatusAndOrderCodeContainingAndOrderDateBetween(status, orderCode, startDate, endDate, pageable);
+        } else if (branchId != null && hasDateRange) {
+            return orderRepository.findByBranch_BranchIdAndOrderDateBetween(branchId, startDate, endDate, pageable);
+        } else if (status != null && hasDateRange) {
+            return orderRepository.findByStatusAndOrderDateBetween(status, startDate, endDate, pageable);
+        } else if (orderCode != null && !orderCode.isEmpty() && hasDateRange) {
+            return orderRepository.findByOrderCodeContainingAndOrderDateBetween(orderCode, startDate, endDate, pageable);
+        } else if (hasDateRange) {
+            return orderRepository.findByOrderDateBetween(startDate, endDate, pageable);
+        }
+
+        // Nếu không có date range:
         if (branchId != null && status != null && orderCode != null && !orderCode.isEmpty()) {
-            return orderRepository.findByBranch_BranchIdAndStatusAndOrderCodeContaining(
-                    branchId, status, orderCode, pageable);
+            return orderRepository.findByBranch_BranchIdAndStatusAndOrderCodeContaining(branchId, status, orderCode, pageable);
         } else if (branchId != null && status != null) {
             return orderRepository.findByBranch_BranchIdAndStatus(branchId, status, pageable);
         } else if (branchId != null && orderCode != null && !orderCode.isEmpty()) {

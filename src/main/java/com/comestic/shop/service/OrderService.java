@@ -23,7 +23,8 @@ public interface OrderService {
     Order getOrderById(int orderId);
     Order getOrderByOrderCode(String orderCode);
 
-    Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Pageable pageable);
+    Page<Order> getOrders(Long branchId, OrderStatus status, String orderCode, Date startDate, Date endDate, Pageable pageable);
+
     Page<Order> getOrdersByCustomerID(int customerID, Pageable pageable);
 
     Order updateOrderStatus(Order order, OrderStatus newStatus);
