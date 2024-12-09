@@ -17,6 +17,19 @@
         <div class="card-body">
             <p><strong>Mã Đơn hàng:</strong> <span th:text="${order.orderCode}"></span></p>
             <p><strong>Ngày đặt:</strong> <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></span></p>
+            <p>
+                <strong>Người nhận:</strong>
+                <span th:text="${order.customer.firstName}"></span>
+                <span th:text="${order.customer.lastName}"></span>
+            </p>
+            <p>
+                <strong>Địa chỉ:</strong>
+                <span th:text="${order.shippingAddress.streetAddress}"></span>,
+                <span th:text="${order.shippingAddress.ward.wardName}"></span>,
+                <span th:text="${order.shippingAddress.ward.district.districtName}"></span>,
+                <span th:text="${order.shippingAddress.ward.district.province.provinceName}"></span>
+            </p>
+            <p><strong>Số điện thoại:</strong> <span th:text="${order.customer.phone}"></span></p>
             <p><strong>Tổng tiền:</strong>
                 <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 0)} + ' VNĐ'"></span>
             </p>

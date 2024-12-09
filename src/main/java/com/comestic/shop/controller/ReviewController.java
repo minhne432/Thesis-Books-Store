@@ -2,6 +2,7 @@ package com.comestic.shop.controller;
 
 import com.comestic.shop.model.Customer;
 import com.comestic.shop.model.OrderDetails;
+import com.comestic.shop.model.OrderStatus;
 import com.comestic.shop.model.Review;
 import com.comestic.shop.service.CustomerService;
 import com.comestic.shop.service.OrderDetailsService;
@@ -38,8 +39,8 @@ public class ReviewController {
         }
 
         // Check if a review already exists
-        if (orderDetails.getReview() != null) {
-            return "redirect:/orders/" + orderDetails.getOrder().getOrderID();
+        if (orderDetails.getReview() != null || orderDetails.getOrder().getStatus()!= OrderStatus.DELIVERED) {
+            return "redirect:/orders/" + orderDetails.getOrder().getOrderID()+"/OrderDetails";
         }
 
         Review review = new Review();
