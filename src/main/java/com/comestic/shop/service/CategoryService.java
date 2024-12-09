@@ -29,4 +29,13 @@ public class CategoryService {
     }
 
 
+    public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public boolean existsByCategoryName(String categoryName) {
+        return categoryRepository.existsByCategoryName(categoryName);
+    }
+
+
 }
