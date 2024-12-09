@@ -25,14 +25,36 @@ public class ShopController {
 
 
 
+//    @GetMapping("/list")
+//    public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
+//        int pageSize = 9; // Số sản phẩm mỗi trang
+//        Page<Product> productPage = productService.getProductsByPage(page, pageSize);
+//        model.addAttribute("productPage", productPage);
+//        model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
+//        return "shop/product_list";
+//    }
+
+
     @GetMapping("/list")
-    public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String showProductList(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(required = false) String category,
+                                  @RequestParam(required = false) String brand,
+                                  @RequestParam(required = false) Integer priceMin,
+                                  @RequestParam(required = false) Integer priceMax,
+                                  Model model) {
         int pageSize = 9; // Số sản phẩm mỗi trang
-        Page<Product> productPage = productService.getProductsByPage(page, pageSize);
+        Page<Product> productPage = productService.filterProducts(category, brand, priceMin, priceMax, page, pageSize);
+
         model.addAttribute("productPage", productPage);
-        model.addAttribute("products", productPage.getContent()); // Lấy danh sách sản phẩm
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("category", category);
+        model.addAttribute("brand", brand);
+        model.addAttribute("priceMin", priceMin);
+        model.addAttribute("priceMax", priceMax);
+
         return "shop/product_list";
     }
+
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam(value = "keyword", required = false) String keyword,

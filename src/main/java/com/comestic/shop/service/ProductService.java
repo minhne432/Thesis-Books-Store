@@ -89,4 +89,32 @@ public class ProductService {
         }
     }
 
+
+    public Page<Product> filterProducts(String category, String brand, Integer priceMin, Integer priceMax, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        boolean hasCategory = (category != null && !category.trim().isEmpty());
+        boolean hasBrand = (brand != null && !brand.trim().isEmpty());
+        boolean hasPriceRange = (priceMin != null && priceMax != null);
+
+        if (hasCategory && hasBrand && hasPriceRange) {
+            return productRepository.findByCategory_CategoryNameIgnoreCaseAndBrandIgnoreCaseAndPriceBetween(category, brand, priceMin, priceMax, pageable);
+        } else if (hasCategory && hasBrand) {
+            return productRepository.findByCategory_CategoryNameIgnoreCaseAndBrandIgnoreCase(category, brand, pageable);
+        } else if (hasCategory && hasPriceRange) {
+            return productRepository.findByCategory_CategoryNameIgnoreCaseAndPriceBetween(category, priceMin, priceMax, pageable);
+        } else if (hasBrand && hasPriceRange) {
+            return productRepository.findByBrandIgnoreCaseAndPriceBetween(brand, priceMin, priceMax, pageable);
+        } else if (hasCategory) {
+            return productRepository.findByCategory_CategoryNameIgnoreCase(category, pageable);
+        } else if (hasBrand) {
+            return productRepository.findByBrandIgnoreCase(brand, pageable);
+        } else if (hasPriceRange) {
+            return productRepository.findByPriceBetween(priceMin, priceMax, pageable);
+        } else {
+            // Nếu không có tham số lọc, trả về tất cả
+            return productRepository.findAll(pageable);
+        }
+    }
+
 }

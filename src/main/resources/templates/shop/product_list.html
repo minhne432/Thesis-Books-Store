@@ -109,12 +109,12 @@
                             </a>
                             <div class="collapse" id="productCategorySubmenu">
                                 <ul class="nav flex-column ms-3">
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/skincare}"><i class="fas fa-spa"></i> Chăm sóc da</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/makeup}"><i class="fas fa-paint-brush"></i> Trang điểm</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/fragrance}"><i class="fas fa-smile-wink"></i> Nước hoa</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/haircare}"><i class="fas fa-cut"></i> Chăm sóc tóc</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/sets}"><i class="fas fa-box-open"></i> Bộ sản phẩm</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/categories/all}"><i class="fas fa-th"></i> Tất cả sản phẩm</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(category='skincare')}"><i class="fas fa-spa"></i> Chăm sóc da</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(category='makeup')}"><i class="fas fa-paint-brush"></i> Trang điểm</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(category='fragrance')}"><i class="fas fa-smile-wink"></i> Nước hoa</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(category='haircare')}"><i class="fas fa-cut"></i> Chăm sóc tóc</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(category='sets')}"><i class="fas fa-box-open"></i> Bộ sản phẩm</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list}"><i class="fas fa-th"></i> Tất cả sản phẩm</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -127,11 +127,11 @@
                             </a>
                             <div class="collapse" id="brandSubmenu">
                                 <ul class="nav flex-column ms-3">
-                                    <li class="nav-item"><a class="nav-link" href="@{/brands/nivea}">Nivea</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/brands/loreal}">L'Oréal</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/brands/lancome}">Lancôme</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/brands/esteelauder}">Estée Lauder</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/brands/clinique}">Clinique</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(brand='nivea')}">Nivea</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(brand='loreal')}">L'Oréal</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(brand='lancome')}">Lancôme</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(brand='esteelauder')}">Estée Lauder</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(brand='clinique')}">Clinique</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -144,14 +144,15 @@
                             </a>
                             <div class="collapse" id="filterSubmenu">
                                 <ul class="nav flex-column ms-3">
-                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=0,priceMax=100000)}">Dưới 100,000 VNĐ</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=100000,priceMax=500000)}">100,000 - 500,000 VNĐ</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=500000,priceMax=1000000)}">500,000 - 1,000,000 VNĐ</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="@{/shop/products/list(priceMin=1000000)}">Trên 1,000,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(priceMin=0,priceMax=100000)}">Dưới 100,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(priceMin=100000,priceMax=500000)}">100,000 - 500,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(priceMin=500000,priceMax=1000000)}">500,000 - 1,000,000 VNĐ</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/shop/products/list(priceMin=1000000)}">Trên 1,000,000 VNĐ</a></li>
                                 </ul>
                             </div>
                         </li>
                     </ul>
+
                 </nav>
             </aside>
 

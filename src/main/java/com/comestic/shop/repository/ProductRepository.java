@@ -27,4 +27,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> searchProducts(String keyword);
 
     Page<Product> findByProductNameContaining(String keyword, Pageable pageable);
+
+    //new
+    Page<Product> findByCategory_CategoryNameIgnoreCase(String categoryName, Pageable pageable);
+    Page<Product> findByBrandIgnoreCase(String brand, Pageable pageable);
+    Page<Product> findByPriceBetween(int minPrice, int maxPrice, Pageable pageable);
+
+    Page<Product> findByCategory_CategoryNameIgnoreCaseAndBrandIgnoreCase(String categoryName, String brand, Pageable pageable);
+    Page<Product> findByCategory_CategoryNameIgnoreCaseAndPriceBetween(String categoryName, int minPrice, int maxPrice, Pageable pageable);
+    Page<Product> findByBrandIgnoreCaseAndPriceBetween(String brand, int minPrice, int maxPrice, Pageable pageable);
+    Page<Product> findByCategory_CategoryNameIgnoreCaseAndBrandIgnoreCaseAndPriceBetween(String categoryName, String brand, int minPrice, int maxPrice, Pageable pageable);
 }
