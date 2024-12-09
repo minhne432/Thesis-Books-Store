@@ -36,6 +36,8 @@ public class OrderController {
     @Autowired
     OrderDetailsService orderDetailsService;
 
+    @Autowired
+    PermissionCheckerService permissionCheckerService;
     @GetMapping
     public String listOrders(
             @RequestParam(value = "branchId", required = false) Long branchId,
@@ -46,28 +48,11 @@ public class OrderController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
-        // Lấy danh sách permissions của người dùng hiện tại
-        Set<String> permissions = permissionService.getUserPermissions();
-        String permissionRequired = "";
+        String permissionRequired = "view_orders_list";
 
-        // Kiểm tra quyền truy cập vào chi nhánh
-        if (branchId != null) {
-            permissionRequired = "view_orders_branch_" + branchId;
-        } else {
-            permissionRequired = "view_orders_branch_";
-        }
-
-        if (!permissions.contains(permissionRequired)) {
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
             return "access-denied";
-        }
-
-        if (orderCode != null && !orderCode.isEmpty()) {
-            Order order = orderService.getOrderByOrderCode(orderCode);
-            if (order != null && order.getBranch() != null) {
-                if (!permissions.contains("view_orders_branch_" + order.getBranch().getBranchId())) {
-                    return "access-denied";
-                }
-            }
         }
 
         int pageSize = 5;
