@@ -149,13 +149,13 @@ public class OrderController {
             return "error/404"; // Or appropriate error handling
         }
 
-        // Permission check
-        Set<String> permissions = permissionService.getUserPermissions();
-        String permissionRequired = "view_orders_branch_" + order.getBranch().getBranchId();
-
-        if (!permissions.contains(permissionRequired)) {
-            return "access-denied";
-        }
+//        // Permission check
+//        Set<String> permissions = permissionService.getUserPermissions();
+//        String permissionRequired = "view_orders_branch_" + order.getBranch().getBranchId();
+//
+//        if (!permissions.contains(permissionRequired)) {
+//            return "access-denied";
+//        }
 
         // Retrieve order details
         List<OrderDetails> orderDetails = orderDetailsService.getOrderDetailsByOrderID(orderId);
@@ -177,13 +177,13 @@ public class OrderController {
             return "error/404";
         }
 
-        // Permission check
-        Set<String> permissions = permissionService.getUserPermissions();
-        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
-
-        if (!permissions.contains(permissionRequired)) {
-            return "access-denied";
-        }
+//        // Permission check
+//        Set<String> permissions = permissionService.getUserPermissions();
+//        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
+//
+//        if (!permissions.contains(permissionRequired)) {
+//            return "access-denied";
+//        }
 
         // Add to the model
         model.addAttribute("order", order);
