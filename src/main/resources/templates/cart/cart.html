@@ -50,8 +50,9 @@
                             <td class="text-center">
                                 <!-- Hidden field để gửi cartItemId -->
                                 <input type="hidden" th:field="*{cartItems[__${iterStat.index}__].cartItemId}" />
-                                <input type="number" th:field="*{cartItems[__${iterStat.index}__].quantity}"
-                                       class="form-control quantity-input" min="1" style="width: 80px; margin: 0 auto;" />
+<!--                                <input type="number" th:field="*{cartItems[__${iterStat.index}__].quantity}"-->
+<!--                                       class="form-control quantity-input" min="1" style="width: 80px; margin: 0 auto;" />-->
+                                <span th:text="${item.quantity}"></span>
                             </td>
 
                             <!-- Sửa biểu thức 'Tổng cộng' -->
@@ -68,11 +69,11 @@
                 </div>
 
                 <!-- Nút Cập nhật giỏ hàng -->
-                <div class="text-end mb-4">
-                    <button type="submit" class="btn btn-pink">
-                        <i class="fas fa-sync-alt me-2"></i> Cập nhật giỏ hàng
-                    </button>
-                </div>
+<!--                <div class="text-end mb-4">-->
+<!--                    <button type="submit" class="btn btn-pink">-->
+<!--                        <i class="fas fa-sync-alt me-2"></i> Cập nhật giỏ hàng-->
+<!--                    </button>-->
+<!--                </div>-->
             </form>
 
             <!-- Phần tổng tiền và phương thức thanh toán -->
