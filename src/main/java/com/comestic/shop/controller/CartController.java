@@ -485,7 +485,12 @@ public String vnpayReturn(@RequestParam Map<String, String> allParams, Model mod
             model.addAttribute("errorMessage", e.getMessage());
             return "cart/cart";
         } catch (RuntimeException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            // Kiểm tra xem đây có phải là lỗi không tìm thấy chi nhánh
+            if (e.getMessage().contains("chi nhánh nào có đủ hàng")) {
+                model.addAttribute("errorMessage", "Không có chi nhánh nào đáp ứng đầy đủ các sản phẩm trong đơn hàng của bạn, vui lòng chỉnh sửa đơn hàng hoặc quay lại sau.");
+            } else {
+                model.addAttribute("errorMessage", e.getMessage());
+            }
             return "cart/cart";
         }
     }

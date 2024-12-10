@@ -33,6 +33,11 @@ public class BranchController {
     @Autowired
     private WardService wardService;
 
+    @Autowired
+    private  PermissionCheckerService permissionCheckerService;
+
+    @Autowired
+    private DistanceCalculationService distanceCalculationService;
 
     // Hiển thị danh sách chi nhánh
     // Hiển thị danh sách chi nhánh với phân trang và tìm kiếm
@@ -42,6 +47,14 @@ public class BranchController {
             @RequestParam(value = "size", defaultValue = "10") int size, // Kích thước trang
             @RequestParam(value = "keyword", required = false) String keyword, // Từ khóa tìm kiếm
             Model model) {
+
+
+        String permissionRequired = "view_branch_list";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Branch> branchPage;
@@ -62,6 +75,14 @@ public class BranchController {
     // Hiển thị form tạo chi nhánh mới
     @GetMapping("/create")
     public String showCreateBranchForm(Model model) {
+
+        String permissionRequired = "create_new_branch";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
+
         model.addAttribute("branch", new Branch());
         model.addAttribute("address", new Address());
 
@@ -96,6 +117,8 @@ public class BranchController {
 
         // Lưu chi nhánh
         branchService.addBranch(branch);
+
+        distanceCalculationService.calculateAndSaveDistances();
 
         redirectAttributes.addFlashAttribute("success", "Thêm chi nhánh mới thành công!");
         return "redirect:/branches";

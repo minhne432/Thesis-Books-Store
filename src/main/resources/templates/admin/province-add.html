@@ -1,10 +1,12 @@
-<!-- templates/admin/province-add.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Thêm mới Tỉnh</title>
+    <title layout:fragment="title" >Thêm mới Tỉnh</title>
 </head>
 <body>
+<div layout:fragment="content">
 <h1>Thêm mới Tỉnh</h1>
 <form th:action="@{/admin/provinces/add}" th:object="${province}" method="post">
     <label for="provinceName">Tên Tỉnh:</label>
@@ -13,5 +15,6 @@
     <button type="submit">Lưu</button>
     <a th:href="@{/admin/provinces}">Hủy</a>
 </form>
+</div>
 </body>
 </html>

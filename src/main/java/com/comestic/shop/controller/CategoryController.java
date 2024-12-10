@@ -2,6 +2,7 @@ package com.comestic.shop.controller;
 
 import com.comestic.shop.model.Category;
 import com.comestic.shop.service.CategoryService;
+import com.comestic.shop.service.PermissionCheckerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,20 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+
+    @Autowired
+    private PermissionCheckerService permissionCheckerService;
     // Trang liệt kê danh mục sản phẩm và form thêm mới
     @GetMapping
     public String listCategories(Model model) {
+
+        String permissionRequired = "manage_category";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
+
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         model.addAttribute("category", new Category()); // Đối tượng để binding form tạo mới

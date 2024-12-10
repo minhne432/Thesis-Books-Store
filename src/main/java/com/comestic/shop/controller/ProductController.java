@@ -4,6 +4,7 @@ import com.comestic.shop.model.Category;
 import com.comestic.shop.model.Inventory;
 import com.comestic.shop.model.Product;
 import com.comestic.shop.service.CategoryService;
+import com.comestic.shop.service.PermissionCheckerService;
 import com.comestic.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,9 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private PermissionCheckerService permissionCheckerService;
+
     // Directory to save uploaded images
     private static String UPLOAD_DIR = System.getProperty("user.dir") + "/product-images";
 //    private static String UPLOAD_DIR = "src/main/resources/static/images";
@@ -40,6 +44,14 @@ public class ProductController {
     // Hiển thị danh sách sản phẩm
     @GetMapping("/list")
     public String showProductList(@RequestParam(defaultValue = "0") int page, Model model) {
+
+        String permissionRequired = "view_product_list";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
+
         int pageSize = 5; // Số sản phẩm mỗi trang
         Page<Product> productPage = productService.getProductsByPage(page, pageSize);
         model.addAttribute("productPage", productPage);
@@ -51,6 +63,14 @@ public class ProductController {
 // Thêm phương thức trong ProductController để cung cấp danh sách categories
     @GetMapping("/add")
     public String showAddProductForm(Model model) {
+
+        String permissionRequired = "create_product";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
+
         model.addAttribute("product", new Product());
         List<Category> categories = categoryService.getAllCategories(); // Giả sử bạn có CategoryService
         model.addAttribute("categories", categories);

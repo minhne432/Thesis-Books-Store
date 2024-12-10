@@ -42,8 +42,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     // Kết hợp các bộ lọc
 
+    @Query("SELECT o FROM Order o ORDER BY o.orderDate DESC")
     Page<Order> findAll(Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE o.customer.customerID = :customerID ORDER BY o.orderDate DESC")
     Page<Order> findByCustomer_CustomerID(int customerID, Pageable pageable);
 
 

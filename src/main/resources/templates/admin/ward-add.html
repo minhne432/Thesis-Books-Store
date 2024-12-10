@@ -1,11 +1,14 @@
 <!-- templates/admin/ward-add.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Thêm mới Phường/Xã</title>
+    <title  layout:fragment="title" >Thêm mới Phường/Xã</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Bao gồm jQuery -->
 </head>
 <body>
+<div layout:fragment="content">
 <h1>Thêm mới Phường/Xã</h1>
 <form th:action="@{/admin/wards/add}" th:object="${ward}" method="post">
     <label for="wardName">Tên Phường/Xã:</label>
@@ -37,6 +40,7 @@
     <br/>
     <button type="submit">Lưu</button>
     <a th:href="@{/admin/wards}">Hủy</a>
+
 </form>
 
 <script type="text/javascript">
@@ -65,6 +69,6 @@
 </script>
 
 
-
+</div>
 </body>
 </html>

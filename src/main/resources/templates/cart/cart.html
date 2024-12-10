@@ -12,9 +12,13 @@
     <div class="container mt-5">
         <h2 class="mb-4 text-center text-pink">Giỏ hàng của bạn</h2>
 
+        <div th:if="${errorMessage}" class="alert alert-danger text-center" role="alert">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <!-- Giỏ hàng trống -->
         <div th:if="${#lists.isEmpty(cartItems)}" class="text-center">
-            <p class="lead">Giỏ hàng của bạn đang trống. <a th:href="@{/shop/products/list}" class="btn btn-pink">Tiếp tục mua sắm</a></p>
+            <p class="lead"><a th:href="@{/shop/products/list}" class="btn btn-pink">Tiếp tục mua sắm</a></p>
         </div>
 
         <!-- Giỏ hàng có sản phẩm -->
@@ -89,13 +93,13 @@
                             <h4 class="card-title text-pink">Tổng tiền:</h4>
                             <!-- Sửa biểu thức 'Tổng tiền' và thêm span để JavaScript có thể chọn -->
                             <h3 class="card-text text-end">
-                                <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmount, 0, 0)}|">VNĐ 0</span>
+                                <span th:text="|${#numbers.formatDecimal(totalAmount, 0, 0)} VNĐ|">VNĐ 0</span>
                             </h3>
                             <!-- Hiển thị giảm giá nếu có -->
                             <div th:if="${session.discountAmount != null}">
                                 <h5 class="card-title text-pink">Giảm giá:</h5>
                                 <h4 class="card-text text-end text-success">
-                                    -<span th:text="|VNĐ ${#numbers.formatDecimal(session.discountAmount, 0, 0)}|">VNĐ 0</span>
+                                    -<span th:text="|${#numbers.formatDecimal(session.discountAmount, 0, 0)} VNĐ|">VNĐ 0</span>
                                 </h4>
                             </div>
 
@@ -103,7 +107,7 @@
                             <div th:if="${session.discountAmount != null}">
                                 <h4 class="card-title text-pink">Tổng cộng:</h4>
                                 <h3 class="card-text text-end">
-                                    <span th:text="|VNĐ ${#numbers.formatDecimal(totalAmountAfterDiscount, 0, 0)}|">VNĐ 0</span>
+                                    <span th:text="|${#numbers.formatDecimal(totalAmountAfterDiscount, 0, 0)} VNĐ|">VNĐ 0</span>
                                 </h3>
                             </div>
 

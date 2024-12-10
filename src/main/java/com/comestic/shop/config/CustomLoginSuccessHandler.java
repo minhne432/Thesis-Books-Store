@@ -19,7 +19,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
 
         // Danh sách các vai trò chuyển hướng đến cùng một trang
-        Set<String> branchRoles = Set.of("ROLE_ADMIN", "ROLE_BRANCH_MANAGER");
+        Set<String> branchRoles = Set.of("ROLE_ADMIN", "ROLE_INVENTORY_MANAGER");
 
         // Kiểm tra nếu user có bất kỳ vai trò nào trong branchRoles
         boolean isBranchRole = authentication.getAuthorities().stream()

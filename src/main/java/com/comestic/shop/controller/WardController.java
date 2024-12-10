@@ -4,6 +4,7 @@ import com.comestic.shop.dto.DistrictDTO;
 import com.comestic.shop.dto.WardDTO;
 import com.comestic.shop.model.Ward;
 import com.comestic.shop.model.District;
+import com.comestic.shop.service.DistanceCalculationService;
 import com.comestic.shop.service.ProvinceService;
 import com.comestic.shop.service.WardService;
 import com.comestic.shop.service.DistrictService;
@@ -28,6 +29,9 @@ public class WardController {
 
     @Autowired
     private DistrictService districtService;
+
+    @Autowired
+    private DistanceCalculationService distanceCalculationService;
 
     // Hiển thị danh sách tất cả các phường/xã
     @GetMapping
@@ -73,6 +77,7 @@ public class WardController {
         if (districtOptional.isPresent()) {
             ward.setDistrict(districtOptional.get());
             wardService.saveWard(ward);
+            distanceCalculationService.calculateAndSaveDistances();
             return "redirect:/admin/wards";
         } else {
             // Nếu không tìm thấy District theo ID
@@ -100,6 +105,7 @@ public class WardController {
     @PostMapping("/edit")
     public String updateWard(@ModelAttribute("ward") Ward ward) {
         wardService.saveWard(ward);
+        distanceCalculationService.calculateAndSaveDistances();
         return "redirect:/admin/wards";
     }
 

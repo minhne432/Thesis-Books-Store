@@ -1,10 +1,13 @@
 <!-- templates/admin/district-add.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Thêm mới Quận/Huyện</title>
+    <title layout:fragment="title" >Thêm mới Quận/Huyện</title>
 </head>
 <body>
+<div layout:fragment="content">
 <h1>Thêm mới Quận/Huyện</h1>
 <form th:action="@{/admin/districts/add}" th:object="${district}" method="post">
     <label for="districtName">Tên Quận/Huyện:</label>
@@ -21,5 +24,6 @@
     <button type="submit">Lưu</button>
     <a th:href="@{/admin/districts}">Hủy</a>
 </form>
+</div>
 </body>
 </html>

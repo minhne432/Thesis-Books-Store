@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Chỉnh sửa Coupon</title>
+    <title layout:fragment="title" >Chỉnh sửa Coupon</title>
 </head>
 <body>
+<div layout:fragment="content">
 <h1>Chỉnh sửa Coupon</h1>
 <form th:action="@{/coupons/update/{id}(id=${coupon.couponId})}" th:object="${coupon}" method="post">
     <label>Mã:</label>
@@ -39,5 +42,6 @@
     <button type="submit">Cập nhật</button>
 </form>
 <a th:href="@{/coupons}">Quay lại danh sách</a>
+</div>
 </body>
 </html>

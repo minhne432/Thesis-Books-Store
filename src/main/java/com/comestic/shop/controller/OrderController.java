@@ -203,13 +203,13 @@ public class OrderController {
             return "error/404";
         }
 
-        // Permission check
-        Set<String> permissions = permissionService.getUserPermissions();
-        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
-
-        if (!permissions.contains(permissionRequired)) {
-            return "access-denied";
-        }
+//        // Permission check
+//        Set<String> permissions = permissionService.getUserPermissions();
+//        String permissionRequired = "edit_orders_branch_" + order.getBranch().getBranchId();
+//
+//        if (!permissions.contains(permissionRequired)) {
+//            return "access-denied";
+//        }
 
         // Update the order status using the new method
         orderService.updateOrderStatus(order, status);

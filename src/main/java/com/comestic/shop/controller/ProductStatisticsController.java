@@ -7,6 +7,7 @@ import com.comestic.shop.dto.ProductSalesDateDTO;
 import com.comestic.shop.model.OrderStatus;
 import com.comestic.shop.service.OrderDetailsService;
 import com.comestic.shop.service.OrderService;
+import com.comestic.shop.service.PermissionCheckerService;
 import com.comestic.shop.service.ProductStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,6 +35,9 @@ public class ProductStatisticsController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private PermissionCheckerService permissionCheckerService;
+
     @GetMapping("/best-selling-products")
     public String getBestSellingProducts(
             @RequestParam(value = "type", required = false, defaultValue = "day") String type,
@@ -41,6 +45,13 @@ public class ProductStatisticsController {
             @RequestParam(value = "month", required = false) Integer month,
             @RequestParam(value = "year", required = false) Integer year,
             Model model) {
+
+        String permissionRequired = "view_statistics";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
 
         List<ProductSalesDTO> productSales = new ArrayList<>();
 
@@ -91,6 +102,13 @@ public class ProductStatisticsController {
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
             Model model) {
+
+        String permissionRequired = "view_statistics";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
 
         if (startDate == null) {
             // Mặc định là ngày hôm nay
@@ -166,6 +184,13 @@ public class ProductStatisticsController {
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
             Model model) {
 
+        String permissionRequired = "view_statistics";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
+
         List<CategorySalesDTO> categorySales;
 
         if (startDate != null && endDate != null) {
@@ -218,6 +243,13 @@ public class ProductStatisticsController {
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
             Model model) {
+
+        String permissionRequired = "view_statistics";
+
+        // Kiểm tra permission chung cho danh sách đơn hàng
+        if (!permissionCheckerService.hasPermission(permissionRequired)) {
+            return "access-denied";
+        }
 
         List<BranchRevenueDTO> branchRevenues;
 
